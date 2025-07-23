@@ -1,88 +1,27 @@
 {
-  "name": "evecloud",
-  "productName": "Evecloud",
-  "description": "Learning platform.",
-  "version": "0.0.0-development",
-  "author": "Martin Jakobsson <eveapp2021@gmail.com>",
-  "main": "main.js",
-  "email": "eveapp2021@gmail.com",
-  "maintainer": "Martin Jakobsson",
-  "homepage": "https://github.com/EvecloudGroup/evecloud#readme",
-  "url": "https://github.com/EvecloudGroup/evecloud/issues",
-  "build": {
-    "appId": "com.electron.evecloud",
-    "extends": null,
-    "directories": {
-      "buildResources": "build"
-    },
-    "files": [
-      "package.json",
-      "main.js",
-      "index.html",
-      "reload.js",
-      "package.json",
-      "build/**/*",
-      "dist/**/*",
-      "node_modules/**/*",
-      "./assets/**/*",
-      "*"
-    ],
-    "dmg": {
-      "title": "Evecloud",
-      "contents": [
-        {
-          "x": 110,
-          "y": 150
-        },
-        {
-          "x": 240,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
-    "linux": {
-      "executableName": "Evecloud",
-      "artifactName": "${productName}-${version}.${ext}",
-      "target": [
-        "deb"
-      ]
-    },
-    "win": {
-      "target": "NSIS",
-      "icon": "build/icon.ico"
-    },
-    "nsis": {
-      "oneClick": true,
-      "perMachine": false,
-      "allowElevation": true,
-      "allowToChangeInstallationDirectory": false,
-      "runAfterFinish": true
-    }
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "./assets/icon"
-      }
-    }
-  },
-  "scripts": {
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "make-mac": "electron-forge make --platform darwin",
-    "semantic-release": "semantic-release"
-  },
-  "postinstall": "electron-builder install-app-deps",
-  "devDependencies": {
-    "@electron-forge/cli": "6.0.3",
-    "electron": "23.1.0",
-    "electron-builder": "23.6.0",
-    "semantic-release": "^19.0.5"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/EvecloudGroup/evecloud.git"
-  }
+	"name": "neurapath-app",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^6.0.0",
+		"@sveltejs/kit": "^2.22.0",
+		"@sveltejs/vite-plugin-svelte": "^6.0.0",
+		"@tailwindcss/forms": "^0.5.9",
+		"@tailwindcss/typography": "^0.5.15",
+		"@tailwindcss/vite": "^4.0.0",
+		"svelte": "^5.0.0",
+		"svelte-check": "^4.0.0",
+		"tailwindcss": "^4.0.0",
+		"typescript": "^5.0.0",
+		"vite": "^7.0.4"
+	}
 }

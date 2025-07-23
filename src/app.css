@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:500,600,400");
+
+:root {
+
+  --zen-opacity: 1;
+
+
+  /****************** DEFAULT VALUES ******************/
+  --font-color: 68, 68, 68;
+  --font-color_button: 255, 255, 255;
+
+  --background-color: 255, 255, 255;
+  --background-color_sidebar: 252, 252, 252;
+  --background-color_modalbox: 240, 240, 240;
+  --background-color_button: 163, 205, 255;
+  --background-color_button-hover: 118, 180, 255;
+  --background-color_checkbox: 33, 150, 243;
+  /****************************************************/
+
+
+  /****************** DAY VALUES ******************/
+  --day-font-color: 68, 68, 68;
+  --day-font-color_button: 255, 255, 255;
+
+  --day-background-color: 255, 255, 255;
+  --day-background-color_sidebar: 252, 252, 252;
+  --day-background-color_modalbox: 240, 240, 240;
+  --day-background-color_button: 163, 205, 255;
+  --day-background-color_button-hover: 118, 180, 255;
+  --day-background-color_checkbox: 33, 150, 243;
+  /****************************************************/
+
+
+  /****************** NIGHT VALUES ******************/
+  --night-font-color: 255, 255, 255;
+  --night-font-color_button: 255, 255, 255;
+
+  --night-background-color: 46, 42, 36;
+  --night-background-color_sidebar: 46, 42, 36;
+  --night-background-color_modalbox: 85, 85, 85;
+  --night-background-color_button: 249, 208, 148;
+  --night-background-color_button-hover: 249, 218, 158, 1;
+  /****************************************************/
+
+
+
+  /****************** HOMEBREW VALUES ******************/
+  --homebrew-font-color: 249, 208, 148;
+  --homebrew-font-color_button: 46, 42, 36;
+
+  --homebrew-background-color: 46, 42, 36;
+  --homebrew-background-color_sidebar: 47, 44, 38;
+  --homebrew-background-color_modalbox: 38, 34, 28;
+  --homebrew-background-color_button: 249, 208, 148;
+  --homebrew-background-color_button-hover: 249, 218, 158, 1;
+  --homebrew_background-color_checkbox: 46, 42, 36;
+  /****************************************************/
+
+
+
+  --mainWindow-padding: 8px;
+  --leftSidebar-padding: 8px;
+  --rightSidebar-padding: 8px;
+  --font-size: 18px;
+
+}
+
+@supports(padding:max(0px)) {
+
+  body,
+  header,
+  footer {
+    padding-left: min(0vmin, env(safe-area-inset-left));
+    padding-right: min(0vmin, env(safe-area-inset-right));
+  }
+}
+
+
+body {
+  touch-action: manipulation;
+
+  background-color: rgb(var(--background-color));
+  color: rgb(var(--font-color));
+
+  margin: 0px;
+  padding: 0px;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+}
