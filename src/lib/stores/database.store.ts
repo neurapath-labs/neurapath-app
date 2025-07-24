@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 import type { Record } from '$lib/models';
 import { getDatabaseByID, createRecord, updateRecord, deleteRecord, updateDatabase } from '$lib/services/database.service';
 
-interface Database {
+export interface Database {
   items: Record[];
 }
 

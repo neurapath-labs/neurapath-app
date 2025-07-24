@@ -14,6 +14,17 @@ declare global {
 		}
 		// interface Platform {}
 	}
+	
+	// Global declaration for localforage
+	const localforage: {
+		getItem<T>(key: string): Promise<T | null>;
+		setItem<T>(key: string, value: T): Promise<T>;
+		removeItem(key: string): Promise<void>;
+		clear(): Promise<void>;
+		length(): Promise<number>;
+		key(keyIndex: number): Promise<string | null>;
+		keys(): Promise<string[]>;
+	};
 }
 
 export {};

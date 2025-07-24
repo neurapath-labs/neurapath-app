@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-interface SelectionState {
+export interface SelectionState {
   isSelected: boolean;
   text: string;
   range: {

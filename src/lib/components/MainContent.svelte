@@ -11,6 +11,7 @@
   import { modal } from '$lib/stores/modal.store';
   import type { Record, Cloze } from '$lib/models';
   import { createID, mobileCheck } from '$lib/utils/helpers';
+  import LearningMode from '$lib/components/LearningMode.svelte';
 
   let { children } = $props();
   let editor: HTMLDivElement;
@@ -226,6 +227,7 @@
     const createOcclusionShortcut = profileData.shortcuts.find((s: any) => s.event === 'input-create-occlusion');
     const createSeparateOcclusionShortcut = profileData.shortcuts.find((s: any) => s.event === 'input-create-occlusion-separate');
     const flagItemShortcut = profileData.shortcuts.find((s: any) => s.event === 'input-flag-item');
+    const spotlightSearchShortcut = profileData.shortcuts.find((s: any) => s.event === 'input-spotlight-toggle');
     
     // Create occlusion when pressed
     if (createOcclusionShortcut &&
@@ -250,6 +252,14 @@
              e.altKey === flagItemShortcut.altKey) {
       e.preventDefault();
       flagItem();
+    }
+    // Toggle spotlight search when pressed
+    else if (spotlightSearchShortcut &&
+             e.keyCode === spotlightSearchShortcut.keyCode &&
+             ((e.ctrlKey || e.metaKey) === (spotlightSearchShortcut.ctrlKey || spotlightSearchShortcut.metaKey)) &&
+             e.altKey === spotlightSearchShortcut.altKey) {
+      e.preventDefault();
+      modal.openSpotlightSearchModal();
     }
   };
 
@@ -483,10 +493,14 @@
 </script>
 
 <main id="content-input" on:contextmenu={handleContextMenu}>
-  <div class="editor-wrapper">
-    <div bind:this={editor} class="editor-container"></div>
-    {@render children()}
-  </div>
+  {#if isLearningMode}
+    <LearningMode />
+  {:else}
+    <div class="editor-wrapper">
+      <div bind:this={editor} class="editor-container"></div>
+      {@render children()}
+    </div>
+  {/if}
 </main>
 
 <style>

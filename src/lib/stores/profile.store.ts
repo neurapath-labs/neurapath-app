@@ -20,7 +20,10 @@ const defaultShortcuts: Shortcut[] = [
   {event: "input-grade-item2", keyCode: 50, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 2"},
   {event: "input-grade-item3", keyCode: 51, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 3"},
   {event: "input-grade-item4", keyCode: 52, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 4"},
-  {event: "input-grade-item5", keyCode: 53, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 5"}
+  {event: "input-grade-item5", keyCode: 53, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 5"},
+  {event: "learning-show-answer", keyCode: 32, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "SPACE"},
+  {event: "learning-flag-item", keyCode: 70, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "F"},
+  {event: "learning-skip-item", keyCode: 83, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "S"}
 ];
 
 const defaultProfile: Profile = {

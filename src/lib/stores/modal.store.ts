@@ -9,6 +9,7 @@ interface ModalState {
   isOcclusionCreateModalOpen: boolean;
   isOcclusionLearningModalOpen: boolean;
   isSummaryModalOpen: boolean;
+  isSpotlightSearchModalOpen: boolean;
   isAlertModalOpen: boolean;
   alertMessage: string;
   alertType: 'default' | 'success' | 'warning' | 'danger';
@@ -23,6 +24,7 @@ const initialState: ModalState = {
   isOcclusionCreateModalOpen: false,
   isOcclusionLearningModalOpen: false,
   isSummaryModalOpen: false,
+  isSpotlightSearchModalOpen: false,
   isAlertModalOpen: false,
   alertMessage: '',
   alertType: 'default'
@@ -142,6 +144,20 @@ const closeSummaryModal = () => {
   }));
 };
 
+const openSpotlightSearchModal = () => {
+  update(state => ({
+    ...state,
+    isSpotlightSearchModalOpen: true
+  }));
+};
+
+const closeSpotlightSearchModal = () => {
+  update(state => ({
+    ...state,
+    isSpotlightSearchModalOpen: false
+  }));
+};
+
 const showAlert = (message: string, type: 'default' | 'success' | 'warning' | 'danger' = 'default') => {
   update(state => ({
     ...state,
@@ -186,6 +202,8 @@ export const modal = {
   closeOcclusionLearningModal,
   openSummaryModal,
   closeSummaryModal,
+  openSpotlightSearchModal,
+  closeSpotlightSearchModal,
   showAlert,
   closeAlert
 };

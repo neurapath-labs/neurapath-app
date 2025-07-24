@@ -11,6 +11,7 @@ interface UIState {
   isChangelogOpen: boolean;
   isPolicyOpen: boolean;
   isTutorialOpen: boolean;
+  isSpotlightSearchModalOpen: boolean;
 }
 
 const initialState: UIState = {
@@ -23,7 +24,8 @@ const initialState: UIState = {
   isDatabasesOpen: false,
   isChangelogOpen: false,
   isPolicyOpen: false,
-  isTutorialOpen: false
+  isTutorialOpen: false,
+  isSpotlightSearchModalOpen: false
 };
 
 const { subscribe, set, update } = writable(initialState);
@@ -175,6 +177,20 @@ const closeTutorial = () => {
   }));
 };
 
+const openSpotlightSearch = () => {
+  update(state => ({
+    ...state,
+    isSpotlightSearchModalOpen: true
+  }));
+};
+
+const closeSpotlightSearch = () => {
+  update(state => ({
+    ...state,
+    isSpotlightSearchModalOpen: false
+  }));
+};
+
 export const ui = {
   subscribe,
   set,
@@ -196,5 +212,7 @@ export const ui = {
   openPolicy,
   closePolicy,
   openTutorial,
-  closeTutorial
+  closeTutorial,
+  openSpotlightSearch,
+  closeSpotlightSearch
 };

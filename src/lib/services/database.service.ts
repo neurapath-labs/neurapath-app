@@ -1,4 +1,55 @@
 const BASE_URL = "https://production.eveapp2021.workers.dev/";
+import type { Database } from '$lib/models';
+
+export const getPublicDatabases = async (): Promise<Database[]> => {
+  try {
+    // Get username and password from localforage
+    const username = await localforage.getItem<string>('username');
+    const password = await localforage.getItem<string>('password');
+
+    // Check if username and password exist
+    if (!username || !password) {
+      console.error('Username or password not found in local storage');
+      // Return sample data for testing
+      return [
+        { id: '1', name: 'Sample Database 1' },
+        { id: '2', name: 'Sample Database 2' },
+        { id: '3', name: 'Sample Database 3' }
+      ];
+    }
+
+    // Create headers with Basic authentication
+    const headers = new Headers();
+    headers.append('Authorization', `Basic ${username}:${password}`);
+
+    // Set up request options
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      headers: headers
+    };
+
+    // Make the API call
+    const response = await fetch('https://evecloud.io/public/data', requestOptions);
+    const data = await response.json();
+
+    // Check for error in response
+    if (data.error && data.error === 403) {
+      console.error('Access forbidden when fetching public databases');
+      return [];
+    }
+
+    // Return the databases array or empty array if not present
+    return data.databases || [];
+  } catch (error) {
+    console.error('Error fetching public databases:', error);
+    // Return sample data for testing
+    return [
+      { id: '1', name: 'Sample Database 1' },
+      { id: '2', name: 'Sample Database 2' },
+      { id: '3', name: 'Sample Database 3' }
+    ];
+  }
+};
 
 export const getDatabaseByID = async (id: string) => {
   try {

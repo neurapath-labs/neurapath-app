@@ -1,68 +1,87 @@
-<script>
-  import { onMount, onDestroy } from 'svelte';
+<script lang="ts">
+  import { onMount } from 'svelte';
   import { learning } from '$lib/stores/learning.store';
   import { database } from '$lib/stores/database.store';
   import { profile } from '$lib/stores/profile.store';
   import { modal } from '$lib/stores/modal.store';
+  import type { Record, Profile } from '$lib/models';
   import Quill from 'quill';
   import 'quill/dist/quill.bubble.css';
 
-  let questionEditor;
-  let answerEditor;
-  let questionQuill = null;
-  let answerQuill = null;
-  let currentRecord = null;
-  let showAnswer = false;
-  let profileData = {};
-  let dueItems = [];
-  let currentIndex = 0;
-  let sessionStats = {
+  let questionEditor: HTMLDivElement | null = $state(null);
+  let answerEditor: HTMLDivElement | null = $state(null);
+  let questionQuill: Quill | null = $state(null);
+  let answerQuill: Quill | null = $state(null);
+  let questionOcclusionCanvas: HTMLCanvasElement | null = $state(null);
+  let answerOcclusionCanvas: HTMLCanvasElement | null = $state(null);
+  let currentRecord: Record | null = $state(null);
+  let showAnswer: boolean = $state(false);
+  let profileData: Profile | null = $state(null);
+  let dueItems: Record[] = $state([]);
+  let currentIndex: number = $state(0);
+  let sessionStats = $state({
     reviewed: 0,
     total: 0
-  };
+  });
 
   // Subscribe to learning store
-  const unsubscribeLearning = learning.subscribe(($learning) => {
-    currentRecord = $learning.currentRecord;
-    if (currentRecord) {
-      updateQuestionDisplay();
-      showAnswer = false;
-    }
+  $effect(() => {
+    const unsubscribe = learning.subscribe(($learning) => {
+      currentRecord = $learning.currentRecord;
+      if (currentRecord) {
+        updateQuestionDisplay();
+        showAnswer = false;
+      }
+    });
+    
+    return () => unsubscribe();
   });
 
   // Subscribe to profile changes
-  const unsubscribeProfile = profile.subscribe(($profile) => {
-    profileData = $profile;
+  $effect(() => {
+    const unsubscribe = profile.subscribe(($profile) => {
+      profileData = $profile;
+    });
+    
+    return () => unsubscribe();
   });
 
   // Subscribe to database changes to get due items
-  const unsubscribeDatabase = database.subscribe(($database) => {
-    // Filter items that are due for review (dueDate <= today)
-    const today = new Date();
-    dueItems = $database.items.filter((item) => {
-      // Only include items with spaced repetition data
-      if (!item.dueDate || item.repetition === undefined) return false;
+  $effect(() => {
+    const unsubscribe = database.subscribe(($database) => {
+      // Filter items that are due for review (dueDate <= today)
+      const today = new Date();
+      const filteredItems = $database.items.filter((item) => {
+        // Only include items with spaced repetition data
+        if (!item.dueDate || item.repetition === undefined) return false;
+        
+        // Check if item type is enabled for learning mode
+        if (!profileData) return false;
+        if (item.contentType === 'Cloze' && !profileData.showClozesInLearningMode) return false;
+        if (item.contentType === 'Extract' && !profileData.showExtractsInLearningMode) return false;
+        if (item.contentType === 'Occlusion' && !profileData.showOcclusionsInLearningMode) return false;
+        
+        // Check if item is due
+        const dueDate = new Date(item.dueDate);
+        return dueDate <= today;
+      }).sort((a, b) => {
+        // Sort by due date (oldest first)
+        const dateA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
+        const dateB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
+        return dateA - dateB;
+      });
       
-      // Check if item type is enabled for learning mode
-      if (item.contentType === 'Cloze' && !profileData.showClozesInLearningMode) return false;
-      if (item.contentType === 'Extract' && !profileData.showExtractsInLearningMode) return false;
-      if (item.contentType === 'Occlusion' && !profileData.showOcclusionsInLearningMode) return false;
+      dueItems = filteredItems;
+      sessionStats.total = dueItems.length;
       
-      // Check if item is due
-      const dueDate = new Date(item.dueDate);
-      return dueDate <= today;
-    }).sort((a, b) => {
-      // Sort by due date (oldest first)
-      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      // If we don't have a current record, set the first due item
+      if (!currentRecord && dueItems.length > 0) {
+        learning.setCurrentRecord(dueItems[0]);
+        currentIndex = 0;
+      }
     });
     
-    sessionStats.total = dueItems.length;
-    
-    // If we don't have a current record, set the first due item
-    if (!currentRecord && dueItems.length > 0) {
-      learning.setCurrentRecord(dueItems[0]);
-      currentIndex = 0;
-    }
+    return () => unsubscribe();
   });
 
   onMount(() => {
@@ -95,32 +114,36 @@
       learning.setCurrentRecord(dueItems[0]);
       currentIndex = 0;
     }
-  });
-
-  onDestroy(() => {
-    if (unsubscribeLearning) unsubscribeLearning();
-    if (unsubscribeProfile) unsubscribeProfile();
-    if (unsubscribeDatabase) unsubscribeDatabase();
-    window.removeEventListener('keydown', handleKeyDown);
+    
+    // Cleanup function
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   });
 
   // Update question display when current record changes
   function updateQuestionDisplay() {
-    if (questionQuill && currentRecord) {
+    if (currentRecord) {
+      // For occlusions, draw the image with occlusions hidden
+      if (currentRecord.contentType === 'Occlusion' && currentRecord.url && currentRecord.occlusions) {
+        drawOcclusionQuestion();
+      }
       // For clozes, we need to show the text with clozes hidden
-      if (currentRecord.contentType === 'Cloze' && currentRecord.content && currentRecord.clozes) {
-        questionQuill.setContents(currentRecord.content);
-        
-        // Hide clozed text
-        currentRecord.clozes.forEach((cloze) => {
-          questionQuill.formatText(cloze.startindex, cloze.stopindex - cloze.startindex, {
-            'background': '#000000',
-            'color': '#000000'
+      else if (currentRecord.contentType === 'Cloze' && currentRecord.content && currentRecord.clozes) {
+        if (questionQuill) {
+          questionQuill.setContents(currentRecord.content);
+          
+          // Hide clozed text
+          currentRecord.clozes.forEach((cloze) => {
+            questionQuill!.formatText(cloze.startindex, cloze.stopindex - cloze.startindex, {
+              'background': '#000000',
+              'color': '#000000'
+            });
           });
-        });
-      } 
+        }
+      }
       // For extracts and other content types, show as is
-      else if (currentRecord.content) {
+      else if (currentRecord.content && questionQuill) {
         questionQuill.setContents(currentRecord.content);
       }
     }
@@ -128,23 +151,29 @@
 
   // Update answer display
   function updateAnswerDisplay() {
-    if (answerQuill && currentRecord) {
+    if (currentRecord) {
+      // For occlusions, draw the image with occlusions revealed
+      if (currentRecord.contentType === 'Occlusion' && currentRecord.url && currentRecord.occlusions) {
+        drawOcclusionAnswer();
+      }
       // For clozes, show the clozed text
-      if (currentRecord.contentType === 'Cloze' && currentRecord.clozes) {
-        if (currentRecord.content) {
+      else if (currentRecord.contentType === 'Cloze' && currentRecord.clozes) {
+        if (currentRecord.content && answerQuill) {
           answerQuill.setContents(currentRecord.content);
         }
         
         // Highlight clozed text
         currentRecord.clozes.forEach((cloze) => {
-          answerQuill.formatText(cloze.startindex, cloze.stopindex - cloze.startindex, {
-            'background': '#73b9ff',
-            'color': '#000000'
-          });
+          if (answerQuill) {
+            answerQuill!.formatText(cloze.startindex, cloze.stopindex - cloze.startindex, {
+              'background': '#73b9ff',
+              'color': '#000000'
+            });
+          }
         });
-      } 
+      }
       // For other content types, show the same content
-      else if (currentRecord.content) {
+      else if (currentRecord.content && answerQuill) {
         answerQuill.setContents(currentRecord.content);
       }
     }
@@ -157,7 +186,7 @@
   }
 
   // Handle grading of an item (1-5 scale)
-  async function handleGrade(grade) {
+  async function handleGrade(grade: number) {
     if (!currentRecord) return;
     
     try {
@@ -225,14 +254,15 @@
   }
 
   // Handle keyboard shortcuts
-  function handleKeyDown(e) {
+  function handleKeyDown(e: KeyboardEvent) {
     // Only handle shortcuts if in learning mode
-    if (!currentRecord) return;
+    if (!currentRecord || !profileData) return;
     
     // Get shortcuts from profile
     const shortcuts = profileData.shortcuts || [];
-    const showAnswerShortcut = shortcuts.find((s) => s.event === 'learning-show-answer');
-    const flagItemShortcut = shortcuts.find((s) => s.event === 'learning-flag-item');
+    const showAnswerShortcut = shortcuts.find((s: any) => s.event === 'learning-show-answer');
+    const flagItemShortcut = shortcuts.find((s: any) => s.event === 'learning-flag-item');
+    const skipItemShortcut = shortcuts.find((s: any) => s.event === 'learning-skip-item');
     
     // Show answer shortcut (default: Space)
     if (showAnswerShortcut &&
@@ -254,6 +284,15 @@
       e.preventDefault();
       toggleFlag();
     }
+    // Skip item shortcut (default: S)
+    else if (skipItemShortcut &&
+             e.keyCode === skipItemShortcut.keyCode &&
+             ((e.ctrlKey || e.metaKey) === (skipItemShortcut.ctrlKey || skipItemShortcut.metaKey)) &&
+             e.altKey === skipItemShortcut.altKey &&
+             e.shiftKey === (skipItemShortcut.shift || false)) {
+      e.preventDefault();
+      moveToNextItem();
+    }
     // Grade shortcuts (1-5 keys)
     else if (e.keyCode >= 49 && e.keyCode <= 53 && !e.ctrlKey && !e.metaKey && !e.altKey) {
       e.preventDefault();
@@ -262,11 +301,76 @@
         handleGrade(grade);
       }
     }
-    // Skip item (S key)
-    else if (e.keyCode === 83 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      e.preventDefault();
-      moveToNextItem();
+  }
+
+  // Function to handle occlusion image loading
+  function handleOcclusionImageLoad() {
+    drawOcclusionQuestion();
+  }
+
+  // Function to draw occlusion question (hidden occlusions)
+  function drawOcclusionQuestion() {
+    if (!questionOcclusionCanvas || !currentRecord || currentRecord.contentType !== 'Occlusion' || !currentRecord.url || !currentRecord.occlusions) {
+      return;
     }
+
+    const img = new Image();
+    img.onload = () => {
+      // Set canvas dimensions to match image
+      if (questionOcclusionCanvas) {
+        questionOcclusionCanvas.width = img.naturalWidth;
+        questionOcclusionCanvas.height = img.naturalHeight;
+        
+        const ctx = questionOcclusionCanvas.getContext('2d');
+        if (!ctx) return;
+        
+        // Draw image
+        ctx.drawImage(img, 0, 0);
+        
+        // Draw occlusions (hidden - black rectangles)
+        ctx.fillStyle = 'black';
+        if (currentRecord && currentRecord.occlusions) {
+          currentRecord.occlusions.forEach((occlusion) => {
+            ctx.fillRect(occlusion.x, occlusion.y, occlusion.width, occlusion.height);
+          });
+        }
+      }
+    };
+    img.src = currentRecord.url;
+  }
+
+  // Function to draw occlusion answer (revealed occlusions)
+  function drawOcclusionAnswer() {
+    if (!answerOcclusionCanvas || !currentRecord || currentRecord.contentType !== 'Occlusion' || !currentRecord.url || !currentRecord.occlusions) {
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      // Set canvas dimensions to match image
+      if (answerOcclusionCanvas) {
+        answerOcclusionCanvas.width = img.naturalWidth;
+        answerOcclusionCanvas.height = img.naturalHeight;
+        
+        const ctx = answerOcclusionCanvas.getContext('2d');
+        if (!ctx) return;
+        
+        // Draw image
+        ctx.drawImage(img, 0, 0);
+        
+        // Draw occlusions (revealed - semi-transparent rectangles)
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        if (currentRecord && currentRecord.occlusions) {
+          currentRecord.occlusions.forEach((occlusion) => {
+            ctx.fillRect(occlusion.x, occlusion.y, occlusion.width, occlusion.height);
+            ctx.strokeRect(occlusion.x, occlusion.y, occlusion.width, occlusion.height);
+          });
+        }
+      }
+    };
+    img.src = currentRecord.url;
   }
 
   // Exit learning mode
@@ -294,13 +398,42 @@
       
       <div class="question-section">
         <h3>Question</h3>
-        <div bind:this={questionEditor} class="editor question-editor"></div>
+        {#if currentRecord.contentType === 'Occlusion' && currentRecord.url}
+          <div class="occlusion-container">
+            <img
+              src={currentRecord.url}
+              alt="Occlusion image"
+              class="occlusion-image"
+              on:load={handleOcclusionImageLoad}
+            />
+            <canvas
+              bind:this={questionOcclusionCanvas}
+              class="occlusion-canvas"
+            ></canvas>
+          </div>
+        {:else}
+          <div bind:this={questionEditor} class="editor question-editor"></div>
+        {/if}
       </div>
       
       {#if showAnswer}
         <div class="answer-section">
           <h3>Answer</h3>
-          <div bind:this={answerEditor} class="editor answer-editor"></div>
+          {#if currentRecord.contentType === 'Occlusion' && currentRecord.url}
+            <div class="occlusion-container">
+              <img
+                src={currentRecord.url}
+                alt="Occlusion image"
+                class="occlusion-image"
+              />
+              <canvas
+                bind:this={answerOcclusionCanvas}
+                class="occlusion-canvas"
+              ></canvas>
+            </div>
+          {:else}
+            <div bind:this={answerEditor} class="editor answer-editor"></div>
+          {/if}
         </div>
         
         <div class="grading-section">
@@ -529,5 +662,24 @@
   .no-items-message p {
     margin-bottom: 20px;
     color: #666;
+  }
+  
+  .occlusion-container {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+  }
+  
+  .occlusion-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .occlusion-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
   }
 </style>

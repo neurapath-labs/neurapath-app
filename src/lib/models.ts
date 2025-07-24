@@ -70,3 +70,10 @@ export interface Shortcut {
   shift: boolean;
   combination: string;
 }
+
+// Database interface for public databases
+export interface Database {
+  id: string;
+  name: string;
+  // Add other properties as needed based on the API response
+}

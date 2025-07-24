@@ -423,12 +423,12 @@
         <span id="database-text">Shared databases</span>
       </div>
 
-      <div class="sidebar-item" id="header-explorer-button">
+      <div class="sidebar-item" id="header-explorer-button" on:click={renderExplorer}>
         <img height="42px" width="42px" src="/img/find.svg" alt="Item explorer icon.">
         <span id="explorer-text">Item explorer</span>
       </div>
 
-      <div class="sidebar-item" id="header-flagged-button">
+      <div class="sidebar-item" id="header-flagged-button" on:click={renderFlagged}>
         <img height="42px" width="42px" src="/img/unflag.svg" alt="Flagged icon.">
         <span id="flag-text">Flagged items</span>
       </div>

@@ -2,12 +2,12 @@
   import { contextmenu } from '$lib/stores/contextmenu.store';
   import { modal } from '$lib/stores/modal.store';
   import { database } from '$lib/stores/database.store';
-  import { learning } from '$lib/stores/learning.store';
+  import { selection } from '$lib/stores/selection.store';
   import { occlusion } from '$lib/stores/occlusion.store';
   import { createID } from '$lib/utils/helpers';
   import type { Record } from '$lib/models';
-  import { onDestroy } from 'svelte';
 
+  // Define interfaces locally since they're not exported from the store files
   interface ContextMenuState {
     isVisible: boolean;
     x: number;
@@ -16,33 +16,125 @@
     targetType: 'sidebar-item' | 'sidebar-right-item' | 'content-area' | null;
   }
 
-  let contextMenuState: ContextMenuState = {
-    isVisible: false,
-    x: 0,
-    y: 0,
-    targetId: null,
-    targetType: null
-  };
-  
-  let targetRecord: Record | null = null;
+  interface SelectionState {
+    isSelected: boolean;
+    text: string;
+    range: {
+      index: number;
+      length: number;
+    } | null;
+  }
+
+  // Use Svelte 5 runes for reactive state
+  let contextMenuState = $state<ContextMenuState>({ isVisible: false, x: 0, y: 0, targetId: null, targetType: null });
+  let targetRecord = $state<Record | null>(null);
+  let selectionState = $state<SelectionState>({ isSelected: false, text: '', range: null });
 
   // Subscribe to context menu state
-  const unsubscribe = contextmenu.subscribe(($contextmenu) => {
-    contextMenuState = $contextmenu;
-    
-    // If a target ID is set, get the record
-    if ($contextmenu.targetId) {
-      const record = database.getRecordById($contextmenu.targetId);
-      targetRecord = record || null;
-    } else {
-      targetRecord = null;
-    }
+  $effect(() => {
+    return contextmenu.subscribe((state) => {
+      contextMenuState = state;
+      
+      // If a target ID is set, get the record
+      if (state.targetId) {
+        targetRecord = database.getRecordById(state.targetId) || null;
+      } else {
+        targetRecord = null;
+      }
+    });
   });
 
-  // Clean up subscription
-  onDestroy(() => {
-    unsubscribe();
+  // Subscribe to selection state
+  $effect(() => {
+    return selection.subscribe((state) => {
+      selectionState = state;
+    });
   });
+
+  // Function to handle create extract from selection
+  async function handleCreateExtract() {
+    if (selectionState.isSelected && contextMenuState.targetId) {
+      try {
+        const range = selectionState.range;
+        if (range) {
+          // Get the target record
+          const targetRecord = database.getRecordById(contextMenuState.targetId);
+          if (targetRecord) {
+            // Create new record for the extract
+            const newRecordId = targetRecord.id + "/" + createID(6);
+            const newRecord: Record = {
+              id: newRecordId,
+              contentType: "Extract",
+              content: {
+                ops: [
+                  {
+                    insert: selectionState.text
+                  }
+                ]
+              }
+            };
+            
+            // Add to database
+            await database.addRecord(newRecord);
+            
+            contextmenu.hideContextMenu();
+            modal.showAlert('Extract created successfully', 'success');
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error creating extract:', error);
+        contextmenu.hideContextMenu();
+        modal.showAlert('Error creating extract', 'danger');
+        return;
+      }
+    }
+    modal.showAlert('Please select text to create an extract', 'warning');
+    contextmenu.hideContextMenu();
+  }
+
+  // Function to handle create cloze deletion
+  async function handleCreateCloze() {
+    if (selectionState.isSelected && contextMenuState.targetId) {
+      try {
+        const range = selectionState.range;
+        if (range) {
+          // Get the target record
+          const targetRecord = database.getRecordById(contextMenuState.targetId);
+          if (targetRecord) {
+            // Create new record for the cloze
+            const newRecordId = targetRecord.id + "/" + createID(6);
+            const newRecord: Record = {
+              id: newRecordId,
+              contentType: "Cloze",
+              content: targetRecord.content,
+              clozes: [
+                {
+                  cloze: selectionState.text,
+                  startindex: range.index,
+                  stopindex: range.index + range.length
+                }
+              ]
+            };
+            
+            // Add to database
+            await database.addRecord(newRecord);
+            
+            contextmenu.hideContextMenu();
+            modal.showAlert('Cloze created successfully', 'success');
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error creating cloze:', error);
+        contextmenu.hideContextMenu();
+        modal.showAlert('Error creating cloze', 'danger');
+        return;
+      }
+    }
+    modal.showAlert('Please select text to create a cloze', 'warning');
+    contextmenu.hideContextMenu();
+  }
 
   // Function to handle create folder
   async function handleCreateFolder() {
@@ -53,7 +145,6 @@
         contentType: 'Folder'
       };
       await database.addRecord(newFolder);
-      console.log('Create folder');
       contextmenu.hideContextMenu();
       modal.showAlert('Folder created successfully', 'success');
     } catch (error) {
@@ -79,7 +170,6 @@
         }
       };
       await database.addRecord(newText);
-      console.log('Create text');
       contextmenu.hideContextMenu();
       modal.showAlert('Text created successfully', 'success');
     } catch (error) {
@@ -94,7 +184,6 @@
     if (contextMenuState.targetId) {
       try {
         await database.removeRecordById(contextMenuState.targetId);
-        console.log('Remove item with ID:', contextMenuState.targetId);
         contextmenu.hideContextMenu();
         modal.showAlert('Item removed successfully', 'success');
       } catch (error) {
@@ -120,7 +209,6 @@
             ...currentItem,
             // Example update - in a real app this would be the new name
           });
-          console.log('Rename item with ID:', contextMenuState.targetId);
           contextmenu.hideContextMenu();
           modal.showAlert('Item renamed successfully', 'success');
         }
@@ -145,7 +233,6 @@
             id: createID(6) // Generate a new ID
           };
           await database.addRecord(newItem);
-          console.log('Duplicate item with ID:', contextMenuState.targetId);
           contextmenu.hideContextMenu();
           modal.showAlert('Item duplicated successfully', 'success');
         }
@@ -164,7 +251,6 @@
         await database.updateRecordRemotely(contextMenuState.targetId, {
           isFlagged: true
         });
-        console.log('Flag item with ID:', contextMenuState.targetId);
         contextmenu.hideContextMenu();
         modal.showAlert('Item flagged successfully', 'success');
       } catch (error) {
@@ -182,7 +268,6 @@
         await database.updateRecordRemotely(contextMenuState.targetId, {
           isFlagged: false
         });
-        console.log('Unflag item with ID:', contextMenuState.targetId);
         contextmenu.hideContextMenu();
         modal.showAlert('Item unflagged successfully', 'success');
       } catch (error) {
@@ -204,7 +289,27 @@
         await database.updateRecordRemotely(contextMenuState.targetId, {
           dueDate: nextWeek.toISOString()
         });
-        console.log('Postpone item with ID:', contextMenuState.targetId);
+        contextmenu.hideContextMenu();
+        modal.showAlert('Item postponed successfully', 'success');
+      } catch (error) {
+        console.error('Error postponing item:', error);
+        contextmenu.hideContextMenu();
+        modal.showAlert('Error postponing item', 'danger');
+      }
+    }
+  }
+
+  // Function to handle postpone 30 days
+  async function handlePostpone30Days() {
+    if (contextMenuState.targetId) {
+      try {
+        // Calculate new due date (postpone by 30 days)
+        const nextMonth = new Date();
+        nextMonth.setDate(nextMonth.getDate() + 30);
+        
+        await database.updateRecordRemotely(contextMenuState.targetId, {
+          dueDate: nextMonth.toISOString()
+        });
         contextmenu.hideContextMenu();
         modal.showAlert('Item postponed successfully', 'success');
       } catch (error) {
@@ -221,7 +326,6 @@
       // In a real implementation, we would read from a file
       // For now, we'll just demonstrate the load functionality
       await database.loadDatabase('demo-user');
-      console.log('Import database');
       contextmenu.hideContextMenu();
       modal.showAlert('Database imported successfully', 'success');
     } catch (error) {
@@ -237,7 +341,6 @@
       // In a real implementation, we would write to a file
       // For now, we'll just demonstrate the save functionality
       await database.saveDatabase('demo-user');
-      console.log('Export database');
       contextmenu.hideContextMenu();
       modal.showAlert('Database exported successfully', 'success');
     } catch (error) {
@@ -250,7 +353,6 @@
   // Function to handle import article
   function handleImportArticle() {
     // TODO: Implement article import logic
-    console.log('Import article');
     contextmenu.hideContextMenu();
     modal.showAlert('Article imported successfully', 'success');
   }
@@ -258,7 +360,6 @@
   // Function to handle create occlusion
   function handleCreateOcclusion() {
     // TODO: Implement occlusion creation logic
-    console.log('Create occlusion');
     contextmenu.hideContextMenu();
     modal.showAlert('Occlusion created successfully', 'success');
   }
@@ -266,28 +367,28 @@
 
 <div
   id="modalbox-contextmenu"
-  class="{contextMenuState.isVisible ? 'visible' : 'hidden'}"
+  class="{(contextMenuState.isVisible) ? 'visible' : 'hidden'}"
   style="top: {contextMenuState.y}px; left: {contextMenuState.x}px;"
 >
   <!-- Sidebar item context menu -->
   {#if contextMenuState.targetType === 'sidebar-item'}
     <div 
       id="contextmenu-remove-item" 
-      class="{targetRecord ? '' : 'hidden'}"
+      class="{(targetRecord) ? '' : 'hidden'}"
       on:click={handleRemoveItem}
     >
       Remove item
     </div>
     <div 
       id="contextmenu-rename-item" 
-      class="{targetRecord ? '' : 'hidden'}"
+      class="{(targetRecord) ? '' : 'hidden'}"
       on:click={handleRenameItem}
     >
       Rename item
     </div>
     <div 
       id="contextmenu-duplicate-item" 
-      class="{targetRecord ? '' : 'hidden'}"
+      class="{(targetRecord) ? '' : 'hidden'}"
       on:click={handleDuplicateItem}
     >
       Duplicate item
@@ -306,26 +407,59 @@
     </div>
     <div 
       id="contextmenu-postpone-7days" 
-      class="{targetRecord ? '' : 'hidden'}"
+      class="{(targetRecord) ? '' : 'hidden'}"
       on:click={handlePostpone7Days}
     >
       Postpone 7 days
     </div>
     <div 
+      id="contextmenu-postpone-30days" 
+      class="{(targetRecord) ? '' : 'hidden'}"
+      on:click={handlePostpone30Days}
+    >
+      Postpone 30 days
+    </div>
+    <div 
       id="contextmenu-flag-item" 
-      class="{targetRecord && !targetRecord.isFlagged ? '' : 'hidden'}"
+      class="{(targetRecord && !targetRecord.isFlagged) ? '' : 'hidden'}"
       on:click={handleFlagItem}
     >
       Flag item
     </div>
     <div 
       id="contextmenu-unflag-item" 
-      class="{targetRecord && targetRecord.isFlagged ? '' : 'hidden'}"
+      class="{(targetRecord && targetRecord.isFlagged) ? '' : 'hidden'}"
       on:click={handleUnflagItem}
     >
       Unflag item
     </div>
   {:else if contextMenuState.targetType === 'content-area'}
+    <div 
+      id="contextmenu-create-extract" 
+      class="{(selectionState.isSelected) ? '' : 'hidden'}"
+      on:click={handleCreateExtract}
+    >
+      Create extract from selection
+    </div>
+    <div 
+      id="contextmenu-create-cloze" 
+      class="{(selectionState.isSelected) ? '' : 'hidden'}"
+      on:click={handleCreateCloze}
+    >
+      Create cloze deletion
+    </div>
+    <div 
+      id="contextmenu-create-occlusion" 
+      on:click={handleCreateOcclusion}
+    >
+      Create image occlusion
+    </div>
+    <div 
+      id="contextmenu-flag-item-content" 
+      on:click={handleFlagItem}
+    >
+      Flag item
+    </div>
     <div 
       id="contextmenu-import-database" 
       on:click={handleImportDatabase}

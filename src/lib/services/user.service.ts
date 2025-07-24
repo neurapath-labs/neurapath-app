@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 // For now, we'll use a hardcoded user for demonstration
 // In a real application, this would come from a database
 const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'e0caabb2c0b63e401b4ecc29132d8e520e90733c0dcf62481deaf5eb412867ff6b5f98a7adead5782bb8ba1b71f978b8ee9b92a06ceb3b7b430d9288';
 
 // Hardcoded user for demonstration
 // In a real application, this would come from a database
@@ -32,6 +32,8 @@ export const authenticateUser = async (username: string, password: string): Prom
   
   // Check if password matches
   const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+
+  console.log(JSON.stringify(user));
   
   if (!isPasswordValid) {
     return null;
