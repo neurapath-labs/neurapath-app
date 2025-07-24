@@ -78,7 +78,7 @@
           <div id="sidebar-due-items">-</div>
         </div>
       </div>
-      <div id="learning-button" class="start-learning-button" onclick="learningManager.toggleLearning()">Engage!</div>
+      <div id="learning-button" class="start-learning-button" on:click="learningManager.toggleLearning()">Engage!</div>
       <div id="menu">
         <div id="header-buttons">
 
@@ -141,8 +141,8 @@
         <canvas id="modalbox-occlusion-create-canvas" width="2000px" height="2000px" ondrop="quillOnDrop(event)"
           onmousedown="graphicsManager.onCanvasMouseDown(event)"
           onmouseup="graphicsManager.onCanvasMouseUp(event)"></canvas>
-        <!-- <div class="modalbox-occlusion-create-button" id="modalbox-occlusion-create-cancel-button" onclick="">Cancel</div>
-            <div class="modalbox-occlusion-create-button" id="modalbox-occlusion-create-generate-button" onclick="">Generate</div> -->
+        <!-- <div class="modalbox-occlusion-create-button" id="modalbox-occlusion-create-cancel-button" on:click="">Cancel</div>
+                    <div class="modalbox-occlusion-create-button" id="modalbox-occlusion-create-generate-button" on:click="">Generate</div> -->
       </div>
     </div>
 
@@ -160,36 +160,36 @@
 
       <div class="" id="modalbox-settings-sidebar">
         
-        <div class="sidebar-item" onclick="graphicsManager.toggleOverlayProfile()">
+        <div class="sidebar-item" on:click="graphicsManager.toggleOverlayProfile()">
           <img src="assets/img/user.svg"/>
           Profile
         </div>
 
-        <div class="sidebar-item" onclick="graphicsManager.toggleOverlayShortcuts()">
+        <div class="sidebar-item" on:click="graphicsManager.toggleOverlayShortcuts()">
           <img src="assets/img/keyboard.svg"/>
             Shortcuts
           </div>
 
-        <div class="sidebar-item" onclick="graphicsManager.toggleOverlayLearning()">
+        <div class="sidebar-item" on:click="graphicsManager.toggleOverlayLearning()">
         <img src="assets/img/thinking.svg"/>
           Learning
         </div>
 
-        <div class="sidebar-item" onclick="graphicsManager.toggleOverlayInterface()">
+        <div class="sidebar-item" on:click="graphicsManager.toggleOverlayInterface()">
           <img src="assets/img/rgb.svg"/>
           Interface
         </div>
 
-        <div class="sidebar-item" onclick="graphicsManager.toggleOverlayDatabase()">
+        <div class="sidebar-item" on:click="graphicsManager.toggleOverlayDatabase()">
           <img src="assets/img/database.svg"/>
           Database
         </div>
 
-        <div class="sidebar-item" onclick="profileManager.logout()">
+        <div class="sidebar-item" on:click="profileManager.logout()">
           <b>Logout</b>
         </div>
           
-        <!-- <div class="sidebar-item" onclick="graphicsManager.toggleOverlayInformation()">Information</div> -->
+        <!-- <div class="sidebar-item" on:click="graphicsManager.toggleOverlayInformation()">Information</div> -->
 
       </div>
 
@@ -396,11 +396,11 @@
         </label>
 
         <br>
-        <div class="modalbox-button2" onclick="databaseManager.importDatabase()">Import backup</div> 
-        <div class="modalbox-button2" onclick="databaseManager.importAnkiDatabase()">Import Anki</div> 
-        <div class="modalbox-button2" onclick="databaseManager.importQuizletDatabase()">Import Quizlet</div> 
-        <div class="modalbox-button2" onclick="databaseManager.exportDatabase()">Export backup</div> 
-        <div class="modalbox-button2" onclick="databaseManager.deleteDatabase()">Delete database</div> 
+        <div class="modalbox-button2" on:click="databaseManager.importDatabase()">Import backup</div>
+        <div class="modalbox-button2" on:click="databaseManager.importAnkiDatabase()">Import Anki</div>
+        <div class="modalbox-button2" on:click="databaseManager.importQuizletDatabase()">Import Quizlet</div>
+        <div class="modalbox-button2" on:click="databaseManager.exportDatabase()">Export backup</div>
+        <div class="modalbox-button2" on:click="databaseManager.deleteDatabase()">Delete database</div>
       </div>
 
 
@@ -1112,25 +1112,25 @@
   </div>
 
   <div class="hidden" id="modalbox-contextmenu">
-    <div class="hidden" onclick="graphicsManager.removeItem()" id="contextmenu-remove-item">Delete item</div>
-    <div class="hidden" onclick="graphicsManager.renameItem()" id="contextmenu-rename-item">Rename item</div>
-    <div class="hidden" onclick="graphicsManager.duplicateItem()" id="contextmenu-duplicate-item">Duplicate item</div>
-    <div class="hidden" onclick="graphicsManager.createFolder()" id="contextmenu-create-folder">Create folder</div>
-    <div class="hidden" onclick="graphicsManager.createText()" id="contextmenu-create-text">Create text</div>
-    <div class="hidden" onclick="databaseManager.postpone(7)" id="contextmenu-postpone-7days">Postpone (+7 days)</div>
-    <div class="hidden" onclick="databaseManager.setItemFlag(true)" id="contextmenu-flag-item">Flag</div>
-    <div class="hidden" onclick="databaseManager.setItemFlag(false)" id="contextmenu-unflag-item">Unflag</div>
-    <!-- <div class="hidden" onclick="databaseManager.increasePriority(10)" id="contextmenu-priority">Increase priority (+10)</div> -->
+    <div class="hidden" on:click="graphicsManager.removeItem()" id="contextmenu-remove-item">Delete item</div>
+    <div class="hidden" on:click="graphicsManager.renameItem()" id="contextmenu-rename-item">Rename item</div>
+    <div class="hidden" on:click="graphicsManager.duplicateItem()" id="contextmenu-duplicate-item">Duplicate item</div>
+    <div class="hidden" on:click="graphicsManager.createFolder()" id="contextmenu-create-folder">Create folder</div>
+    <div class="hidden" on:click="graphicsManager.createText()" id="contextmenu-create-text">Create text</div>
+    <div class="hidden" on:click="databaseManager.postpone(7)" id="contextmenu-postpone-7days">Postpone (+7 days)</div>
+    <div class="hidden" on:click="databaseManager.setItemFlag(true)" id="contextmenu-flag-item">Flag</div>
+    <div class="hidden" on:click="databaseManager.setItemFlag(false)" id="contextmenu-unflag-item">Unflag</div>
+    <!-- <div class="hidden" on:click="databaseManager.increasePriority(10)" id="contextmenu-priority">Increase priority (+10)</div> -->
 
-    <div class="hidden" onclick="databaseManager.importSelectedDatabase(this)" id="contextmenu-import-database">Import
+    <div class="hidden" on:click="databaseManager.importSelectedDatabase(this)" id="contextmenu-import-database">Import
       database</div>
-    <div class="hidden" onclick="databaseManager.exportSelectedDatabase(this)" id="contextmenu-export-database">Export
+    <div class="hidden" on:click="databaseManager.exportSelectedDatabase(this)" id="contextmenu-export-database">Export
       database</div>
 
-    <div class="hidden" onclick="databaseManager.importArticle(this)" id="contextmenu-content-similar-import-article">
+    <div class="hidden" on:click="databaseManager.importArticle(this)" id="contextmenu-content-similar-import-article">
       Import article</div>
-    <!-- <div class="hidden" onclick="databaseManager.clipboardArticle(this)" id="contextmenu-content-similar-import-clipboard">Send to clipboard</div> -->
-    <div class="hidden" onclick="databaseManager.createImageOcclusion(this)"
+    <!-- <div class="hidden" on:click="databaseManager.clipboardArticle(this)" id="contextmenu-content-similar-import-clipboard">Send to clipboard</div> -->
+    <div class="hidden" on:click="databaseManager.createImageOcclusion(this)"
       id="contextmenu-content-similar-create-occlusion">Create occlusion</div>
   </div>
 

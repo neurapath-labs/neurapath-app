@@ -204,17 +204,17 @@
         <canvas
           id="modalbox-occlusion-create-canvas"
           bind:this={canvasElement}
-          on:mousedown={handleMouseDown}
-          on:mousemove={handleMouseMove}
-          on:mouseup={handleMouseUp}
-          on:mouseleave={handleMouseUp}
+          onmousedown={handleMouseDown}
+          onmousemove={handleMouseMove}
+          onmouseup={handleMouseUp}
+          onmouseleave={handleMouseUp}
         ></canvas>
         <img
           id="modalbox-occlusion-create-image"
           bind:this={imageElement}
           src={imageUrl}
           alt="Occlusion visualization"
-          on:load={handleImageLoad}
+          onload={handleImageLoad}
         />
       </div>
       
@@ -237,14 +237,14 @@
       <div class="modalbox-button-container">
         <button 
           class="modalbox-button" 
-          on:click={cancelOcclusion} 
+          on:click={cancelOcclusion}
           type="button"
         >
           Cancel
         </button>
         <button 
           class="modalbox-button" 
-          on:click={saveOcclusion} 
+          on:click={saveOcclusion}
           type="button"
           disabled={occlusions.length === 0}
         >

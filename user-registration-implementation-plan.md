@@ -147,7 +147,7 @@ export const actions: Actions = {
       cookies.set('token', token, {
         path: '/',
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         sameSite: 'strict',
         maxAge: 60 * 60 // 1 hour
       });
@@ -170,7 +170,7 @@ import jwt from 'jsonwebtoken';
 import { databaseService } from './database.service'; // New database service
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = 'your-secret-key';
 
 export interface User {
   id: string;

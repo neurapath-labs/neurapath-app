@@ -6,7 +6,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
   cookies.set('token', '', {
     path: '/',
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     sameSite: 'strict',
     maxAge: 0 // Expire immediately
   });

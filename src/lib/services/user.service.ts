@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { getUserByUsername, createUser as createDatabaseUser } from './database.service';
-import type { User, UserWithPasswordHash } from '$lib/models';
+import type { User } from '$lib/models';
+import { JWT_SECRET } from '$env/static/private';
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || 'e0caabb2c0b63e401b4ecc29132d8e520e90733c0dcf62481deaf5eb412867ff6b5f98a7adead5782bb8ba1b71f978b8ee9b92a06ceb3b7b430d9288';
 
 export const authenticateUser = async (username: string, password: string): Promise<User | null> => {
   try {
@@ -82,7 +82,7 @@ export const verifyToken = (token: string): User | null => {
       id: decoded.userId,
       username: decoded.username
     };
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 };

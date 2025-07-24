@@ -2941,7 +2941,7 @@ class GraphicsManager {
       let efactor = document.createElement("td")
       let priority = document.createElement("td")
 
-      p.setAttribute("onclick", "graphicsManager.onClickExplorerItem(this)")
+      p.setAttribute("on:click", "graphicsManager.on:clickExplorerItem(this)")
       p.setAttribute("data-id", record.id)
       name.innerHTML = record.id
       repetitions.innerHTML = record.repetition
@@ -2971,7 +2971,7 @@ class GraphicsManager {
       let repetitions = document.createElement("td")
       let efactor = document.createElement("td")
 
-      p.setAttribute("onclick", "graphicsManager.onClickExplorerItem(this)")
+      p.setAttribute("on:click", "graphicsManager.on:clickExplorerItem(this)")
       p.setAttribute("data-id", record.id)
 
       name.innerHTML = record.id
@@ -3007,7 +3007,7 @@ class GraphicsManager {
       let repetitions = document.createElement("td")
       let efactor = document.createElement("td")
 
-      p.setAttribute("onclick", "graphicsManager.onClickExplorerItem(this)")
+      p.setAttribute("on:click", "graphicsManager.on:clickExplorerItem(this)")
       p.setAttribute("data-id", record.id)
       name.innerHTML = record.id
       repetitions.innerHTML = record.repetition
@@ -3023,7 +3023,7 @@ class GraphicsManager {
 
   }
 
-  onClickExplorerItem(item) {
+  on:clickExplorerItem(item) {
 
       document.querySelectorAll(".active").forEach((node) => {
         node.classList.remove("active")
@@ -3032,7 +3032,7 @@ class GraphicsManager {
       const dataID = item.getAttribute("data-id")
     const r = databaseManager.getRecordByID(dataID)
     
-    console.log("onClickExplorerItem, dataID: " + dataID)
+    console.log("on:clickExplorerItem, dataID: " + dataID)
     console.log("r.id: " + r.id)
 
       if (r.contentType == "Occlusion") {
@@ -3082,7 +3082,7 @@ class GraphicsManager {
       let author = document.createElement("td")
 
       p.setAttribute("data-id", id)
-      p.setAttribute("onclick", "graphicsManager.onClickDatabaseItem(this)")
+      p.setAttribute("on:click", "graphicsManager.on:clickDatabaseItem(this)")
       name.innerHTML = id
       items.innerHTML = "-"
 
@@ -3107,7 +3107,7 @@ class GraphicsManager {
       // let author = document.createElement("td")
 
       // p.setAttribute("data-id", id)
-      // p.setAttribute("onclick", "graphicsManager.onClickDatabaseItem(this)")
+      // p.setAttribute("on:click", "graphicsManager.on:clickDatabaseItem(this)")
       // name.innerHTML = id
       // items.innerHTML = "-"
 
@@ -3120,7 +3120,7 @@ class GraphicsManager {
 
   }
 
-  async onClickDatabaseItem(e) {
+  async on:clickDatabaseItem(e) {
 
     let username = e.getAttribute("data-id")
     let password = prompt("All your data in current database will be overwritten with shared database. Write 'accept' to continue.")
@@ -3289,7 +3289,7 @@ class GraphicsManager {
       //   for(const [key, value] of Object.entries(items)) {
 
       //     const id = `sidebar-right-item-mesh-${createID(4)}`
-      //     similarContentSidebar.innerHTML += `<a href="${value.link}" data='${value.description}' id="${id}" class="similar-content-item" target="_blank" and rel="noopener noreferrer" onmouseenter='graphicsManager.toggleItemSummary(event)' onmouseleave='graphicsManager.toggleItemSummary(event)' onclick='graphicsManager.toggleItemSummary(event)'>${value.title}</a><br>`
+      //     similarContentSidebar.innerHTML += `<a href="${value.link}" data='${value.description}' id="${id}" class="similar-content-item" target="_blank" and rel="noopener noreferrer" onmouseenter='graphicsManager.toggleItemSummary(event)' onmouseleave='graphicsManager.toggleItemSummary(event)' on:click='graphicsManager.toggleItemSummary(event)'>${value.title}</a><br>`
         
       //   }
 
@@ -3322,7 +3322,7 @@ class GraphicsManager {
       //     value.id = id
 
       //     psykologiguidenItems.push(value)
-      //     similarContentSidebar.innerHTML += `<a data='' id="${id}" class="similar-content-item" target="_blank" and rel="noopener noreferrer" onmouseenter='graphicsManager.toggleItemSummary(event)' onmouseleave='graphicsManager.toggleItemSummary(event)' onclick=''>${value.lexWord}</a><br>`
+      //     similarContentSidebar.innerHTML += `<a data='' id="${id}" class="similar-content-item" target="_blank" and rel="noopener noreferrer" onmouseenter='graphicsManager.toggleItemSummary(event)' onmouseleave='graphicsManager.toggleItemSummary(event)' on:click=''>${value.lexWord}</a><br>`
         
       //   }
 
@@ -3375,7 +3375,7 @@ class GraphicsManager {
             "link": link
           })
 
-          similarContentSidebar.innerHTML += `<a data='' id="${id}" class="similar-content-item" target="_blank" and rel="noopener noreferrer" onmouseenter='graphicsManager.toggleItemSummary(event)' onmouseleave='graphicsManager.toggleItemSummary(event)' onclick='graphicsManager.onWikipediaItemClicked(event)'>${title}</a><br>` //href='${link}'>${title}
+          similarContentSidebar.innerHTML += `<a data='' id="${id}" class="similar-content-item" target="_blank" and rel="noopener noreferrer" onmouseenter='graphicsManager.toggleItemSummary(event)' onmouseleave='graphicsManager.toggleItemSummary(event)' on:click='graphicsManager.onWikipediaItemClicked(event)'>${title}</a><br>` //href='${link}'>${title}
         }
 
         // Add Wikipedia content to sidebar.
@@ -3406,10 +3406,10 @@ class GraphicsManager {
       //       newImage.classList.add("sidebar-right-image")
       //       newImage.src = pictures.value[i].thumbnailUrl
             
-      //       newImage.setAttribute("onclick", "graphicsManager.onImageSidebarClicked(event, this)")
+      //       newImage.setAttribute("on:click", "graphicsManager.onImageSidebarClicked(event, this)")
       //       newImage.setAttribute("onmouseenter", "graphicsManager.toggleModalFullImage(event)") 
       //       newImage.setAttribute("onmouseleave", "graphicsManager.toggleModalFullImage(event)")
-      //       //newImage.setAttribute("onclick", "graphicsManager.updateOcclusionCreateCanvas(event)")
+      //       //newImage.setAttribute("on:click", "graphicsManager.updateOcclusionCreateCanvas(event)")
       //       similarContentSidebar.appendChild(newImage)
       //     }
 
@@ -4007,7 +4007,7 @@ class GraphicsManager {
             }
 
             
-            child.setAttribute("onclick", "graphicsManager.onMenuItemClicked(event)")
+            child.setAttribute("on:click", "graphicsManager.onMenuItemClicked(event)")
             child.setAttribute("ondragstart", "graphicsManager.onFolderDrag(event)")
             child.setAttribute("ondragover", "graphicsManager.onFolderDragOver(event)")
             child.setAttribute("ondrop", "graphicsManager.onItemDrop(event)")
@@ -4341,7 +4341,7 @@ class GraphicsManager {
   //       title.innerHTML = hit.objectID.split("-")[1]
   //       content.innerHTML = hit['_highlightResult'].content.value.substring(0, 100)
 
-  //       child.setAttribute("onclick", "graphicsManager.algoliaResultOnClick(event, this)")
+  //       child.setAttribute("on:click", "graphicsManager.algoliaResulton:click(event, this)")
   //       child.setAttribute("data-id", hit.objectID.split("-")[1])
   //       child.appendChild(title)
   //       child.appendChild(content)
@@ -4354,7 +4354,7 @@ class GraphicsManager {
 
   // }
 
-  algoliaResultOnClick(event, element) {
+  algoliaResulton:click(event, element) {
     
 
 

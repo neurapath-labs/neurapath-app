@@ -5,13 +5,12 @@
   import { profile } from '$lib/stores/profile.store';
   import { modal } from '$lib/stores/modal.store';
   import type { Record, Profile } from '$lib/models';
-  import Quill from 'quill';
-  import 'quill/dist/quill.bubble.css';
+  import { browser } from '$app/environment';
 
   let questionEditor: HTMLDivElement | null = $state(null);
   let answerEditor: HTMLDivElement | null = $state(null);
-  let questionQuill: Quill | null = $state(null);
-  let answerQuill: Quill | null = $state(null);
+  let questionQuill: any | null = $state(null);
+  let answerQuill: any | null = $state(null);
   let questionOcclusionCanvas: HTMLCanvasElement | null = $state(null);
   let answerOcclusionCanvas: HTMLCanvasElement | null = $state(null);
   let currentRecord: Record | null = $state(null);
@@ -85,23 +84,33 @@
   });
 
   onMount(() => {
-    // Initialize Quill editors
-    if (questionEditor) {
-      questionQuill = new Quill(questionEditor, {
-        theme: 'bubble',
-        readOnly: true,
-        modules: {
-          toolbar: false
+    // Dynamically import Quill only in browser context
+    if (browser) {
+      import('quill').then((QuillModule) => {
+        const Quill = QuillModule.default;
+        
+        // Import Quill CSS
+        import('quill/dist/quill.bubble.css');
+        
+        // Initialize Quill editors
+        if (questionEditor) {
+          questionQuill = new Quill(questionEditor, {
+            theme: 'bubble',
+            readOnly: true,
+            modules: {
+              toolbar: false
+            }
+          });
         }
-      });
-    }
-    
-    if (answerEditor) {
-      answerQuill = new Quill(answerEditor, {
-        theme: 'bubble',
-        readOnly: true,
-        modules: {
-          toolbar: false
+        
+        if (answerEditor) {
+          answerQuill = new Quill(answerEditor, {
+            theme: 'bubble',
+            readOnly: true,
+            modules: {
+              toolbar: false
+            }
+          });
         }
       });
     }
@@ -361,7 +370,7 @@
               src={currentRecord.url}
               alt="Occlusion image"
               class="occlusion-image"
-              on:load={handleOcclusionImageLoad}
+              onload={handleOcclusionImageLoad}
             />
             <canvas
               bind:this={questionOcclusionCanvas}
@@ -396,22 +405,22 @@
         <div class="grading-section">
           <h3>How well did you know this?</h3>
           <div class="grade-buttons">
-            <button class="grade-btn grade-1" on:click={() => handleGrade(1)}>1 - Didn't know</button>
-            <button class="grade-btn grade-2" on:click={() => handleGrade(2)}>2 - Hard</button>
-            <button class="grade-btn grade-3" on:click={() => handleGrade(3)}>3 - Medium</button>
-            <button class="grade-btn grade-4" on:click={() => handleGrade(4)}>4 - Easy</button>
-            <button class="grade-btn grade-5" on:click={() => handleGrade(5)}>5 - Perfect</button>
+            <button class="grade-btn grade-1" onclick={() => handleGrade(1)}>1 - Didn't know</button>
+            <button class="grade-btn grade-2" onclick={() => handleGrade(2)}>2 - Hard</button>
+            <button class="grade-btn grade-3" onclick={() => handleGrade(3)}>3 - Medium</button>
+            <button class="grade-btn grade-4" onclick={() => handleGrade(4)}>4 - Easy</button>
+            <button class="grade-btn grade-5" onclick={() => handleGrade(5)}>5 - Perfect</button>
           </div>
         </div>
       {:else}
         <div class="show-answer-section">
-          <button class="show-answer-btn" on:click={handleShowAnswer}>Show Answer (Space)</button>
+          <button class="show-answer-btn" onclick={handleShowAnswer}>Show Answer (Space)</button>
         </div>
       {/if}
     </div>
     
     <div class="learning-actions">
-      <button class="action-btn flag-btn" on:click={toggleFlag}>
+      <button class="action-btn flag-btn" onclick={toggleFlag}>
         {#if currentRecord && currentRecord.isFlagged}
           Unflag Item (F)
         {:else}

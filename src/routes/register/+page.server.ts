@@ -45,7 +45,7 @@ export const actions: Actions = {
       cookies.set('token', token, {
         path: '/',
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         sameSite: 'strict',
         maxAge: 60 * 60 // 1 hour
       });
