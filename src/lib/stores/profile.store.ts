@@ -3,24 +3,41 @@ import type { Profile, Shortcut } from '$lib/models';
 
 // Default shortcuts based on the original script
 const defaultShortcuts: Shortcut[] = [
-  {event: "input-create-occlusion", keyCode: 90, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + Z"},
-  {event: "input-create-occlusion-separate", keyCode: 188, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + <"},
-  {event: "input-show-occlusion", keyCode: 32, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "SPACE"},
-  {event: "input-create-cloze", keyCode: 67, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + C"},
-  {event: "input-create-extract", keyCode: 88, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + X"},
+  // Create occlusion (Ctrl/Cmd + Shift + O)
+  {event: "input-create-occlusion", keyCode: 79, altKey: false, metaKey: true, ctrlKey: true, shift: true, combination: "CTRL + SHIFT + O"},
+  // Create separate occlusions (Ctrl/Cmd + Shift + S)
+  {event: "input-create-occlusion-separate", keyCode: 83, altKey: false, metaKey: true, ctrlKey: true, shift: true, combination: "CTRL + SHIFT + S"},
+  // Show answer for occlusion (Ctrl/Cmd + Shift + A)
+  {event: "input-show-occlusion", keyCode: 65, altKey: false, metaKey: true, ctrlKey: true, shift: true, combination: "CTRL + SHIFT + A"},
+  // Create cloze (Ctrl/Cmd + Shift + C)
+  {event: "input-create-cloze", keyCode: 67, altKey: false, metaKey: true, ctrlKey: true, shift: true, combination: "CTRL + SHIFT + C"},
+  // Create extract from selection (Ctrl/Cmd + Shift + E)
+  {event: "input-create-extract", keyCode: 69, altKey: false, metaKey: true, ctrlKey: true, shift: true, combination: "CTRL + SHIFT + E"},
+  // Toggle spotlight search (Ctrl/Cmd + Space)
   {event: "input-spotlight-toggle", keyCode: 32, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + SPACE"},
-  {event: "input-text-summarize", keyCode: 71, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + G"},
-  {event: "input-flag-item", keyCode: 70, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + F"},
-  {event: "input-remove-item", keyCode: 90, altKey: true, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + ALT + Z"},
-  {event: "input-rename-item", keyCode: 88, altKey: true, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + ALT + X"},
-  {event: "input-duplicate-item", keyCode: 68, altKey: true, metaKey: false, ctrlKey: true, shift: false, combination: "CTRL + ALT + D"},
-  {event: "input-create-folder", keyCode: 67, altKey: true, metaKey: true, ctrlKey: true, shift: false, combination:"CTRL + ALT + C"},
-  {event: "input-create-text", keyCode: 83, altKey: true, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + ALT + S"},
-  {event: "input-grade-item1", keyCode: 49, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 1"},
-  {event: "input-grade-item2", keyCode: 50, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 2"},
-  {event: "input-grade-item3", keyCode: 51, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 3"},
-  {event: "input-grade-item4", keyCode: 52, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 4"},
-  {event: "input-grade-item5", keyCode: 53, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + 5"},
+  // Summarize selected text with AI (Ctrl/Cmd + Shift + M)
+  {event: "input-text-summarize", keyCode: 77, altKey: false, metaKey: true, ctrlKey: true, shift: true, combination: "CTRL + SHIFT + M"},
+  // Flag item (Ctrl/Cmd + Shift + F)
+  {event: "input-flag-item", keyCode: 70, altKey: false, metaKey: true, ctrlKey: true, shift: true, combination: "CTRL + SHIFT + F"},
+  // Remove selected item (Delete)
+  {event: "input-remove-item", keyCode: 46, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "DELETE"},
+  // Rename selected item (F2)
+  {event: "input-rename-item", keyCode: 113, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "F2"},
+  // Duplicate selected item (Ctrl/Cmd + D)
+  {event: "input-duplicate-item", keyCode: 68, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + D"},
+  // Create folder (Ctrl/Cmd + Shift + N)
+  {event: "input-create-folder", keyCode: 78, altKey: false, metaKey: true, ctrlKey: true, shift: true, combination: "CTRL + SHIFT + N"},
+  // Create text document (Ctrl/Cmd + N)
+  {event: "input-create-text", keyCode: 78, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + N"},
+  // Open settings (Ctrl/Cmd + ,)
+  {event: "input-open-settings", keyCode: 188, altKey: false, metaKey: true, ctrlKey: true, shift: false, combination: "CTRL + ,"},
+  // Grade items (1-5)
+  {event: "input-grade-item1", keyCode: 49, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "1"},
+  {event: "input-grade-item2", keyCode: 50, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "2"},
+  {event: "input-grade-item3", keyCode: 51, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "3"},
+  {event: "input-grade-item4", keyCode: 52, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "4"},
+  {event: "input-grade-item5", keyCode: 53, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "5"},
+  // Learning mode shortcuts
   {event: "learning-show-answer", keyCode: 32, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "SPACE"},
   {event: "learning-flag-item", keyCode: 70, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "F"},
   {event: "learning-skip-item", keyCode: 83, altKey: false, metaKey: false, ctrlKey: false, shift: false, combination: "S"}
@@ -90,11 +107,32 @@ const toggleImagesInSidebar = () => {
   }));
 };
 
+const updateShortcut = (event: string, shortcut: Shortcut) => {
+  update(profile => {
+    const shortcuts = profile.shortcuts.map(s =>
+      s.event === event ? shortcut : s
+    );
+    return {
+      ...profile,
+      shortcuts
+    };
+  });
+};
+
+const resetShortcutsToDefault = () => {
+  update(profile => ({
+    ...profile,
+    shortcuts: defaultShortcuts
+  }));
+};
+
 export const profile = {
   subscribe,
   set,
   updateProfile,
   setTheme,
   toggleRightSidebar,
-  toggleImagesInSidebar
+  toggleImagesInSidebar,
+  updateShortcut,
+  resetShortcutsToDefault
 };

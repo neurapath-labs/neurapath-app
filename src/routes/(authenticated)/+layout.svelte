@@ -9,8 +9,21 @@
 	import DatabasesModal from '$lib/components/modals/DatabasesModal.svelte';
 	import SpotlightSearchModal from '$lib/components/modals/SpotlightSearchModal.svelte';
 	import ImageOcclusionModal from '$lib/components/modals/ImageOcclusionModal.svelte';
+	import SettingsModal from '$lib/components/modals/SettingsModal.svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { keyboardService } from '$lib/services/keyboard.service';
 
 	let { children } = $props();
+
+	// Initialize keyboard service
+	onMount(() => {
+		// Keyboard service is automatically initialized as a singleton
+	});
+
+	// Cleanup keyboard service
+	onDestroy(() => {
+		keyboardService.destroy();
+	});
 </script>
 
 <div id="wrapper">
@@ -27,6 +40,7 @@
 <DatabasesModal />
 <SpotlightSearchModal />
 <ImageOcclusionModal />
+<SettingsModal />
 
 <style>
 	#wrapper {

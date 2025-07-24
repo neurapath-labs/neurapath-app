@@ -1,27 +1,20 @@
+import { get } from 'svelte/store';
 import { profile } from '$lib/stores/profile.store';
 import { modal } from '$lib/stores/modal.store';
 import { selection } from '$lib/stores/selection.store';
 import { database } from '$lib/stores/database.store';
+import { learning } from '$lib/stores/learning.store';
 import { createID } from '$lib/utils/helpers';
 import type { Shortcut, Record } from '$lib/models';
-import type { SelectionState } from '$lib/stores/selection.store';
-import type { Database } from '$lib/stores/database.store';
-import type { Profile } from '$lib/models';
 
 class KeyboardService {
   private shortcuts: Shortcut[] = [];
-  private unsubscribeProfile: (() => void) | null = null;
 
   constructor() {
     this.init();
   }
 
   private init() {
-    // Subscribe to profile changes to get updated shortcuts
-    this.unsubscribeProfile = profile.subscribe(($profile: Profile) => {
-      this.shortcuts = $profile.shortcuts || [];
-    });
-
     // Add global keydown listener
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyDown.bind(this));
@@ -37,6 +30,10 @@ class KeyboardService {
     ) {
       return;
     }
+
+    // Get current shortcuts from profile
+    const profileData = get(profile);
+    this.shortcuts = profileData.shortcuts || [];
 
     // Match the key event with defined shortcuts
     const matchedShortcut = this.shortcuts.find((shortcut) => {
@@ -56,85 +53,121 @@ class KeyboardService {
   }
 
   private async executeShortcut(event: string) {
+    // Get learning mode state
+    const learningData = get(learning);
+    const isInLearningMode = learningData.isInLearningMode;
+
     switch (event) {
-      // Spotlight search
+      // Spotlight search (only when not in learning mode)
       case 'input-spotlight-toggle':
-        modal.openSpotlightSearchModal();
+        if (!isInLearningMode) {
+          modal.openSpotlightSearchModal();
+        }
         break;
 
-      // Create cloze
+      // Create cloze (only when not in learning mode)
       case 'input-create-cloze':
-        await this.createCloze();
+        if (!isInLearningMode) {
+          await this.createCloze();
+        }
         break;
 
-      // Create image occlusion
+      // Create image occlusion (only when not in learning mode)
       case 'input-create-occlusion':
-        modal.openOcclusionCreateModal();
+        if (!isInLearningMode) {
+          modal.openOcclusionCreateModal();
+        }
         break;
 
-      // Create separate occlusions
+      // Create separate occlusions (only when not in learning mode)
       case 'input-create-occlusion-separate':
-        // Implementation would depend on context
-        modal.showAlert('Create separate occlusions functionality not yet implemented', 'warning');
+        if (!isInLearningMode) {
+          // Implementation would depend on context
+          modal.showAlert('Create separate occlusions functionality not yet implemented', 'warning');
+        }
         break;
 
-      // Show answer for occlusion
+      // Show answer for occlusion (learning mode specific)
       case 'learning-show-answer':
-        // This is handled in LearningMode.svelte
+      case 'input-show-occlusion':
+        // These are handled in LearningMode.svelte
         break;
 
-      // Create extract from selection
+      // Create extract from selection (only when not in learning mode)
       case 'input-create-extract':
-        await this.createExtract();
+        if (!isInLearningMode) {
+          await this.createExtract();
+        }
         break;
 
-      // Summarize selected text with AI
+      // Summarize selected text with AI (only when not in learning mode)
       case 'input-text-summarize':
-        modal.openSummaryModal();
+        if (!isInLearningMode) {
+          modal.openSummaryModal();
+        }
         break;
 
-      // Flag item
+      // Flag item (works in both modes)
       case 'input-flag-item':
         await this.flagItem();
         break;
 
-      // Remove selected item
+      // Remove selected item (Delete/Backspace - only when not in learning mode)
       case 'input-remove-item':
-        await this.removeItem();
+        if (!isInLearningMode) {
+          await this.removeItem();
+        }
         break;
 
-      // Rename selected item
+      // Rename selected item (F2 - only when not in learning mode)
       case 'input-rename-item':
-        // Implementation would depend on context
-        modal.showAlert('Rename item functionality not yet implemented', 'warning');
+        if (!isInLearningMode) {
+          // Implementation would depend on context
+          modal.showAlert('Rename item functionality not yet implemented', 'warning');
+        }
         break;
 
-      // Duplicate selected item
+      // Duplicate selected item (Ctrl/Cmd + D - only when not in learning mode)
       case 'input-duplicate-item':
-        await this.duplicateItem();
+        if (!isInLearningMode) {
+          await this.duplicateItem();
+        }
         break;
 
-      // Create folder
+      // Create folder (Ctrl/Cmd + Shift + N - only when not in learning mode)
       case 'input-create-folder':
-        await this.createFolder();
+        if (!isInLearningMode) {
+          await this.createFolder();
+        }
         break;
 
-      // Create text document
+      // Create text document (Ctrl/Cmd + N - only when not in learning mode)
       case 'input-create-text':
-        await this.createTextDocument();
+        if (!isInLearningMode) {
+          await this.createTextDocument();
+        }
         break;
 
-      // Grade items
+      // Open settings (Ctrl/Cmd + , - only when not in learning mode)
+      case 'input-open-settings':
+        if (!isInLearningMode) {
+          modal.openSettingsModal();
+        }
+        break;
+
+      // Grade items (1-5 - learning mode specific)
       case 'input-grade-item1':
+      case 'input-grade-item2':
+      case 'input-grade-item3':
+      case 'input-grade-item4':
+      case 'input-grade-item5':
         // These are handled in LearningMode.svelte
         break;
-      case 'input-grade-item2':
-        break;
-      case 'input-grade-item3':
-        break;
-      case 'input-grade-item4':
-        break;
-      case 'input-grade-item5':
+
+      // Learning mode specific shortcuts
+      case 'learning-flag-item':
+      case 'learning-skip-item':
+        // These are handled in LearningMode.svelte
         break;
 
       // Default case
@@ -146,11 +179,7 @@ class KeyboardService {
 
   private async createCloze() {
     // Get current selection
-    let selectionData: SelectionState | null = null;
-    const unsubscribe = selection.subscribe(($selection: SelectionState) => {
-      selectionData = $selection;
-    });
-    unsubscribe();
+    const selectionData = get(selection);
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
       modal.showAlert('Please select text to create a cloze', 'warning');
@@ -158,14 +187,10 @@ class KeyboardService {
     }
 
     // Get active record
-    let activeRecord: Record | null = null;
-    const unsubscribeDb = database.subscribe(($database: Database) => {
-      // For now, just get the first record with content
-      activeRecord = $database.items.find((item: Record) =>
-        item.contentType === 'Extract' || item.contentType === 'Cloze'
-      ) || null;
-    });
-    unsubscribeDb();
+    const databaseData = get(database);
+    const activeRecord = databaseData.items.find(item =>
+      item.contentType === 'Extract' || item.contentType === 'Cloze'
+    ) || null;
 
     if (!activeRecord) {
       modal.showAlert('No active record to create cloze', 'warning');
@@ -181,13 +206,6 @@ class KeyboardService {
 
       // Create new record for the cloze
       const newRecordId = (activeRecord.id || "record") + "/" + createID(6);
-      
-      // Get profile data for cloze highlight color
-      let profileData: Profile | null = null;
-      const unsubscribeProfile = profile.subscribe(($profile: Profile) => {
-        profileData = $profile;
-      });
-      unsubscribeProfile();
 
       const newRecord: Record = {
         id: newRecordId,
@@ -195,7 +213,7 @@ class KeyboardService {
         content: {
           "ops": [
             {
-              "insert": selectionData!.text
+              "insert": selectionData.text
             }
           ]
         }
@@ -213,11 +231,7 @@ class KeyboardService {
 
   private async createExtract() {
     // Get current selection
-    let selectionData: SelectionState | null = null;
-    const unsubscribe = selection.subscribe(($selection: SelectionState) => {
-      selectionData = $selection;
-    });
-    unsubscribe();
+    const selectionData = get(selection);
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
       modal.showAlert('Please select text to create an extract', 'warning');
@@ -225,14 +239,10 @@ class KeyboardService {
     }
 
     // Get active record
-    let activeRecord: Record | null = null;
-    const unsubscribeDb = database.subscribe(($database: Database) => {
-      // For now, just get the first record with content
-      activeRecord = $database.items.find((item: Record) =>
-        item.contentType === 'Extract' || item.contentType === 'Cloze'
-      ) || null;
-    });
-    unsubscribeDb();
+    const databaseData = get(database);
+    const activeRecord = databaseData.items.find(item =>
+      item.contentType === 'Extract' || item.contentType === 'Cloze'
+    ) || null;
 
     if (!activeRecord) {
       modal.showAlert('No active record to create extract', 'warning');
@@ -249,7 +259,7 @@ class KeyboardService {
         content: {
           "ops": [
             {
-              "insert": selectionData!.text
+              "insert": selectionData.text
             }
           ]
         }
@@ -267,14 +277,10 @@ class KeyboardService {
 
   private async flagItem() {
     // Get active record
-    let activeRecord: Record | null = null;
-    const unsubscribeDb = database.subscribe(($database: Database) => {
-      // For now, just get the first record with content
-      activeRecord = $database.items.find((item: Record) =>
-        item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
-      ) || null;
-    });
-    unsubscribeDb();
+    const databaseData = get(database);
+    const activeRecord = databaseData.items.find(item =>
+      item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
+    ) || null;
 
     if (!activeRecord || !activeRecord.id) {
       modal.showAlert('No active record to flag', 'warning');
@@ -295,14 +301,10 @@ class KeyboardService {
 
   private async removeItem() {
     // Get active record
-    let activeRecord: Record | null = null;
-    const unsubscribeDb = database.subscribe(($database: Database) => {
-      // For now, just get the first record with content
-      activeRecord = $database.items.find((item: Record) =>
-        item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
-      ) || null;
-    });
-    unsubscribeDb();
+    const databaseData = get(database);
+    const activeRecord = databaseData.items.find(item =>
+      item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
+    ) || null;
 
     if (!activeRecord || !activeRecord.id) {
       modal.showAlert('No active record to remove', 'warning');
@@ -322,14 +324,10 @@ class KeyboardService {
 
   private async duplicateItem() {
     // Get active record
-    let activeRecord: Record | null = null;
-    const unsubscribeDb = database.subscribe(($database: Database) => {
-      // For now, just get the first record with content
-      activeRecord = $database.items.find((item: Record) =>
-        item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
-      ) || null;
-    });
-    unsubscribeDb();
+    const databaseData = get(database);
+    const activeRecord = databaseData.items.find(item =>
+      item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
+    ) || null;
 
     if (!activeRecord) {
       modal.showAlert('No active record to duplicate', 'warning');
@@ -404,10 +402,6 @@ class KeyboardService {
 
   // Cleanup method
   public destroy() {
-    if (this.unsubscribeProfile) {
-      this.unsubscribeProfile();
-    }
-    
     if (typeof window !== 'undefined') {
       window.removeEventListener('keydown', this.handleKeyDown.bind(this));
     }

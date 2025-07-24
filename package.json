@@ -19,6 +19,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.11",
     "@types/bcrypt": "^6.0.0",
+    "@types/pdfjs-dist": "^2.10.377",
     "svelte": "^5.36.14",
     "svelte-check": "^4.3.0",
     "tailwindcss": "^4.1.11",
@@ -29,6 +30,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
+    "pdfjs-dist": "^5.3.93",
     "quill": "^2.0.3"
   }
 }

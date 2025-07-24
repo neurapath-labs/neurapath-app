@@ -138,16 +138,9 @@
     }
 
     // Add global keydown listener
-    window.addEventListener('keydown', handleGlobalKeyDown);
+    // window.addEventListener('keydown', handleGlobalKeyDown); // Handled by keyboard.service.ts
   });
 
-  // Clean up global event listeners
-  onDestroy(() => {
-    window.removeEventListener('keydown', handleGlobalKeyDown);
-    if (saveTimeout) {
-      clearTimeout(saveTimeout);
-    }
-  });
 
   // Function to save content to database
   const saveContentToDatabase = async (recordId: string, content: any) => {
@@ -221,47 +214,6 @@
     }
   };
 
-  // Function to handle global keydown events
-  const handleGlobalKeyDown = (e: KeyboardEvent) => {
-    // Get shortcuts from profile
-    const createOcclusionShortcut = profileData.shortcuts.find((s: any) => s.event === 'input-create-occlusion');
-    const createSeparateOcclusionShortcut = profileData.shortcuts.find((s: any) => s.event === 'input-create-occlusion-separate');
-    const flagItemShortcut = profileData.shortcuts.find((s: any) => s.event === 'input-flag-item');
-    const spotlightSearchShortcut = profileData.shortcuts.find((s: any) => s.event === 'input-spotlight-toggle');
-    
-    // Create occlusion when pressed
-    if (createOcclusionShortcut &&
-        e.keyCode === createOcclusionShortcut.keyCode &&
-        ((e.ctrlKey || e.metaKey) === (createOcclusionShortcut.ctrlKey || createOcclusionShortcut.metaKey)) &&
-        e.altKey === createOcclusionShortcut.altKey) {
-      e.preventDefault();
-      createOcclusion(false);
-    }
-    // Create separate occlusions when pressed
-    else if (createSeparateOcclusionShortcut &&
-             e.keyCode === createSeparateOcclusionShortcut.keyCode &&
-             ((e.ctrlKey || e.metaKey) === (createSeparateOcclusionShortcut.ctrlKey || createSeparateOcclusionShortcut.metaKey)) &&
-             e.altKey === createSeparateOcclusionShortcut.altKey) {
-      e.preventDefault();
-      createOcclusion(true);
-    }
-    // Flag item when pressed
-    else if (flagItemShortcut &&
-             e.keyCode === flagItemShortcut.keyCode &&
-             ((e.ctrlKey || e.metaKey) === (flagItemShortcut.ctrlKey || flagItemShortcut.metaKey)) &&
-             e.altKey === flagItemShortcut.altKey) {
-      e.preventDefault();
-      flagItem();
-    }
-    // Toggle spotlight search when pressed
-    else if (spotlightSearchShortcut &&
-             e.keyCode === spotlightSearchShortcut.keyCode &&
-             ((e.ctrlKey || e.metaKey) === (spotlightSearchShortcut.ctrlKey || spotlightSearchShortcut.metaKey)) &&
-             e.altKey === spotlightSearchShortcut.altKey) {
-      e.preventDefault();
-      modal.openSpotlightSearchModal();
-    }
-  };
 
   // Function to create a cloze deletion
   const createCloze = () => {

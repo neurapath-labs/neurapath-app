@@ -383,6 +383,11 @@
   const highlightItemInSidebarByID = (id: string) => {
     ui.setActiveItemId(id);
   };
+  
+  // Function to open PDF import modal
+  const openPdfImport = () => {
+    ui.openPdfImport();
+  };
 </script>
 
 <aside id="sidebar-left">
@@ -408,7 +413,7 @@
   <div id="menu">
     <div id="header-buttons">
 
-      <div class="sidebar-item" id="header-settings-button">
+      <div class="sidebar-item" id="header-settings-button" on:click={() => modal.openSettingsModal()}>
         <img height="42px" width="42px" src="/img/user.svg" alt="Settings icon.">
         <span>Settings</span>
       </div>
@@ -421,6 +426,11 @@
       <div class="sidebar-item" id="header-database-button">
         <img height="42px" width="42px" src="/img/database.svg" alt="Database icon.">
         <span id="database-text">Shared databases</span>
+      </div>
+      
+      <div class="sidebar-item" id="header-pdf-import-button" on:click={openPdfImport}>
+        <img height="42px" width="42px" src="/img/extract.svg" alt="PDF import icon.">
+        <span id="pdf-import-text">Import PDF</span>
       </div>
 
       <div class="sidebar-item" id="header-explorer-button" on:click={renderExplorer}>

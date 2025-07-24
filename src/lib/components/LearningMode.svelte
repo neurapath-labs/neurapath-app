@@ -107,7 +107,7 @@
     }
     
     // Add keyboard event listener
-    window.addEventListener('keydown', handleKeyDown);
+    // window.addEventListener('keydown', handleKeyDown); // Handled by keyboard.service.ts
     
     // Load first due item if available
     if (dueItems.length > 0 && !currentRecord) {
@@ -117,7 +117,7 @@
     
     // Cleanup function
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      // window.removeEventListener('keydown', handleKeyDown); // Handled by keyboard.service.ts
     };
   });
 
@@ -253,54 +253,11 @@
     }
   }
 
-  // Handle keyboard shortcuts
+  // Handle keyboard shortcuts - now handled by global keyboard service
+  // This function is kept for learning mode specific shortcuts that need context
   function handleKeyDown(e: KeyboardEvent) {
-    // Only handle shortcuts if in learning mode
-    if (!currentRecord || !profileData) return;
-    
-    // Get shortcuts from profile
-    const shortcuts = profileData.shortcuts || [];
-    const showAnswerShortcut = shortcuts.find((s: any) => s.event === 'learning-show-answer');
-    const flagItemShortcut = shortcuts.find((s: any) => s.event === 'learning-flag-item');
-    const skipItemShortcut = shortcuts.find((s: any) => s.event === 'learning-skip-item');
-    
-    // Show answer shortcut (default: Space)
-    if (showAnswerShortcut &&
-        e.keyCode === showAnswerShortcut.keyCode &&
-        ((e.ctrlKey || e.metaKey) === (showAnswerShortcut.ctrlKey || showAnswerShortcut.metaKey)) &&
-        e.altKey === showAnswerShortcut.altKey &&
-        e.shiftKey === (showAnswerShortcut.shift || false)) {
-      e.preventDefault();
-      if (!showAnswer) {
-        handleShowAnswer();
-      }
-    }
-    // Flag item shortcut (default: F)
-    else if (flagItemShortcut &&
-             e.keyCode === flagItemShortcut.keyCode &&
-             ((e.ctrlKey || e.metaKey) === (flagItemShortcut.ctrlKey || flagItemShortcut.metaKey)) &&
-             e.altKey === flagItemShortcut.altKey &&
-             e.shiftKey === (flagItemShortcut.shift || false)) {
-      e.preventDefault();
-      toggleFlag();
-    }
-    // Skip item shortcut (default: S)
-    else if (skipItemShortcut &&
-             e.keyCode === skipItemShortcut.keyCode &&
-             ((e.ctrlKey || e.metaKey) === (skipItemShortcut.ctrlKey || skipItemShortcut.metaKey)) &&
-             e.altKey === skipItemShortcut.altKey &&
-             e.shiftKey === (skipItemShortcut.shift || false)) {
-      e.preventDefault();
-      moveToNextItem();
-    }
-    // Grade shortcuts (1-5 keys)
-    else if (e.keyCode >= 49 && e.keyCode <= 53 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      e.preventDefault();
-      if (showAnswer) {
-        const grade = e.keyCode - 48; // Convert key code to grade (1-5)
-        handleGrade(grade);
-      }
-    }
+    // This function is no longer used as keyboard handling is done globally
+    // but kept for reference if needed in the future
   }
 
   // Function to handle occlusion image loading
