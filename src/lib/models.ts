@@ -60,6 +60,8 @@ export interface Profile {
   acceptedPolicy: boolean;
   statistics: { [date: string]: { reviewsCount?: number; newItemsCount?: number } };
   shortcuts: Shortcut[];
+  openaiApiKey?: string;
+  anthropicApiKey?: string;
 }
 
 export interface Shortcut {

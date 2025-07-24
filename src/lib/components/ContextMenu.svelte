@@ -372,6 +372,17 @@
       contextmenu.hideContextMenu();
     }
   }
+  
+  // Function to handle summarize text
+  function handleSummarizeText() {
+    if (selectionState.isSelected) {
+      modal.openSummaryModal();
+      contextmenu.hideContextMenu();
+    } else {
+      modal.showAlert('Please select text to summarize', 'warning');
+      contextmenu.hideContextMenu();
+    }
+  }
 </script>
 
 <div
@@ -482,11 +493,18 @@
     >
       Import database
     </div>
-    <div 
-      id="contextmenu-export-database" 
+    <div
+      id="contextmenu-export-database"
       on:click={handleExportDatabase}
     >
       Export database
+    </div>
+    <div
+      id="contextmenu-summarize-text"
+      class="{(selectionState.isSelected) ? '' : 'hidden'}"
+      on:click={handleSummarizeText}
+    >
+      Summarize selected text
     </div>
   {:else if contextMenuState.targetType === 'sidebar-right-item'}
     <div 

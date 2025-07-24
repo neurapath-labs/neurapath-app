@@ -74,7 +74,9 @@ const defaultProfile: Profile = {
   theme: "day",
   acceptedPolicy: false,
   statistics: {},
-  shortcuts: defaultShortcuts
+  shortcuts: defaultShortcuts,
+  openaiApiKey: "",
+  anthropicApiKey: ""
 };
 
 const { subscribe, set, update } = writable(defaultProfile);

@@ -9,11 +9,15 @@
   let recordingEvent: string | null = $state(null);
   let filterText: string = $state('');
   let isSettingsModalOpen: boolean = $state(false);
+  let openaiApiKey: string = $state('');
+  let anthropicApiKey: string = $state('');
 
   // Subscribe to profile changes
   $effect(() => {
     const unsubscribeProfile = profile.subscribe(($profile) => {
       shortcuts = [...$profile.shortcuts];
+      openaiApiKey = $profile.openaiApiKey || '';
+      anthropicApiKey = $profile.anthropicApiKey || '';
     });
     
     const unsubscribeModal = modal.subscribe(($modal) => {
@@ -127,6 +131,15 @@
     modal.showAlert('Keyboard shortcuts saved successfully', 'success');
   }
 
+  // Function to save API keys
+  function saveApiKeys() {
+    profile.updateProfile({
+      openaiApiKey,
+      anthropicApiKey
+    });
+    modal.showAlert('API keys saved successfully', 'success');
+  }
+
   // Function to reset to default shortcuts
   function resetToDefaults() {
     profile.resetShortcutsToDefault();
@@ -220,6 +233,48 @@
       </div>
     </div>
     
+    <div class="ai-settings-container">
+      <div class="settings-header">
+        <h2>AI Service Settings</h2>
+      </div>
+      
+      <div class="api-key-settings">
+        <div class="form-group">
+          <label for="openai-api-key">OpenAI API Key:</label>
+          <input
+            type="password"
+            id="openai-api-key"
+            bind:value={openaiApiKey}
+            placeholder="Enter your OpenAI API key"
+            class="api-key-input"
+          />
+          <p class="help-text">
+            Used for text summarization with GPT-3.5. Get your API key from the OpenAI dashboard.
+          </p>
+        </div>
+        
+        <div class="form-group">
+          <label for="anthropic-api-key">Anthropic API Key:</label>
+          <input
+            type="password"
+            id="anthropic-api-key"
+            bind:value={anthropicApiKey}
+            placeholder="Enter your Anthropic API key"
+            class="api-key-input"
+          />
+          <p class="help-text">
+            Used for text summarization with Claude. Get your API key from the Anthropic console.
+          </p>
+        </div>
+        
+        <div class="settings-actions">
+          <button class="save-button" on:click={saveApiKeys} type="button">
+            Save API Keys
+          </button>
+        </div>
+      </div>
+    </div>
+    
     <button class="modalbox-button" on:click={closeSettings} type="button">Close</button>
   </div>
 {/if}
@@ -277,6 +332,12 @@
     flex-direction: column;
     height: 100%;
   }
+  
+  .ai-settings-container {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(var(--background-color));
+  }
 
   .settings-header {
     display: flex;
@@ -308,11 +369,26 @@
     overflow-y: auto;
     margin-bottom: 20px;
   }
+  
+  .api-key-settings {
+    margin-bottom: 20px;
+  }
 
   .shortcuts-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+  }
+  
+  .api-key-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgb(var(--background-color));
+    border-radius: 4px;
+    background-color: rgb(var(--background-color_input));
+    color: rgb(var(--font-color));
+    font-size: 14px;
+    margin-bottom: 5px;
   }
 
   .shortcuts-table th {
@@ -329,6 +405,12 @@
 
   .shortcuts-table tr:hover {
     background-color: rgba(var(--background-color), 0.5);
+  }
+  
+  .help-text {
+    font-size: 12px;
+    color: rgb(var(--font-color-secondary));
+    margin: 5px 0 15px 0;
   }
 
   .recording {

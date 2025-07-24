@@ -11,6 +11,7 @@
 	import ImageOcclusionModal from '$lib/components/modals/ImageOcclusionModal.svelte';
 	import SettingsModal from '$lib/components/modals/SettingsModal.svelte';
 	import ExportImportModal from '$lib/components/modals/ExportImportModal.svelte';
+	import SummarizeModal from '$lib/components/modals/SummarizeModal.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { keyboardService } from '$lib/services/keyboard.service';
 
@@ -43,6 +44,7 @@
 <ImageOcclusionModal />
 <SettingsModal />
 <ExportImportModal />
+<SummarizeModal />
 
 <style>
 	#wrapper {

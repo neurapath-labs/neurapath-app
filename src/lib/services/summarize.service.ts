@@ -2,6 +2,7 @@ import { get } from 'svelte/store';
 import { selection } from '$lib/stores/selection.store';
 import { database } from '$lib/stores/database.store';
 import { modal } from '$lib/stores/modal.store';
+import { profile } from '$lib/stores/profile.store';
 import { createID } from '$lib/utils/helpers';
 import type { Record } from '$lib/models';
 
@@ -106,6 +107,15 @@ export const createSummaryRecord = async (originalText: string, summary: string,
     console.error('Error creating summary record:', error);
     throw error;
   }
+};
+
+// Function to get API keys from profile
+export const getApiKeysFromProfile = (): { openaiApiKey: string; anthropicApiKey: string } => {
+  const profileStore: any = get(profile);
+  return {
+    openaiApiKey: profileStore.openaiApiKey || '',
+    anthropicApiKey: profileStore.anthropicApiKey || ''
+  };
 };
 
 // Main function to summarize selected text
