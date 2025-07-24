@@ -42,6 +42,12 @@
   function closeDatabases() {
     ui.closeDatabases();
   }
+  
+  // Function to open export/import modal
+  function openExportImport() {
+    ui.closeDatabases();
+    ui.openExportImport();
+  }
 </script>
 
 {#if isOpen}
@@ -49,6 +55,9 @@
     <div class="modalbox-header">
       <img class="modalbox-icon" src="/img/database.svg" alt="Database icon" />
       <span class="modalbox-title">Shared Databases</span>
+    </div>
+    <div class="database-actions">
+      <button class="modalbox-button" on:click={openExportImport} type="button">Export/Import Database</button>
     </div>
     <table id="database-list">
       <thead>
@@ -159,6 +168,10 @@
     color: rgb(var(--font-color));
   }
 
+  .database-actions {
+    margin-bottom: 20px;
+  }
+  
   .modalbox-button {
     border-color: rgb(var(--background-color));
     background-color: rgb(var(--background-color_button));
@@ -167,6 +180,7 @@
     text-align: center;
     border-radius: 4px;
     align-self: center;
+    margin-bottom: 10px;
   }
 
   .modalbox-button:hover {

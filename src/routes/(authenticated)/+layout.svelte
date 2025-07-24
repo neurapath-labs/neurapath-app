@@ -10,6 +10,7 @@
 	import SpotlightSearchModal from '$lib/components/modals/SpotlightSearchModal.svelte';
 	import ImageOcclusionModal from '$lib/components/modals/ImageOcclusionModal.svelte';
 	import SettingsModal from '$lib/components/modals/SettingsModal.svelte';
+	import ExportImportModal from '$lib/components/modals/ExportImportModal.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { keyboardService } from '$lib/services/keyboard.service';
 
@@ -41,6 +42,7 @@
 <SpotlightSearchModal />
 <ImageOcclusionModal />
 <SettingsModal />
+<ExportImportModal />
 
 <style>
 	#wrapper {

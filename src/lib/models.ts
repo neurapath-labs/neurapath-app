@@ -9,6 +9,7 @@ export interface Record {
   repetition?: number;
   totalRepetitionCount?: number;
   isFlagged?: boolean;
+  isPublic?: boolean;
   interval?: number;
   efactor?: number;
   dueDate?: string;

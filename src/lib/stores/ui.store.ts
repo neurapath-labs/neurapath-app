@@ -13,6 +13,7 @@ interface UIState {
   isTutorialOpen: boolean;
   isSpotlightSearchModalOpen: boolean;
   isPdfImportOpen: boolean;
+  isExportImportOpen: boolean;
 }
 
 const initialState: UIState = {
@@ -27,7 +28,8 @@ const initialState: UIState = {
   isPolicyOpen: false,
   isTutorialOpen: false,
   isSpotlightSearchModalOpen: false,
-  isPdfImportOpen: false
+  isPdfImportOpen: false,
+  isExportImportOpen: false
 };
 
 const { subscribe, set, update } = writable(initialState);
@@ -207,6 +209,20 @@ const closePdfImport = () => {
   }));
 };
 
+const openExportImport = () => {
+  update(state => ({
+    ...state,
+    isExportImportOpen: true
+  }));
+};
+
+const closeExportImport = () => {
+  update(state => ({
+    ...state,
+    isExportImportOpen: false
+  }));
+};
+
 export const ui = {
   subscribe,
   set,
@@ -232,5 +248,7 @@ export const ui = {
   openSpotlightSearch,
   closeSpotlightSearch,
   openPdfImport,
-  closePdfImport
+  closePdfImport,
+  openExportImport,
+  closeExportImport
 };
