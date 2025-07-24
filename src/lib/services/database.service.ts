@@ -29,7 +29,7 @@ export const getPublicDatabases = async (): Promise<Database[]> => {
     };
 
     // Make the API call
-    const response = await fetch('https://evecloud.io/public/data', requestOptions);
+    const response = await fetch('https://neurapath.io/public/data', requestOptions);
     const data = await response.json();
 
     // Check for error in response

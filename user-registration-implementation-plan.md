@@ -86,7 +86,7 @@ File: `src/lib/services/user.service.ts`
 <div class="visible modalbox" id="modalbox-register">
   <form method="POST" action="?/register" use:enhance>
     <div class="modalbox-header">
-      <img class="modalbox-icon" src="/img/logo.svg" alt="Evecloud logo">
+      <img class="modalbox-icon" src="/img/logo.svg" alt="neurapath logo">
       <span class="modalbox-title">Register</span>
     </div>
     <div class="modalbox-content">

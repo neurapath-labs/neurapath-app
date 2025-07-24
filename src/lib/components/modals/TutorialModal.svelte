@@ -85,7 +85,7 @@
           <span class="modalbox-title">Quick start (4/{totalSteps})</span>
         </div>
         <div class="modalbox-content-text">
-          <p><u>Due today</u> tells you how many items are due today. Evecloud uses the same algoritm as Anki which is called SM-2 (SuperMemo 2) which is based on the forgetting curve in order to optimize learning. The numer within the parentheses tell you how many items in total that are due today which depends on which settings are disbled and enabled in your profile.</p>
+          <p><u>Due today</u> tells you how many items are due today. neurapath uses the same algoritm as Anki which is called SM-2 (SuperMemo 2) which is based on the forgetting curve in order to optimize learning. The numer within the parentheses tell you how many items in total that are due today which depends on which settings are disbled and enabled in your profile.</p>
         </div>
       {:else if currentStep === 5}
         <div class="modalbox-header">
@@ -186,7 +186,7 @@
           <span class="modalbox-title">Quick start (14/{totalSteps})</span>
         </div>
         <div class="modalbox-content-text">
-          <p><u>Well done!</u> You do not know the most important features of Eve. You can join our Discord channel at: <a href="https://discord.gg/QKVf38QfCc" target="_blank" rel="noopener noreferrer">https://discord.gg/QKVf38QfCc</a> or contact us at email: <a href="mailto:hi@evecloud.io">hi@evecloud.io</a></p>
+          <p><u>Well done!</u> You do not know the most important features of Eve. You can join our Discord channel at: <a href="https://discord.gg/QKVf38QfCc" target="_blank" rel="noopener noreferrer">https://discord.gg/QKVf38QfCc</a> or contact us at email: <a href="mailto:hi@neurapath.io">hi@neurapath.io</a></p>
         </div>
       {/if}
     </div>

@@ -392,7 +392,7 @@
 
 <aside id="sidebar-left">
   <div id="logo-area">
-    <img src="/img/logo.svg" alt="Evecloud logo">
+    <img src="/img/logo.svg" alt="neurapath logo">
     <div id="sidebar-title">EVE</div>
     <div id="sidebar-subtitle">Made in Sweden.</div>
     <div id="sidebar-saved">Last saved:

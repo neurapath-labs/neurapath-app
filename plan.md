@@ -1,6 +1,6 @@
-# Project Migration Plan: Evecloud to SvelteKit
+# Project Migration Plan: neurapath to SvelteKit
 
-This document outlines the plan to migrate the Evecloud application from its current vanilla JS/Electron architecture to a modern, web-only SvelteKit application using Svelte 5 and TypeScript.
+This document outlines the plan to migrate the neurapath application from its current vanilla JS/Electron architecture to a modern, web-only SvelteKit application using Svelte 5 and TypeScript.
 
 ## 1. Project Setup & Tooling
 

@@ -1,21 +1,38 @@
 <script lang="ts">
+  import { enhance } from '$app/forms';
+  import { page } from '$app/stores';
+  
   let username = '';
   let password = '';
+  let confirmPassword = '';
+  let errorMessage = '';
+  
+  $: errorMessage = $page.form?.error || '';
 </script>
 
-<div class="visible modalbox" id="modalbox-login">
-  <form method="POST" action="?/login">
+<div class="visible modalbox" id="modalbox-register">
+  <form method="POST" action="?/register" use:enhance>
     <div class="modalbox-header">
-      <img class="modalbox-icon" src="/img/logo.svg" alt="neurapath logo">
-      <span class="modalbox-title">EVE</span>
+      <img class="modalbox-icon" src="/img/logo.svg" alt="Evecloud logo" />
+      <span class="modalbox-title">Register</span>
     </div>
     <div class="modalbox-content">
-      Welcome aboard! Eve is specifically tailored for effective studying. <u>New user:</u> enter an username and password then press login in order to create an new account. <u>Old user:</u> Please enter your username and
-      password below.
+      Create a new account to access Eve.
     </div>
-    <input class="modalbox-field" id="modalbox-login-username" name="username" placeholder="Username..." bind:value={username}>
-    <input class="modalbox-field" id="modalbox-login-password" name="password" type="password" placeholder="Password..." bind:value={password}>
-    <button class="modalbox-button" id="modalbox-login-button" type="submit">Login!</button>
+    
+    {#if errorMessage}
+      <div class="modalbox-error">
+        {errorMessage}
+      </div>
+    {/if}
+    
+    <input class="modalbox-field" name="username" placeholder="Username..." bind:value={username} required />
+    <input class="modalbox-field" name="password" type="password" placeholder="Password..." bind:value={password} required />
+    <input class="modalbox-field" name="confirmPassword" type="password" placeholder="Confirm Password..." bind:value={confirmPassword} required />
+    <button class="modalbox-button" type="submit">Register</button>
+    <div class="modalbox-footer">
+      <a href="/login">Already have an account? Login</a>
+    </div>
   </form>
 </div>
 
@@ -26,12 +43,12 @@
     background-color: rgb(var(--background-color_modalbox));
     color: rgb(var(--font-color));
     width: 400px;
-    height: 400px;
+    height: 450px;
     max-height: 600px;
     left: 50%;
     top: 50%;
     margin-left: -200px;
-    margin-top: -400px;
+    margin-top: -300px;
     grid-template-columns: auto;
     grid-template-rows: auto;
     align-content: center;
@@ -76,6 +93,13 @@
     text-align: justify;
   }
 
+  .modalbox-error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
   .modalbox-field {
     color: #555;
     background-color: white;
@@ -85,6 +109,7 @@
     text-align: left;
     width: 100%;
     box-sizing: border-box;
+    margin-bottom: 15px;
   }
 
   .modalbox-field:focus {
@@ -99,10 +124,24 @@
     padding: 10px 15px;
     text-align: center;
     border-radius: 4px;
+    margin-bottom: 20px;
   }
 
   .modalbox-button:hover {
     background-color: rgba(var(--background-color_button-hover));
     cursor: pointer;
+  }
+
+  .modalbox-footer {
+    text-align: center;
+  }
+
+  .modalbox-footer a {
+    color: rgb(var(--font-color));
+    text-decoration: underline;
+  }
+
+  .modalbox-footer a:hover {
+    color: rgb(var(--background-color_button));
   }
 </style>

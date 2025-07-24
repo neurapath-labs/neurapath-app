@@ -7,184 +7,183 @@
   
   type ChangelogEntry = {
     date: string;
-    changes: string[];
-  };
-  
-  let changelogEntries: ChangelogEntry[] = $state([
-    {
-      date: '2020-03-07',
-      changes: [
-        '+ Added tutorial on launch',
-        '+ New theme added (Homebrew)',
-        '+ Added autosave for theme selection',
-        '+ Added "error correction" in case of fallback',
-        '+ Added custom colors for clozes and extracts',
-        '+ Added padding option for menu items',
-        '- Toolbar has been replaced by a hover bar',
-        '- Redesign of notification system',
-        '- Improved UI of profile and settings',
-        '- Improved the overall user interface',
-        '! Fixed positioning of hovering of Wikipedia article',
-        '! Fixed layering of left sidebar',
-        '! Fixed create folder function',
-        '! Fixed login function'
-      ]
-    },
-    {
-      date: '2020-02-28',
-      changes: [
-        '+ Added slider for working window padding in profile page',
-        '+ Added upload information in titlebar',
-        '+ Added changelog',
-        '+ Added custom command for free recall',
-        '+ Added statistics',
-        '- Improved image loading times',
-        '! Fixed right sidebar hidden in app when word selected',
-        '! Fixed fast switching which resulted in fallback'
-      ]
-    },
-    {
-      date: '2020-02-24',
-      changes: [
-        '+ Added PDF support (experimental)',
-        '+ Added API for Psykologiguiden',
-        '+ Added API for MeSH',
-        '+ Added toggle for right sidebar',
-        '- Imrovements of right sidebar',
-        '- Auto select username',
-        '- Auto generate of username removed',
-        '! Fixed share function for encrypted databases'
-      ]
-    },
-    {
-      date: '2020-02-20',
-      changes: [
-        '+ Added encryption (AES256) for database information',
-        '+ Added convertion to WEBP format',
-        '+ Added copy text from right sidebar to clipboard',
-        '+ Added deflag and flag to right click menu',
-        '- Improved flag and deflag function for PWA'
-      ]
-    },
-    {
-      date: '2020-02-14',
-      changes: [
-        '+ Added flag item option',
-        '+ Added drag and drop support for PDF-files',
-        '+ Added button to toggle occlusions in the sidebar',
-        '- Now places image in selected folder (if any)',
-        '- Minor UI tweaks (for PWA and bug fixes)'
-      ]
-    },
-    {
-      date: '2020-02-13',
-      changes: [
-        '+ Postpone for items',
-        '+ Create image occlusion from similar content',
-        '+ Import Wikipedia articles from similar content',
-        '+ Anki import (experimental)',
-        '+ Quizlet import (experimental)',
-        '- Minor PWA fixes for UI',
-        '! Fixed rename bug',
-        '! Fixed move item bug',
-        '! Fixed color of overlay to yellow',
-        '! Fixed folder navigation',
-        '! Fixed keep folders open during navigation',
-        '! Fixed remove function',
-        '! Fixed rendering of files when loading db'
-      ]
-    },
-    {
-      date: '2020-02-07',
-      changes: [
-        '+ Added terms of agreement',
-        '- Improved UI: hide sidebar during learning on PWA',
-        '- Improved UI: only show grading menu during learning',
-        '! Fixed login issue when database not loading',
-        '! Fixed the footer on mobile app',
-        '! Login ID no longer case sensitive'
-      ]
-    },
-    {
-      date: '2020-02-02',
-      changes: [
-        '+ Added selection of item during engage',
-        '! Fixed favicon',
-        '! Fixed icon for PWA',
-        '! Fixed formatting when leaving training mode',
-        '! Fixed folder collapse when creating new items'
-      ]
-    },
-    {
-      date: '2020-02-01',
-      changes: [
-        '+ Added function to export and import selected items in sidebar',
-        '+ Added toggle of image occlusions during learning',
-        '+ Added toggle of clozes during learning',
-        '+ Added email at: hi@evecloud.io',
-        '! Minor bug fixes for UI components',
-        '! Minor bug fixes for learning mode',
-        '! Minor bug fixes for the PWA'
-      ]
-    },
-    {
-      date: '2020-01-31',
-      changes: [
-        '+ Added PWA (tested on: iPhone X)',
-        '+ Added due today in sidebar',
-        '+ Added database explorer (share and browse)',
-        '+ Added image occlusion count in profile',
-        '+ Added toggle option for extracts in learning mode',
-        '+ Added shortcut for text summarization with AI',
-        '+ Added card explorer & algoritm to find items',
-        '+ Added neural network for text summarization',
-        '- Improved database and search database each minute',
-        '- Improved the load time when logging in',
-        '- Improved backend storage optimization',
-        '! Fixed learning mode',
-        '! Fixed date formating'
-      ]
-    },
-    {
-      date: '2020-01-16',
-      changes: [
-        '+ Added Spotlight search',
-        '+ Added duplicate item for context menu',
-        '+ Added image paste function',
-        '+ Added multiple image occlusions',
-        '+ Added an introduction text when logging in',
-        '+ Added additional shortcuts',
-        '+ Added text when last saved to cloud',
-        '- Improved database, now saved when import completed',
-        '- Improved right-click menu',
-        '- Improved visuals (higher contrast)',
-        '- Improved folder open when new content added',
-        '- Minor improvements of the RTE',
-        '! Fixed database, now saved when image uploaded',
-        '! Fixed rename, now works for images'
-      ]
-    },
-    {
-      date: '2020-01-12',
-      changes: [
-        '+ Update database on paste to quill',
-        '+ Updated the user UI of profile',
-        '+ Customize keyboard shortcuts',
-        '+ Change shortcut to enable user to copy ID',
-        '+ Check if shortcut already used before setting',
-        '+ Grammar corrections',
-        '+ Show image occlusion with space'
-      ]
-    },
-    {
-      date: '2020-01-09',
-      changes: [
-        '+ Added realtime image search of typed text',
-        '+ Added displaying image occlusions in the information tree',
-        '+ Added display full picture when hovering image',
-        '- Improved more accurate filtering',
-        '- Improvement of launch time'
-      ]
+    changes: slet changelogEntries: ChangelogEntry[] = $state([
+			{
+				date: "2020-03-07",
+				changes: [
+					"+ Added tutorial on launch",
+					"+ New theme added (Homebrew)",
+					"+ Added autosave for theme selection",
+					'+ Added "error correction" in case of fallback',
+					"+ Added custom colors for clozes and extracts",
+					"+ Added padding option for menu items",
+					"- Toolbar has been replaced by a hover bar",
+					"- Redesign of notification system",
+					"- Improved UI of profile and settings",
+					"- Improved the overall user interface",
+					"! Fixed positioning of hovering of Wikipedia article",
+					"! Fixed layering of left sidebar",
+					"! Fixed create folder function",
+					"! Fixed login function",
+				],
+			},
+			{
+				date: "2020-02-28",
+				changes: [
+					"+ Added slider for working window padding in profile page",
+					"+ Added upload information in titlebar",
+					"+ Added changelog",
+					"+ Added custom command for free recall",
+					"+ Added statistics",
+					"- Improved image loading times",
+					"! Fixed right sidebar hidden in app when word selected",
+					"! Fixed fast switching which resulted in fallback",
+				],
+			},
+			{
+				date: "2020-02-24",
+				changes: [
+					"+ Added PDF support (experimental)",
+					"+ Added API for Psykologiguiden",
+					"+ Added API for MeSH",
+					"+ Added toggle for right sidebar",
+					"- Imrovements of right sidebar",
+					"- Auto select username",
+					"- Auto generate of username removed",
+					"! Fixed share function for encrypted databases",
+				],
+			},
+			{
+				date: "2020-02-20",
+				changes: [
+					"+ Added encryption (AES256) for database information",
+					"+ Added convertion to WEBP format",
+					"+ Added copy text from right sidebar to clipboard",
+					"+ Added deflag and flag to right click menu",
+					"- Improved flag and deflag function for PWA",
+				],
+			},
+			{
+				date: "2020-02-14",
+				changes: [
+					"+ Added flag item option",
+					"+ Added drag and drop support for PDF-files",
+					"+ Added button to toggle occlusions in the sidebar",
+					"- Now places image in selected folder (if any)",
+					"- Minor UI tweaks (for PWA and bug fixes)",
+				],
+			},
+			{
+				date: "2020-02-13",
+				changes: [
+					"+ Postpone for items",
+					"+ Create image occlusion from similar content",
+					"+ Import Wikipedia articles from similar content",
+					"+ Anki import (experimental)",
+					"+ Quizlet import (experimental)",
+					"- Minor PWA fixes for UI",
+					"! Fixed rename bug",
+					"! Fixed move item bug",
+					"! Fixed color of overlay to yellow",
+					"! Fixed folder navigation",
+					"! Fixed keep folders open during navigation",
+					"! Fixed remove function",
+					"! Fixed rendering of files when loading db",
+				],
+			},
+			{
+				date: "2020-02-07",
+				changes: [
+					"+ Added terms of agreement",
+					"- Improved UI: hide sidebar during learning on PWA",
+					"- Improved UI: only show grading menu during learning",
+					"! Fixed login issue when database not loading",
+					"! Fixed the footer on mobile app",
+					"! Login ID no longer case sensitive",
+				],
+			},
+			{
+				date: "2020-02-02",
+				changes: [
+					"+ Added selection of item during engage",
+					"! Fixed favicon",
+					"! Fixed icon for PWA",
+					"! Fixed formatting when leaving training mode",
+					"! Fixed folder collapse when creating new items",
+				],
+			},
+			{
+				date: "2020-02-01",
+				changes: [
+					"+ Added function to export and import selected items in sidebar",
+					"+ Added toggle of image occlusions during learning",
+					"+ Added toggle of clozes during learning",
+					"+ Added email at: hi@neurapath.io",
+					"! Minor bug fixes for UI components",
+					"! Minor bug fixes for learning mode",
+					"! Minor bug fixes for the PWA",
+				],
+			},
+			{
+				date: "2020-01-31",
+				changes: [
+					"+ Added PWA (tested on: iPhone X)",
+					"+ Added due today in sidebar",
+					"+ Added database explorer (share and browse)",
+					"+ Added image occlusion count in profile",
+					"+ Added toggle option for extracts in learning mode",
+					"+ Added shortcut for text summarization with AI",
+					"+ Added card explorer & algoritm to find items",
+					"+ Added neural network for text summarization",
+					"- Improved database and search database each minute",
+					"- Improved the load time when logging in",
+					"- Improved backend storage optimization",
+					"! Fixed learning mode",
+					"! Fixed date formating",
+				],
+			},
+			{
+				date: "2020-01-16",
+				changes: [
+					"+ Added Spotlight search",
+					"+ Added duplicate item for context menu",
+					"+ Added image paste function",
+					"+ Added multiple image occlusions",
+					"+ Added an introduction text when logging in",
+					"+ Added additional shortcuts",
+					"+ Added text when last saved to cloud",
+					"- Improved database, now saved when import completed",
+					"- Improved right-click menu",
+					"- Improved visuals (higher contrast)",
+					"- Improved folder open when new content added",
+					"- Minor improvements of the RTE",
+					"! Fixed database, now saved when image uploaded",
+					"! Fixed rename, now works for images",
+				],
+			},
+			{
+				date: "2020-01-12",
+				changes: [
+					"+ Update database on paste to quill",
+					"+ Updated the user UI of profile",
+					"+ Customize keyboard shortcuts",
+					"+ Change shortcut to enable user to copy ID",
+					"+ Check if shortcut already used before setting",
+					"+ Grammar corrections",
+					"+ Show image occlusion with space",
+				],
+			},
+			{
+				date: "2020-01-09",
+				changes: [
+					"+ Added realtime image search of typed text",
+					"+ Added displaying image occlusions in the information tree",
+					"+ Added display full picture when hovering image",
+					"- Improved more accurate filtering",
+					"- Improvement of launch time",
+				],
+			},
+		]);      ]
     }
   ]);
 
