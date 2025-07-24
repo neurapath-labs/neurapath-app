@@ -57,6 +57,16 @@ export interface Profile {
   showToolbar: boolean;
   theme: string;
   acceptedPolicy: boolean;
-  statistics: any;
-  shortcuts: any[];
+  statistics: { [date: string]: { reviewsCount?: number; newItemsCount?: number } };
+  shortcuts: Shortcut[];
+}
+
+export interface Shortcut {
+  event: string;
+  keyCode: number;
+  altKey: boolean;
+  metaKey: boolean;
+  ctrlKey: boolean;
+  shift: boolean;
+  combination: string;
 }
