@@ -4,6 +4,7 @@
   import { database } from '$lib/stores/database.store';
   import { selection } from '$lib/stores/selection.store';
   import { occlusion } from '$lib/stores/occlusion.store';
+  import { ui } from '$lib/stores/ui.store';
   import { createID } from '$lib/utils/helpers';
   import type { Record } from '$lib/models';
 
@@ -363,6 +364,14 @@
     contextmenu.hideContextMenu();
     modal.showAlert('Occlusion created successfully', 'success');
   }
+  
+  // Function to handle share item
+  function handleShareItem() {
+    if (contextMenuState.targetId) {
+      ui.openShareModal(contextMenuState.targetId);
+      contextmenu.hideContextMenu();
+    }
+  }
 </script>
 
 <div
@@ -426,12 +435,19 @@
     >
       Flag item
     </div>
-    <div 
-      id="contextmenu-unflag-item" 
+    <div
+      id="contextmenu-unflag-item"
       class="{(targetRecord && targetRecord.isFlagged) ? '' : 'hidden'}"
       on:click={handleUnflagItem}
     >
       Unflag item
+    </div>
+    <div
+      id="contextmenu-share-item"
+      class="{(targetRecord) ? '' : 'hidden'}"
+      on:click={handleShareItem}
+    >
+      Share item
     </div>
   {:else if contextMenuState.targetType === 'content-area'}
     <div 

@@ -14,6 +14,8 @@ interface UIState {
   isSpotlightSearchModalOpen: boolean;
   isPdfImportOpen: boolean;
   isExportImportOpen: boolean;
+  isShareModalOpen: boolean;
+  shareModalTargetId: string | null;
 }
 
 const initialState: UIState = {
@@ -29,7 +31,9 @@ const initialState: UIState = {
   isTutorialOpen: false,
   isSpotlightSearchModalOpen: false,
   isPdfImportOpen: false,
-  isExportImportOpen: false
+  isExportImportOpen: false,
+  isShareModalOpen: false,
+  shareModalTargetId: null
 };
 
 const { subscribe, set, update } = writable(initialState);
@@ -223,6 +227,22 @@ const closeExportImport = () => {
   }));
 };
 
+const openShareModal = (targetId: string) => {
+  update(state => ({
+    ...state,
+    isShareModalOpen: true,
+    shareModalTargetId: targetId
+  }));
+};
+
+const closeShareModal = () => {
+  update(state => ({
+    ...state,
+    isShareModalOpen: false,
+    shareModalTargetId: null
+  }));
+};
+
 export const ui = {
   subscribe,
   set,
@@ -250,5 +270,7 @@ export const ui = {
   openPdfImport,
   closePdfImport,
   openExportImport,
-  closeExportImport
+  closeExportImport,
+  openShareModal,
+  closeShareModal
 };

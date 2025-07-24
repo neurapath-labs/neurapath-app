@@ -2,9 +2,9 @@
   import { ui } from '$lib/stores/ui.store';
   import { modal } from '$lib/stores/modal.store';
   import { database } from '$lib/stores/database.store';
-  import { 
-    generateShareableLink, 
-    toggleItemPublicStatus, 
+  import {
+    generateShareableLink,
+    toggleItemPublicStatus,
     getItemPublicStatus,
     makeDatabasePublic,
     makeDatabasePrivate,
@@ -14,12 +14,12 @@
   import type { Record } from '$lib/models';
 
   // Using Svelte 5 runes for reactivity
-  let isOpen: boolean = $state(false);
-  let targetItem: Record | null = $state(null);
-  let isItemPublic: boolean = $state(false);
-  let shareableLink: string = $state('');
-  let isDatabasePublic: boolean = $state(false);
-  let isProcessing: boolean = $state(false);
+  let isOpen = $state(false);
+  let targetItem = $state<Record | null>(null);
+  let isItemPublic = $state(false);
+  let shareableLink = $state('');
+  let isDatabasePublic = $state(false);
+  let isProcessing = $state(false);
 
   // Subscribe to UI changes
   let unsubscribeUI: (() => void) | undefined;
@@ -39,7 +39,7 @@
   });
 
   // Function to load item data
-  const loadItemData = async (itemId: string) => {
+  async function loadItemData(itemId: string) {
     try {
       targetItem = database.getRecordById(itemId) || null;
       if (targetItem) {
@@ -51,10 +51,10 @@
       console.error('Error loading item data:', error);
       modal.showAlert('Error loading item data', 'danger');
     }
-  };
+  }
 
   // Function to toggle item public status
-  const togglePublicStatus = async () => {
+  async function togglePublicStatus() {
     if (!targetItem) return;
     
     isProcessing = true;
@@ -73,10 +73,10 @@
     } finally {
       isProcessing = false;
     }
-  };
+  }
 
   // Function to toggle database public status
-  const toggleDatabasePublicStatus = async () => {
+  async function toggleDatabasePublicStatus() {
     isProcessing = true;
     try {
       if (isDatabasePublic) {
@@ -94,10 +94,10 @@
     } finally {
       isProcessing = false;
     }
-  };
+  }
 
   // Function to copy shareable link to clipboard
-  const copyLinkToClipboard = async () => {
+  async function copyLinkToClipboard() {
     if (!shareableLink) return;
     
     try {
@@ -107,7 +107,7 @@
       console.error('Error copying link to clipboard:', error);
       modal.showAlert('Error copying link to clipboard', 'danger');
     }
-  };
+  }
 
   // Function to close the share modal
   function closeShareModal() {
@@ -146,10 +146,11 @@
         
         {#if isItemPublic}
           <div class="control-group">
-            <label>Shareable Link:</label>
+            <label for="share-link">Shareable Link:</label>
             <div class="link-container">
               <input 
                 type="text" 
+                id="share-link"
                 value={shareableLink} 
                 readonly 
                 class="share-link-input"
@@ -158,6 +159,7 @@
                 class="copy-button" 
                 on:click={copyLinkToClipboard}
                 disabled={isProcessing}
+                type="button"
               >
                 Copy
               </button>
@@ -263,3 +265,105 @@
     font-size: 18px;
   }
 
+  .share-item-info p {
+    margin: 0;
+    font-size: 14px;
+    color: rgb(var(--font-color-secondary));
+  }
+
+  .share-controls, .database-share-controls {
+    margin-bottom: 20px;
+  }
+
+  .database-share-controls h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+
+  .control-group {
+    margin-bottom: 15px;
+  }
+
+  .control-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  .control-group input[type="checkbox"] {
+    margin-right: 8px;
+  }
+
+  .help-text {
+    font-size: 12px;
+    color: rgb(var(--font-color-secondary));
+    margin: 5px 0 0 0;
+  }
+
+  .link-container {
+    display: flex;
+    gap: 10px;
+  }
+
+  .share-link-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid rgb(var(--background-color));
+    border-radius: 4px;
+    background-color: rgb(var(--background-color_input));
+    color: rgb(var(--font-color));
+  }
+
+  .copy-button {
+    border-color: rgb(var(--background-color));
+    background-color: rgb(var(--background-color_button));
+    color: rgb(var(--font-color_button));
+    padding: 8px 12px;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .copy-button:hover:not(:disabled) {
+    background-color: rgba(var(--background-color_button-hover));
+  }
+
+  .copy-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .modalbox-button {
+    border-color: rgb(var(--background-color));
+    background-color: rgb(var(--background-color_button));
+    color: rgb(var(--font-color_button));
+    padding: 10px 15px;
+    text-align: center;
+    border-radius: 4px;
+    align-self: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .modalbox-button:hover:not(:disabled) {
+    background-color: rgba(var(--background-color_button-hover));
+  }
+
+  .modalbox-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .visible {
+    display: block !important;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+</style>
