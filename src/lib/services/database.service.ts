@@ -1,6 +1,5 @@
 const BASE_URL = "https://neurapath-backend.neurapath.workers.dev/";
 import type { Database, User, UserWithPasswordHash } from '$lib/models';
-import { databaseConfig } from '$lib/config/database.config';
 
 // In-memory storage for users (in a real app, this would be a database)
 let users: UserWithPasswordHash[] = [
