@@ -49,7 +49,7 @@ const login = async (username: string, password: string) => {
     // Update the store
     set(newState);
     return { success: true };
-  } catch (error) {
+  } catch (_error) {
     return { success: false, error: 'Login failed' };
   }
 };
@@ -67,7 +67,7 @@ const logout = async () => {
     // Update the store
     set({ isLoggedIn: false, user: null });
     return { success: true };
-  } catch (error) {
+  } catch (_error) {
     return { success: false, error: 'Logout failed' };
   }
 };

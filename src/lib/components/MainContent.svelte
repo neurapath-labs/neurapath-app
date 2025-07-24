@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import Quill from 'quill';
+  import { browser } from '$app/environment';
   import 'quill/dist/quill.bubble.css';
   import { database } from '$lib/stores/database.store';
   import { learning } from '$lib/stores/learning.store';
@@ -15,7 +15,7 @@
 
   let { children } = $props();
   let editor: HTMLDivElement;
-  let quill: Quill | null = null;
+  let quill: any = null;
   let activeRecord: Record | null = null;
   let isLearningMode = false;
   let profileData: any = {};
@@ -86,8 +86,9 @@
     ];
   };
 
-  onMount(() => {
-    if (editor) {
+  onMount(async () => {
+    if (editor && browser) {
+      const { default: Quill } = await import('quill');
       quill = new Quill(editor, {
         theme: 'bubble',
         modules: {
@@ -118,7 +119,7 @@
       });
 
       // Handle selection changes
-      quill.on('selection-change', (range) => {
+      quill.on('selection-change', (range: any) => {
         if (range && range.length > 0 && quill) {
           const text = quill.getText(range.index, range.length) || '';
           selection.setSelection(text, range);

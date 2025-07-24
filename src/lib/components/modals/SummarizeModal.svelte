@@ -20,20 +20,25 @@
   onMount(() => {
     unsubscribeModal = modal.subscribe(($modal) => {
       isOpen = $modal.isSummaryModalOpen;
+      console.log('Summary modal state changed:', isOpen);
     });
 
     unsubscribeSelection = selection.subscribe(($selection) => {
       selectionData = $selection;
+      console.log('Selection data updated:', $selection);
     });
 
     unsubscribeProfile = profile.subscribe(($profile) => {
       // Initialize API keys from profile
+      console.log('Profile updated:', $profile);
       apiKey = $profile.openaiApiKey || $profile.anthropicApiKey || '';
+      console.log('API key set:', apiKey);
       if ($profile.openaiApiKey) {
         provider = 'openai';
       } else if ($profile.anthropicApiKey) {
         provider = 'anthropic';
       }
+      console.log('Provider set:', provider);
     });
   });
 

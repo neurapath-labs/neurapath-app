@@ -20,7 +20,7 @@ let DATABASE_VERSION = "1.0.0"
 let BASE_URL = "https://neurapath-backend.neurapath.workers.dev/" // OLD: "https://production.eveapp2021.workers.dev/"
 let IMAGE_WORKER_URL = "https://neurapath-image-worker.neurapath.workers.dev/" // OLD: "https://image-worker.eveapp2021.workers.dev/"
 
-if (location.hostname == "127.0.0.1" || location.hostname == "localhost") {
+if (location.hostname === "127.0.0.1" || location.hostname === "localhost") {
   IS_DEVELOPMENT = 1
   BASE_URL = "https://neurapath-backend.neurapath.workers.dev/" // OLD: "https://development.eveapp2021.workers.dev/"
   IMAGE_WORKER_URL = "https://neurapath-image-worker.neurapath.workers.dev/" // OLD: "127.0.0.1/"
