@@ -62,6 +62,51 @@
     unsubscribeUI();
   });
   
+  // Function to attach event listeners to menu items
+  const attachEventListeners = () => {
+    // Wait for the next tick to ensure DOM is updated
+    setTimeout(() => {
+      const menuItems = document.querySelectorAll('#content-structure p[data-fullpath]');
+      menuItems.forEach(item => {
+        const fullPath = item.getAttribute('data-fullpath');
+        if (fullPath) {
+          // Remove existing event listeners to avoid duplicates
+          item.removeEventListener('click', handleMenuItemClickBound);
+          item.removeEventListener('contextmenu', handleContextMenuBound);
+          
+          // Add event listeners with bound fullPath
+          const clickHandler = () => handleMenuItemClick(fullPath);
+          const contextMenuHandler = (e: Event) => handleContextMenu(e as MouseEvent, fullPath);
+          
+          item.addEventListener('click', clickHandler);
+          item.addEventListener('contextmenu', contextMenuHandler);
+        }
+      });
+    }, 0);
+  };
+  
+  // Call attachEventListeners when component is mounted
+  onMount(() => {
+    attachEventListeners();
+  });
+  
+  // Bound versions of event handlers for easier removal
+  const handleMenuItemClickBound = (e: Event) => {
+    const target = e.target as HTMLElement;
+    const fullPath = target.closest('p')?.getAttribute('data-fullpath');
+    if (fullPath) {
+      handleMenuItemClick(fullPath);
+    }
+  };
+  
+  const handleContextMenuBound = (e: Event) => {
+    const target = e.target as HTMLElement;
+    const fullPath = target.closest('p')?.getAttribute('data-fullpath');
+    if (fullPath) {
+      handleContextMenu(e as MouseEvent, fullPath);
+    }
+  };
+  
   const handleLogout = async () => {
     await auth.logout();
     // Redirect to login page
@@ -114,7 +159,7 @@
         
         // Check if this folder should be expanded
         const isExpanded = expandedFolders.has(fullPath);
-        
+
         return `
           <div class="menuSubItem">
             <p
@@ -124,14 +169,14 @@
               on:contextmenu={(e) => handleContextMenu(e, '${fullPath}')}
             >
               ${item && item.contentType === 'Folder' ?
-                `<img class="threeIcon" src="/img/${isExpanded ? 'folderopen' : 'folderclose'}.svg" alt="Folder icon">` :
+                `<img class="threeIcon" width="42px" src="/img/${isExpanded ? 'folderopen' : 'folderclose'}.svg" alt="Folder icon">` :
                 item && item.contentType === 'Cloze' ?
-                  '<img class="threeIcon" src="/img/cloze.svg" alt="Cloze icon">' :
+                  '<img class="threeIcon" width="42px" src="/img/cloze.svg" alt="Cloze icon">' :
                   item && item.contentType === 'Extract' ?
                     '<img class="threeIcon" src="/img/extract.svg" alt="Extract icon">' :
                     item && item.contentType === 'Occlusion' ?
-                      '<img class="threeIcon" src="/img/occlusion2.svg" alt="Occlusion icon">' :
-                      '<img class="threeIcon" src="/img/folderclose.svg" alt="Folder icon">'}
+                      '<img class="threeIcon" width="42px" src="/img/occlusion2.svg" alt="Occlusion icon">' :
+                      '<img class="threeIcon" width="42px" src="/img/folderclose.svg" alt="Folder icon">'}
               ${key}
               ${item && item.isFlagged ? '<span class="flag-icon">🚩</span>' : ''}
             </p>
@@ -388,6 +433,11 @@
   const openPdfImport = () => {
     ui.openPdfImport();
   };
+  
+  // Re-attach event listeners when database items change
+  $: if ($database.items.length > 0) {
+    attachEventListeners();
+  }
 </script>
 
 <aside id="sidebar-left">
@@ -465,6 +515,7 @@
   #sidebar-left {
     grid-area: sidebar;
     width: min-content;
+    min-width: 200px;
     height: 100vh;
     overflow: auto;
     background: rgba(var(--background-color_sidebar), 1);
@@ -583,12 +634,16 @@
     grid-gap: 8px;
     background-color: rgb(var(--background-color_sidebar));
     border-bottom: 0px solid rgb(var(--background-color));
+    max-width: 300px;
   }
 
   #content-structure {
     padding: 15px 20px 15px 5px;
     font-size: 14px;
     opacity: var(--zen-opacity);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 300px;
   }
 
   #sidebar:hover #content-structure {
@@ -600,6 +655,18 @@
     font-size: 16px;
     color: rgb(var(--font-color));
     position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar-item > span {
+    max-width: calc(100% - 50px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .sidebar-item > img {
@@ -610,5 +677,25 @@
   .sidebar-item:hover {
     cursor: pointer;
     font-weight: 500;
+  }
+
+  .threeIcon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  
+  .menuSubItem {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .menuSubItem > p {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>

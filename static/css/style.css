@@ -516,6 +516,7 @@ p {
   margin: var(--leftSidebar-padding);
   padding-left: 8px;
   white-space: nowrap;
+
 }
 
 .menuSubItemWithArray {
