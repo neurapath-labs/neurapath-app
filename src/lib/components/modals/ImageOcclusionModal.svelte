@@ -225,7 +225,7 @@
             {#each occlusions as occlusionItem, i}
               <li class="occlusion-item">
                 <span>Occlusion {i + 1}</span>
-                <button class="remove-button" on:click={() => removeOcclusion(i)} type="button">Remove</button>
+                <button class="remove-button" onclick={() => removeOcclusion(i)} type="button">Remove</button>
               </li>
             {/each}
           </ul>
@@ -237,14 +237,14 @@
       <div class="modalbox-button-container">
         <button 
           class="modalbox-button" 
-          on:click={cancelOcclusion}
+          onclick={cancelOcclusion}
           type="button"
         >
           Cancel
         </button>
         <button 
           class="modalbox-button" 
-          on:click={saveOcclusion}
+          onclick={saveOcclusion}
           type="button"
           disabled={occlusions.length === 0}
         >
@@ -384,7 +384,7 @@
     display: block !important;
   }
 
-  .hidden {
+  /* .hidden {
     display: none !important;
-  }
+  } */
 </style>

@@ -351,7 +351,7 @@
       <div class="session-stats">
         Reviewed: {sessionStats.reviewed}/{sessionStats.total}
       </div>
-      <button class="exit-button" on:click={exitLearningMode}>Exit</button>
+      <button class="exit-button" onclick={exitLearningMode}>Exit</button>
     </div>
     
     <div class="item-container">
@@ -427,13 +427,13 @@
           Flag Item (F)
         {/if}
       </button>
-      <button class="action-btn skip-btn" on:click={moveToNextItem}>Skip (S)</button>
+      <button class="action-btn skip-btn" onclick={moveToNextItem}>Skip (S)</button>
     </div>
   {:else}
     <div class="no-items-message">
       <h2>No items to review</h2>
       <p>You've completed all your reviews for now. Check back later for more items.</p>
-      <button class="exit-button" on:click={exitLearningMode}>Exit Learning Mode</button>
+      <button class="exit-button" onclick={exitLearningMode}>Exit Learning Mode</button>
     </div>
   {/if}
 </div>
