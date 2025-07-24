@@ -80,3 +80,13 @@ export interface Database {
   name: string;
   // Add other properties as needed based on the API response
 }
+
+// User interfaces
+export interface User {
+  id: string;
+  username: string;
+}
+
+export interface UserWithPasswordHash extends User {
+  passwordHash: string;
+}

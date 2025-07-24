@@ -27,7 +27,7 @@ export const exportDatabaseToJSON = async (): Promise<boolean> => {
     // Create temporary link and trigger download
     const link = document.createElement('a');
     link.href = url;
-    link.download = `evecloud-database-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `neurapath-database-${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -90,7 +90,7 @@ export const exportDatabaseToCSV = async (): Promise<boolean> => {
     // Create temporary link and trigger download
     const link = document.createElement('a');
     link.href = url;
-    link.download = `evecloud-database-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `neurapath-database-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

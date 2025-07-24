@@ -25,7 +25,7 @@ if (location.hostname == "127.0.0.1" || location.hostname == "localhost") {
   BASE_URL = "https://development.eveapp2021.workers.dev/"
   IMAGE_WORKER_URL = "127.0.0.1/"
   console.log("Mode set to: Development (localhost)")
-  document.title = "Development: Evecloud"
+  document.title = "Development: Neurapath"
 }
 
 
@@ -1264,7 +1264,7 @@ class DatabaseManager {
       headers: myHeaders,
     };
 
-    let res = await fetch("https://evecloud.io/public/data", requestOptions)
+    let res = await fetch("https://neurapath-backend.neurapath.workers.dev/public/data", requestOptions)
     let response = await res.json()
 
     if (response.error && response.error == 403)
@@ -1459,7 +1459,7 @@ class DatabaseManager {
       headers: myHeaders,
     };
 
-    let res = await fetch("https://evecloud.io/user/register", requestOptions)
+    let res = await fetch("https://neurapath-backend.neurapath.workers.dev/user/register", requestOptions)
     let registerMessage = await res.json()
 
     if (registerMessage.error == 420) {
@@ -1490,7 +1490,7 @@ class DatabaseManager {
       redirect: "follow"
     };
 
-    let res = await fetch("https://evecloud.io/user/data", requestOptions)
+    let res = await fetch("https://neurapath-backend.neurapath.workers.dev/user/data", requestOptions)
     let response = await res.json()
 
     console.log(response)
@@ -1603,7 +1603,7 @@ class DatabaseManager {
       headers: myHeaders,
     };
 
-    let res = await fetch("https://evecloud.io/user/data/rere", requestOptions)
+    let res = await fetch("https://neurapath-backend.neurapath.workers.dev/user/data/rere", requestOptions)
     let response = await res.json()
 
     if (response.error && response.error == 403) {
@@ -1643,7 +1643,7 @@ class DatabaseManager {
       body: JSON.stringify(this.database)
     };
 
-    let res = await fetch("https://evecloud.io/user/data", requestOptions)
+    let res = await fetch("https://neurapath-backend.neurapath.workers.dev/user/data", requestOptions)
     let response = await res.json()
 
     if (response.error && response.error == 403) {
@@ -1835,7 +1835,7 @@ class DatabaseManager {
         headers: myHeaders,
       };
 
-      let res = await fetch("https://evecloud.io/user/delete", requestOptions)
+      let res = await fetch("https://neurapath-backend.neurapath.workers.dev/user/delete", requestOptions)
       let response = await res.json()
 
       if (response.error && response.error == 200) 
@@ -2107,7 +2107,7 @@ class DatabaseManager {
       headers: myHeaders,
     };
 
-    let res = await fetch("https://evecloud.io/user/set/public/false", requestOptions)
+    let res = await fetch("https://neurapath-backend.neurapath.workers.dev/user/set/public/false", requestOptions)
     let response = await res.json()
 
     if (response.error && response.error == 200) {
@@ -2132,7 +2132,7 @@ class DatabaseManager {
       headers: myHeaders,
     };
 
-    let res = await fetch("https://evecloud.io/user/set/public/true", requestOptions)
+    let res = await fetch("https://neurapath-backend.neurapath.workers.dev/user/set/public/true", requestOptions)
     let response = await res.json()
     console.log(response)
 
@@ -6069,7 +6069,7 @@ document.getElementById("overlay").addEventListener("click", function() {
 
   } else if (document.getElementById("modalbox-tos").classList.contains("visible")) {
   
-    graphicsManager.toggleAlert("You have to read and accept the terms of agreement in order to continue using Evecloud.")
+    graphicsManager.toggleAlert("You have to read and accept the terms of agreement in order to continue using Neurapath.")
 
   } else if (document.getElementById("modalbox-tutorial").classList.contains("hidden") == false) {
 

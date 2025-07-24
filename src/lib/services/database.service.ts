@@ -1,5 +1,16 @@
-const BASE_URL = "https://production.eveapp2021.workers.dev/";
-import type { Database } from '$lib/models';
+const BASE_URL = "https://neurapath-backend.neurapath.workers.dev/";
+import type { Database, User, UserWithPasswordHash } from '$lib/models';
+import { databaseConfig } from '$lib/config/database.config';
+
+// In-memory storage for users (in a real app, this would be a database)
+let users: UserWithPasswordHash[] = [
+  {
+    id: '1',
+    username: 'admin',
+    // Password is 'password' hashed with bcrypt
+    passwordHash: '$2b$10$8K1p/a0dhrxiowP.dnkgNORTWgdEDHn5L2/xjpEWuC.QQv4rKO9jO'
+  }
+];
 
 export const getPublicDatabases = async (): Promise<Database[]> => {
   try {
@@ -29,7 +40,7 @@ export const getPublicDatabases = async (): Promise<Database[]> => {
     };
 
     // Make the API call
-    const response = await fetch('https://neurapath.io/public/data', requestOptions);
+    const response = await fetch('https://neurapath-backend.neurapath.workers.dev/public/data', requestOptions);
     const data = await response.json();
 
     // Check for error in response
@@ -142,4 +153,23 @@ export const updateDatabase = async (id: string, database: any) => {
     console.error('Error updating database:', error);
     throw error;
   }
+};
+
+// User-related functions
+export const getUserByUsername = async (username: string): Promise<UserWithPasswordHash | null> => {
+  // In a real app, this would query the database
+  // For now, we're using in-memory storage
+  const user = users.find(u => u.username === username);
+  return user || null;
+};
+
+export const createUser = async (user: Omit<UserWithPasswordHash, 'id'>): Promise<UserWithPasswordHash> => {
+  // In a real app, this would insert into the database
+  // For now, we're using in-memory storage
+  const newUser = {
+    id: String(users.length + 1),
+    ...user
+  };
+  users.push(newUser);
+  return newUser;
 };
