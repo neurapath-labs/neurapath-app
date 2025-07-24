@@ -1731,9 +1731,9 @@ class DatabaseManager {
         redirect: 'follow'
       };
 
-      let imageUrl = "https://image-worker.eveapp2021.workers.dev/images/upload"
+      let imageUrl = "https://neurapath-image-worker.neurapath.workers.dev/images/upload"; // OLD: "https://image-worker.eveapp2021.workers.dev/images/upload"
       if (IS_DEVELOPMENT)
-        imageUrl = "http://127.0.0.1:8787/images/upload"
+        imageUrl = "https://neurapath-image-worker.neurapath.workers.dev/images/upload"; // OLD: "http://127.0.0.1:8787/images/upload"
       
       let response = await fetch(imageUrl, requestOptions)
       let responseJson = await response.json()
