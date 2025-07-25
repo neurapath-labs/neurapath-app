@@ -7,10 +7,10 @@
   <form method="POST" action="?/login">
     <div class="modalbox-header">
       <img class="modalbox-icon" src="/img/logo.svg" alt="Neurapath logo" />
-      <span class="modalbox-title">EVE</span>
+      <span class="modalbox-title">Neuraa</span>
     </div>
     <div class="modalbox-content">
-      Welcome aboard! Eve is specifically tailored for effective studying. <u>New user:</u> enter an username and password then press login in order to create an new account. <u>Old user:</u> Please enter your username and
+      Welcome aboard! Neuraa is specifically tailored for effective studying. <u>New user:</u> enter an username and password then press login in order to create an new account. <u>Old user:</u> Please enter your username and
       password below.
     </div>
     <input class="modalbox-field" id="modalbox-login-username" name="username" placeholder="Username..." bind:value={username} />

@@ -17,7 +17,7 @@
       <span class="modalbox-title">Register</span>
     </div>
     <div class="modalbox-content">
-      Create a new account to access Eve.
+      Create a new account to access Neuraa.
     </div>
     
     {#if errorMessage}

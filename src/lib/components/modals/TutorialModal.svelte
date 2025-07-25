@@ -93,7 +93,7 @@
           <span class="modalbox-title">Quick start (5/{totalSteps})</span>
         </div>
         <div class="modalbox-content-text">
-          <p><u>The main working window</u> is the primary workplace in Eve. Here you are able to manage the content of your current document. In this area you are able to paste formatted text and images (both inline and occlusions).</p>
+          <p><u>The main working window</u> is the primary workplace in Neuraa. Here you are able to manage the content of your current document. In this area you are able to paste formatted text and images (both inline and occlusions).</p>
           <br />
           <p><u>Create a text extract:</u> select the text content then press CTRL + X in order to extract some text this will push the text as an item for reading later, you will see due today will increase.</p>
           <br />
@@ -167,7 +167,7 @@
           <span class="modalbox-title">Quick start (12/{totalSteps})</span>
         </div>
         <div class="modalbox-content-text">
-          <p><u>The right sidebar</u> is used for assistance with information search. When you select a word in the main working window it will make a realtime word lookup and get it from Wikipedia. When you have marked the word in the main working window you can hold over items in this sidebar to get the definition of the word and click it in order the copy the content. You can easly paste the content into the main working area. If you right click then press import article Eve will create an new document in the left sidebar with the Wikipedia content for you.</p>
+          <p><u>The right sidebar</u> is used for assistance with information search. When you select a word in the main working window it will make a realtime word lookup and get it from Wikipedia. When you have marked the word in the main working window you can hold over items in this sidebar to get the definition of the word and click it in order the copy the content. You can easly paste the content into the main working area. If you right click then press import article Neuraa will create an new document in the left sidebar with the Wikipedia content for you.</p>
         </div>
       {:else if currentStep === 13}
         <div class="modalbox-header">
@@ -175,7 +175,7 @@
           <span class="modalbox-title">Quick start (13/{totalSteps})</span>
         </div>
         <div class="modalbox-content-text">
-          <p><u>A few more important things to know.</u> In order to get most out of Eve there is a few additional features you should know about. Ever feature can be found under profile then shortcuts. Features good to know are:</p>
+          <p><u>A few more important things to know.</u> In order to get most out of Neuraa there is a few additional features you should know about. Ever feature can be found under profile then shortcuts. Features good to know are:</p>
           <br />
           <p><b>1) AI text summarization:</b> select text in main woring window then press CTRL + F. Within a few seconds you will get a subdocument with the new text.</p>
           <p><b>2) Occlusion generation:</b> in order to learn content from images you can both drop image files into the main working window but also press CTRL + V when you have copied an image.</p>
@@ -186,7 +186,7 @@
           <span class="modalbox-title">Quick start (14/{totalSteps})</span>
         </div>
         <div class="modalbox-content-text">
-          <p><u>Well done!</u> You do not know the most important features of Eve. You can join our Discord channel at: <a href="https://discord.gg/QKVf38QfCc" target="_blank" rel="noopener noreferrer">https://discord.gg/QKVf38QfCc</a> or contact us at email: <a href="mailto:hi@neurapath.io">hi@neurapath.io</a></p>
+          <p><u>Well done!</u> You do not know the most important features of Neuraa. You can join our Discord channel at: <a href="https://discord.gg/QKVf38QfCc" target="_blank" rel="noopener noreferrer">https://discord.gg/QKVf38QfCc</a> or contact us at email: <a href="mailto:hi@neurapath.io">hi@neurapath.io</a></p>
         </div>
       {/if}
     </div>

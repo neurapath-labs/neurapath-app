@@ -1,6 +1,6 @@
-Welcome to Eve!
+Welcome to Neuraa!
 
-This is an alpha release which does mean that the product may consist of bugs here and there. Therefore there are a few things you need to know: when working in Eve please do export the database frequently via the profile page. This means that you will save all your content on your local store which you will be able to import later on if something goes wrong. The platform has only been tested on Safari and Chrome, avoid internet explorer when using Eve. If you find any bugs please report them asap for us to fix them as fast as possible. This can be done via the bugs channel. Any recommendation for a new feature? Then there is a suggestions channel for this. 
+This is an alpha release which does mean that the product may consist of bugs here and there. Therefore there are a few things you need to know: when working in Neuraa please do export the database frequently via the profile page. This means that you will save all your content on your local store which you will be able to import later on if something goes wrong. The platform has only been tested on Safari and Chrome, avoid internet explorer when using Neuraa. If you find any bugs please report them asap for us to fix them as fast as possible. This can be done via the bugs channel. Any recommendation for a new feature? Then there is a suggestions channel for this. 
 
 Quick start:
 1. Write down the ID, this works as a password. There is no need for a mail
@@ -24,8 +24,8 @@ Functions currently supported:
 - Information structure with folders fully customizable
 
 
-Q: What is EVE?
-A: Eve is specifically tailored for evidence-based effective studying with help of evidence-based methods such as spaced repetition (SM2), interleaved practice, and incremental reading.
+Q: What is Neuraa?
+A: Neuraa is specifically tailored for evidence-based effective studying with help of evidence-based methods such as spaced repetition (SM2), interleaved practice, and incremental reading.
 
 
 Q: How do I come in contact?
@@ -37,8 +37,8 @@ A: Please do post it in the bugs channel at Discord.
 Q: How do I suggest a feature?
 A: Send a message on the suggestion channel at Discord.
 
-Q: How is Eve different from SuperMemo?
-A: Eve is web-based which means it will run on all systems (even the smartphone). In regards to the algorithm, Eve is using SM2 instead of SM18 which probably will make some difference in lifelong learning and especially when there is a lot of information in the database. There is also a function in Eve which is called "Similar content" which means that for each selected word it will send a request to Oxford and Wikipedias API to extract the meaning of the word and similar related concepts. This is great because it will help the user with the coherence of the concept.
+Q: How is Neuraa different from SuperMemo?
+A: Neuraa is web-based which means it will run on all systems (even the smartphone). In regards to the algorithm, Neuraa is using SM2 instead of SM18 which probably will make some difference in lifelong learning and especially when there is a lot of information in the database. There is also a function in Neuraa which is called "Similar content" which means that for each selected word it will send a request to Oxford and Wikipedias API to extract the meaning of the word and similar related concepts. This is great because it will help the user with the coherence of the concept.
 
 
 

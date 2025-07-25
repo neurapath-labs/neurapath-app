@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { compare, hash } from 'bcrypt-ts';
+import jwt from "@tsndr/cloudflare-worker-jwt";
 import { getUserByUsername, createUser as createDatabaseUser } from './database.service';
 import type { User } from '$lib/models';
 import { JWT_SECRET } from '$env/static/private';
@@ -16,14 +16,14 @@ export const authenticateUser = async (username: string, password: string): Prom
     }
     
     // Check if password matches
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    const isPasswordValid = await compare(password, user.passwordHash);
     
     if (!isPasswordValid) {
       return null;
     }
     
     // Return user without password hash
-    const { passwordHash, ...userWithoutPassword } = user;
+    const { ...userWithoutPassword } = user;
     return userWithoutPassword;
   } catch (error) {
     console.error('Authentication error:', error);
@@ -49,7 +49,7 @@ export const createUser = async (username: string, password: string): Promise<Us
   }
   
   // Hash password
-  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+  const passwordHash = await hash(password, SALT_ROUNDS);
   
   // Create user in database
   const user = await createDatabaseUser({
@@ -62,22 +62,18 @@ export const createUser = async (username: string, password: string): Promise<Us
   return userWithoutPassword;
 };
 
-export const generateToken = (user: User): string => {
-  return jwt.sign(
+export const generateToken = async (user: User): Promise<string> => {
+  return await jwt.sign(
     { 
       userId: user.id, 
-      username: user.username 
-    }, 
-    JWT_SECRET, 
-    { 
-      expiresIn: '1h' 
-    }
-  );
+      username: user.username,
+      exp: Math.floor(Date.now() / 1000) + (2 * (60 * 60)) // Expires: Now + 2h
+    }, JWT_SECRET);
 };
 
-export const verifyToken = (token: string): User | null => {
+export const verifyToken = async (token: string): Promise<User | null> => {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; username: string };
+    const decoded = await jwt.verify(token, JWT_SECRET) as unknown as { userId: string; username: string };
     return {
       id: decoded.userId,
       username: decoded.username

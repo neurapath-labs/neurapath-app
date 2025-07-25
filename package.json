@@ -6,20 +6,22 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview",
-    "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "clean": "rm -rf node_modules && rm -rf .svelte-kit && bun i"
+    "clean": "rm -rf node_modules && rm -rf .svelte-kit && bun i",
+    "typegen": "wrangler types",
+    "cf:dev": "wrangler pages dev .svelte-kit/cloudflare --compatibility-date=2025-07-22",
+    "cf:deploy": "bun run build && wrangler pages deploy .svelte-kit/cloudflare",
+    "cf:deploy:prod": "bun run build && wrangler pages deploy .svelte-kit/cloudflare --env production"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^6.0.1",
+    "@sveltejs/adapter-cloudflare": "^7.1.1",
     "@sveltejs/kit": "^2.26.0",
     "@sveltejs/vite-plugin-svelte": "^6.1.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.11",
-    "@types/bcrypt": "^6.0.0",
     "@types/pdfjs-dist": "^2.10.378",
     "svelte": "^5.36.16",
     "svelte-check": "^4.3.0",
@@ -28,9 +30,8 @@
     "vite": "^7.0.6"
   },
   "dependencies": {
-    "@types/jsonwebtoken": "^9.0.10",
-    "bcrypt": "^6.0.0",
-    "jsonwebtoken": "^9.0.2",
+    "bcrypt-ts": "^7.1.0",
+    "@tsndr/cloudflare-worker-jwt": "^3.2.0",
     "pdfjs-dist": "^5.3.93",
     "quill": "^2.0.3"
   }

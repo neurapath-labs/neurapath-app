@@ -6,7 +6,7 @@ let users: UserWithPasswordHash[] = [
   {
     id: '1',
     username: 'admin',
-    // Password is 'password' hashed with bcrypt
+    // Password is 'password' hashed with bcrypt-ts
     passwordHash: '$2b$10$8K1p/a0dhrxiowP.dnkgNORTWgdEDHn5L2/xjpEWuC.QQv4rKO9jO'
   }
 ];
@@ -14,8 +14,11 @@ let users: UserWithPasswordHash[] = [
 export const getPublicDatabases = async (): Promise<Database[]> => {
   try {
     // Get username and password from localforage
-    const username = await localforage.getItem<string>('username');
-    const password = await localforage.getItem<string>('password');
+    // const username = await localforage.getItem<string>('username');
+    // const password = await localforage.getItem<string>('password');
+
+    const username = "test";
+    const password = "test";
 
     // Check if username and password exist
     if (!username || !password) {

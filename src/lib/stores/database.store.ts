@@ -33,14 +33,14 @@ export const loadDatabase = async (userId: string) => {
                 "attributes": {
                   "bold": true
                 },
-                "insert": "Welcome to Eve!"
+                "insert": "Welcome to Neuraa!"
               },
               {
                 "insert": "\n\n"
               },
               {
                 "attributes": {},
-                "insert": "This is an alpha release which does mean that the product may consist of bugs here and there. Therefore there are a few things you need to know: when working in Eve please do export the database frequently via the profile page. This means that you will save all your content on your local store which you will be able to import later on if something goes wrong. The platform has only been tested on Safari and Chrome, avoid internet explorer when using Eve. If you find any bugs please report them asap for us to fix them as fast as possible. This can be done via the bugs channel. Any recommendation for a new feature? Then there is a suggestions channel for this. "
+                "insert": "This is an alpha release which does mean that the product may consist of bugs here and there. Therefore there are a few things you need to know: when working in Neuraa please do export the database frequently via the profile page. This means that you will save all your content on your local store which you will be able to import later on if something goes wrong. The platform has only been tested on Safari and Chrome, avoid internet explorer when using Neuraa. If you find any bugs please report them asap for us to fix them as fast as possible. This can be done via the bugs channel. Any recommendation for a new feature? Then there is a suggestions channel for this. "
               }
             ]
           }
@@ -84,14 +84,14 @@ export const loadDatabase = async (userId: string) => {
               "attributes": {
                 "bold": true
               },
-              "insert": "Welcome to Eve!"
+              "insert": "Welcome to Neuraa!"
             },
             {
               "insert": "\n\n"
             },
             {
               "attributes": {},
-              "insert": "This is an alpha release which does mean that the product may consist of bugs here and there. Therefore there are a few things you need to know: when working in Eve please do export the database frequently via the profile page. This means that you will save all your content on your local store which you will be able to import later on if something goes wrong. The platform has only been tested on Safari and Chrome, avoid internet explorer when using Eve. If you find any bugs please report them asap for us to fix them as fast as possible. This can be done via the bugs channel. Any recommendation for a new feature? Then there is a suggestions channel for this. "
+              "insert": "This is an alpha release which does mean that the product may consist of bugs here and there. Therefore there are a few things you need to know: when working in Neuraa please do export the database frequently via the profile page. This means that you will save all your content on your local store which you will be able to import later on if something goes wrong. The platform has only been tested on Safari and Chrome, avoid internet explorer when using Neuraa. If you find any bugs please report them asap for us to fix them as fast as possible. This can be done via the bugs channel. Any recommendation for a new feature? Then there is a suggestions channel for this. "
             }
           ]
         }
