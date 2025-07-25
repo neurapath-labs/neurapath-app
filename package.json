@@ -17,7 +17,7 @@
   "devDependencies": {
     "@sveltejs/adapter-auto": "^6.0.1",
     "@sveltejs/adapter-cloudflare": "^7.1.1",
-    "@sveltejs/kit": "^2.26.0",
+    "@sveltejs/kit": "^2.26.1",
     "@sveltejs/vite-plugin-svelte": "^6.1.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
@@ -26,12 +26,12 @@
     "svelte": "^5.36.16",
     "svelte-check": "^4.3.0",
     "tailwindcss": "^4.1.11",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.1-rc",
     "vite": "^7.0.6"
   },
   "dependencies": {
-    "bcrypt-ts": "^7.1.0",
     "@tsndr/cloudflare-worker-jwt": "^3.2.0",
+    "bcrypt-ts": "^7.1.0",
     "pdfjs-dist": "^5.3.93",
     "quill": "^2.0.3"
   }
