@@ -1,19 +1,33 @@
 <script lang="ts">
+  // UI libs
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import { Button } from '$lib/components/ui/button';
+  import { BarChartIcon } from '@lucide/svelte/icons';
+
+  // Charts (shadcn‑svelte / LayerChart)
+  import * as Chart from "$lib/components/ui/chart/index.js";
+  import { PieChart } from 'layerchart';
+
+  // Stores
   import { database } from '$lib/stores/database.store';
   import { ui } from '$lib/stores/ui.store';
   import { profile } from '$lib/stores/profile.store';
   import type { Record } from '$lib/models';
   import { onMount, onDestroy } from 'svelte';
-  import BarChartIcon from '@lucide/svelte/icons/bar-chart';
 
-  // reactive state
+  // =====================================
+  // Reactive state -----------------------
+  // =====================================
   let items: Record[] = $state([]);
   let isOpen: boolean = $state(false);
   let statisticsData: any = $state({});
 
-  let itemTypeData: { name: string; count: number; color: string }[] = $state([]);
+  // Pie‑chart data/config
+  let pieData: { type: string; count: number; color: string }[] = $state([]);
+  let pieConfig: Chart.ChartConfig = $state({});
+  let mockMode: boolean = $state(false); // true when using placeholder counts
+
+  // Daily Activity + E‑factor (existing SVG logic kept)
   let repetitionData: { date: string; count: number }[] = $state([]);
   let efactorData: { id: string; efactor: number }[] = $state([]);
 
@@ -21,37 +35,92 @@
   let unsubscribeUI: (() => void) | null = null;
   let unsubscribeProfile: (() => void) | null = null;
 
-  // chart helpers
+  // =====================================
+  // Helpers ------------------------------
+  // =====================================
+  const DISTRIBUTIONS = [
+    { label: 'Folders', key: 'Folder', color: '#4e79a7' },
+    { label: 'Extracts', key: 'Extract', color: '#f28e2c' },
+    { label: 'Clozes', key: 'Cloze', color: '#e15759' },
+    { label: 'Occlusions', key: 'Occlusion', color: '#76b7b2' }
+  ];
+
+  function buildPieData(): typeof pieData {
+    return DISTRIBUTIONS.map(({ label, key, color }) => ({
+      type: label,
+      count: items.filter((i) => i.contentType === key).length,
+      color
+    }));
+  }
+
+  function ensureMockPieData(data: typeof pieData): typeof pieData {
+    if (data.every((d) => d.count === 0)) {
+      mockMode = true;
+      // simple static placeholder counts; tweak as desired
+      return [
+        { type: 'Folders', count: 8, color: '#4e79a7' },
+        { type: 'Extracts', count: 5, color: '#f28e2c' },
+        { type: 'Clozes', count: 3, color: '#e15759' },
+        { type: 'Occlusions', count: 2, color: '#76b7b2' }
+      ];
+    }
+    mockMode = false;
+    return data;
+  }
+
+  function rebuildPieConfig(data: typeof pieData): Chart.ChartConfig {
+    return {
+      count: { label: 'Items' },
+      ...data.reduce((cfg, d) => {
+        cfg[d.type] = { label: d.type, color: d.color };
+        return cfg;
+      }, {} as Record<string, { label: string; color: string }>)
+    } as Chart.ChartConfig;
+  }
+
   function initChartData() {
-    const folderCount = items.filter((i) => i.contentType === 'Folder').length;
-    const extractCount = items.filter((i) => i.contentType === 'Extract').length;
-    const clozeCount = items.filter((i) => i.contentType === 'Cloze').length;
-    const occlusionCount = items.filter((i) => i.contentType === 'Occlusion').length;
+    // --------------------------------------------------------------------
+    // Pie chart -----------------------------------------------------------
+    pieData = ensureMockPieData(buildPieData());
+    pieConfig = rebuildPieConfig(pieData);
 
-    itemTypeData = [
-      { name: 'Folders', count: folderCount, color: '#4e79a7' },
-      { name: 'Extracts', count: extractCount, color: '#f28e2c' },
-      { name: 'Clozes', count: clozeCount, color: '#e15759' },
-      { name: 'Occlusions', count: occlusionCount, color: '#76b7b2' }
-    ];
-
+    // --------------------------------------------------------------------
+    // Daily activity (repetitionData) ------------------------------------
     repetitionData = [];
     if (statisticsData && typeof statisticsData === 'object') {
       Object.keys(statisticsData).forEach((d) => {
         const s = statisticsData[d];
-        repetitionData.push({ date: d, count: (s.reviewsCount || 0) + (s.newItemsCount || 0) });
+        repetitionData.push({
+          date: d,
+          count: (s.reviewsCount || 0) + (s.newItemsCount || 0)
+        });
       });
       repetitionData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
       if (repetitionData.length > 10) repetitionData = repetitionData.slice(-10);
     }
 
+    // --------------------------------------------------------------------
+    // E‑factor -----------------------------------------------------------
     efactorData = items
       .filter((i) => ['Cloze', 'Extract', 'Occlusion'].includes(i.contentType) && i.efactor !== undefined)
       .map((i) => ({ id: i.id, efactor: i.efactor || 2.5 }))
       .slice(0, 10);
   }
 
-  // lifecycle
+  function getMaxRepetitionCount() {
+    return repetitionData.length ? Math.max(...repetitionData.map((d) => d.count)) : 1;
+  }
+  function getMaxEFactor() {
+    return efactorData.length ? Math.max(...efactorData.map((d) => d.efactor)) : 5;
+  }
+
+  function closeStatistics() {
+    ui.closeStatistics();
+  }
+
+  // =====================================
+  // Lifecycle ---------------------------
+  // =====================================
   onMount(() => {
     unsubscribeDatabase = database.subscribe(($db) => {
       items = $db.items;
@@ -71,33 +140,10 @@
     unsubscribeUI?.();
     unsubscribeProfile?.();
   });
-
-  function closeStatistics() {
-    ui.closeStatistics();
-  }
-
-  // utility fns
-  function getMaxRepetitionCount() {
-    return repetitionData.length ? Math.max(...repetitionData.map((d) => d.count)) : 1;
-  }
-  function getMaxEFactor() {
-    return efactorData.length ? Math.max(...efactorData.map((d) => d.efactor)) : 5;
-  }
-  function calculatePieSegments() {
-    let cum = 0;
-    const total = itemTypeData.reduce((s, i) => s + i.count, 0);
-    return itemTypeData.map((i) => {
-      const pct = total ? (i.count / total) * 100 : 0;
-      const dash = `${pct} ${100 - pct}`;
-      const offset = -cum;
-      cum += pct;
-      return { ...i, strokeDasharray: dash, strokeDashoffset: offset };
-    });
-  }
 </script>
 
 <!-- STATISTICS DIALOG -->
-<Dialog.Root bind:open={isOpen}>
+<Dialog.Root bind:open={isOpen} on:close={closeStatistics}>
   <Dialog.Portal>
     <!-- Overlay without dim -->
     <Dialog.Overlay class="fixed inset-0 bg-transparent z-50" />
@@ -115,28 +161,34 @@
 
       <!-- Charts -->
       <div class="flex-1 overflow-y-auto pr-2 space-y-10">
-        <!-- Item Distribution -->
+        <!-- Item Distribution (Pie) -->
         <section class="flex flex-col items-center gap-4">
           <h3 class="text-lg font-semibold">Item Distribution</h3>
-          {#if itemTypeData.length}
-            {@const segs = calculatePieSegments()}
-            <svg width="200" height="200" viewBox="0 0 200 200">
-              {#each segs as s}
-                <circle cx="100" cy="100" r="80" fill="transparent" stroke={s.color} stroke-width="40" stroke-dasharray={s.strokeDasharray} stroke-dashoffset={s.strokeDashoffset} transform="rotate(-90 100 100)" />
-              {/each}
-              <circle cx="100" cy="100" r="60" fill="white" />
-            </svg>
-            <ul class="text-sm space-y-1">
-              {#each itemTypeData as it}
-                <li class="flex items-center gap-2"><span class="w-3 h-3 rounded-full" style="background:{it.color}"></span>{it.name}: {it.count}</li>
-              {/each}
-            </ul>
-          {:else}
-            <p class="text-sm">No data available</p>
+
+          <!-- Always render – pieData is ensured to have non‑zero values -->
+          <Chart.Container config={pieConfig} class="h-[300px] w-full max-w-[350px]">
+            <PieChart
+              data={pieData}
+              key="type"
+              value="count"
+              c="color"
+              legend
+              innerRadius={60}
+              padding={29}
+              props={{ pie: { motion: 'tween' } }}
+            >
+              {#snippet tooltip()}
+                <Chart.Tooltip />
+              {/snippet}
+            </PieChart>
+          </Chart.Container>
+
+          {#if mockMode}
+            <p class="text-xs italic text-muted-foreground">Showing example data – add items to see real stats</p>
           {/if}
         </section>
 
-        <!-- Daily Activity -->
+        <!-- Daily Activity (existing SVG) -->
         <section class="flex flex-col items-center gap-4">
           <h3 class="text-lg font-semibold">Daily Activity</h3>
           {#if repetitionData.length}
@@ -161,7 +213,7 @@
           {/if}
         </section>
 
-        <!-- E‑factor Distribution -->
+        <!-- E‑factor Distribution (existing SVG) -->
         <section class="flex flex-col items-center gap-4">
           <h3 class="text-lg font-semibold">E‑Factor Distribution</h3>
           {#if efactorData.length}
