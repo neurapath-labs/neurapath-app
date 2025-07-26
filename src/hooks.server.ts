@@ -4,6 +4,7 @@ import { SIMULATE_LOGGED_IN_USER } from "$env/static/private";
 
 export const handle: Handle = async ({ event, resolve }) => {
   console.log('[Hooks] Handling request for URL:', event.url.pathname);
+  console.log('[Hooks] Request method:', event.request.method);
 
   const simulateLoggedInUser = SIMULATE_LOGGED_IN_USER === 'true';
   if (simulateLoggedInUser) {

@@ -44,7 +44,7 @@ export const actions: Actions = {
         path: '/',
         httpOnly: true,
         secure: !dev,
-        sameSite: 'strict',
+        sameSite: 'lax', // Changed from 'strict' to 'lax'
         maxAge: 60 * 60 * 2 // 2 hours
       });
       console.log('[Login] Token cookie set successfully');
@@ -53,6 +53,10 @@ export const actions: Actions = {
       throw redirect(303, '/');
     } catch (error: any) {
       console.error('[Login] Error during login process:', error);
+      console.error('[Login] Error type:', typeof error);
+      console.error('[Login] Error constructor:', error.constructor.name);
+      console.error('[Login] Error message:', error.message);
+      console.error('[Login] Error stack:', error.stack);
       return fail(401, {
         error: error?.message ?? 'Invalid credentials'
       });

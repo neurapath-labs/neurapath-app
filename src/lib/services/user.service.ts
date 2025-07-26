@@ -30,8 +30,12 @@ export const authenticateUser = async (
     const user = { id: username, username };
     console.log('[UserService] Authentication successful for user:', username);
     return user;
-  } catch (error) {
+  } catch (error: any) {
     console.error('[UserService] Authentication error:', error);
+    console.error('[UserService] Authentication error type:', typeof error);
+    console.error('[UserService] Authentication error constructor:', error.constructor.name);
+    console.error('[UserService] Authentication error message:', error.message);
+    console.error('[UserService] Authentication error stack:', error.stack);
     return null;
   }
 };

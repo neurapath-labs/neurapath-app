@@ -12,7 +12,7 @@ const handler: RequestHandler = async ({ cookies }) => {
     path: '/',
     httpOnly: true,
     secure: !dev,      // secure in prod, loose in dev
-    sameSite: 'strict',
+    sameSite: 'lax',   // Changed from 'strict' to 'lax'
     maxAge: 0          // Expire immediately
   });
 
