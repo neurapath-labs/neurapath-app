@@ -15,7 +15,7 @@
 	<form method="POST" action="?/login" class="contents">
 		<!-- header -->
 		<div class="mb-2 grid place-items-center gap-0 text-center text-2xl">
-			<img src="/img/logo.svg" alt="Neurapath logo" class="w-[72px]" />
+			<img src="/img/logo/logo.svg" alt="Neuraa logo" class="w-[72px]" />
 			<span class="whitespace-nowrap">Neuraa</span>
 		</div>
 

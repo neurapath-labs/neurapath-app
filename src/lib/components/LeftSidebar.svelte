@@ -109,7 +109,7 @@
 >
 	<!-- header -->
 	<header class="flex gap-3">
-		<img src="/img/logo.svg" alt="neurapath logo" class="h-12 w-12" />
+		<img src="/img/logo/logo.svg" alt="Neuraa logo" class="h-12 w-12" />
 		<div class="space-y-1">
 			<h1 class="m-0 text-xl leading-tight">Neuraa</h1>
 			<p class="text-xs"><span>Last saved:</span> <span id="sidebar-last-saved">‑</span></p>
