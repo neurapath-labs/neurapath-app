@@ -71,7 +71,7 @@
 </script>
 
 {#if isOpen}
-  <div id="modalbox-summarize" class="fixed inset-0 flex items-center justify-center z-10" on:keydown={handleKeydown}>
+<div id="modalbox-summarize" class="fixed inset-0 flex items-center justify-center z-10" role="dialog" onkeydown={handleKeydown}>
     <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[500px] p-8 border border-[rgb(var(--background-color))] rounded grid grid-rows-[auto_1fr_auto] gap-6 overflow-hidden">
       <!-- Header -->
       <div class="flex flex-col items-center gap-2">

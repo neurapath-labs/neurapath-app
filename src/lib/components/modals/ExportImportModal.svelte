@@ -213,6 +213,8 @@
 				<div
 					ondragover={handleDragOver}
 					ondrop={handleDrop}
+					role="region"
+					aria-label="File drop zone"
 					class="relative mb-4 rounded border-2 border-dashed p-5 text-center transition-colors duration-200"
 					class:border-[rgb(var(--background-color_button))]={selectedFile}
 					style="border-color: rgb(var(--background-color));"

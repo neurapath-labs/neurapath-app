@@ -14,10 +14,10 @@
   import LearningMode from '$lib/components/LearningMode.svelte';
 
   let { children } = $props();
-  let editor: HTMLDivElement;
-  let quill: any = null;
-  let activeRecord: Record | null = null;
-  let isLearningMode = false;
+  let editor: HTMLDivElement | null = $state(null);
+  let quill: any = $state(null);
+  let activeRecord: Record | null = $state(null);
+  let isLearningMode = $state(false);
   let profileData: any = {};
   let selectionData: any = {};
   let lastActiveImageID: string | null = null;
@@ -448,7 +448,7 @@
 <main
   id="content-input"
   class="[grid-area:body] overflow-auto relative min-h-full w-full h-full box-border pt-2 pb-2 pl-[var(--mainWindow-padding)] pr-[var(--mainWindow-padding)]"
-  on:contextmenu={handleContextMenu}
+  oncontextmenu={handleContextMenu}
 >
   {#if isLearningMode}
     <LearningMode />
@@ -459,9 +459,3 @@
     </div>
   {/if}
 </main>
-
-<style global>
-  .ql-editor {
-    @apply text-[var(--font-size)];
-  }
-</style>

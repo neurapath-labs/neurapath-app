@@ -7,7 +7,7 @@
   
   let similarContent: any[] = [];
   let isLoading = false;
-  let showRightSidebar = true;
+  let showRightSidebar = $state(true);
   let selectionData: any = {};
   let lastRightClickedSimilarContentID: string | null = null;
   let relatedWords: any[] = [];
