@@ -101,9 +101,9 @@
 			<p class="text-xs">
 				<span>Last saved:</span> <span id="sidebar-last-saved">‑</span>
 			</p>
-			<p class="text-xs">
+			<!-- <p class="text-xs">
 				<span>Due today:</span> <span id="sidebar-due-items">{dueCount}</span>
-			</p>
+			</p> -->
 		</div>
 	</header>
 
