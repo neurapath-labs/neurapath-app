@@ -4,6 +4,7 @@
   import { occlusion } from '$lib/stores/occlusion.store';
   import type { Record, Occlusion } from '$lib/models';
   import { onMount, onDestroy } from 'svelte';
+  import ImageIcon from '@lucide/svelte/icons/image';
 
   // Using Svelte 5 runes for reactivity
   let isOpen: boolean = $state(false);
@@ -195,7 +196,7 @@
 {#if isOpen && imageUrl}
   <div class="visible modalbox" id="modalbox-occlusion-create">
     <div class="modalbox-header">
-      <img class="modalbox-icon" src="/img/occlusion1.svg" alt="Occlusion icon" />
+      <ImageIcon class="modalbox-icon" />
       <span class="modalbox-title">Create Image Occlusion</span>
     </div>
     
