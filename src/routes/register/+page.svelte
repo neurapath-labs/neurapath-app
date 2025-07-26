@@ -1,7 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { page } from '$app/stores';
-  import { Button } from "$lib/components/ui/button/index.js";
 
   let username = '';
   let password = '';

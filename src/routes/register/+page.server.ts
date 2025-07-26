@@ -42,7 +42,7 @@ export const actions: Actions = {
       const token = generateToken(user);
       
       // Set secure cookie
-      cookies.set('token', token, {
+      cookies.set('token', await token, {
         path: '/',
         httpOnly: true,
         secure: false,

@@ -8,4 +8,11 @@ declare namespace App {
         };
         caches: CacheStorage & { default: Cache }
     }
+    
+    interface Locals {
+        user: {
+            name: string;
+            role: string;
+        } | null;
+    }
 }
