@@ -160,7 +160,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-5">
       <div class="text-base font-bold">Reviewed: {sessionStats.reviewed}/{sessionStats.total}</div>
-      <Button class="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700" on:click={exitLearningMode} variant="destructive" size="sm">Exit</Button>
+      <Button class="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700" onclick={exitLearningMode} variant="destructive" size="sm">Exit</Button>
     </div>
 
     <!-- Item Container -->
@@ -201,31 +201,31 @@
         <div class="mt-5">
           <h3 class="text-lg text-center mb-4">How well did you know this?</h3>
           <div class="flex justify-center gap-2 flex-wrap">
-            <Button class="grade-btn bg-red-600 text-white" on:click={() => handleGrade(1)}>1 - Didn't know</Button>
-            <Button class="grade-btn bg-orange-500 text-white" on:click={() => handleGrade(2)}>2 - Hard</Button>
-            <Button class="grade-btn bg-amber-400 text-black" on:click={() => handleGrade(3)}>3 - Medium</Button>
-            <Button class="grade-btn bg-lime-600 text-white" on:click={() => handleGrade(4)}>4 - Easy</Button>
-            <Button class="grade-btn bg-green-600 text-white" on:click={() => handleGrade(5)}>5 - Perfect</Button>
+            <Button class="grade-btn bg-red-600 text-white" onclick={() => handleGrade(1)}>1 - Didn't know</Button>
+            <Button class="grade-btn bg-orange-500 text-white" onclick={() => handleGrade(2)}>2 - Hard</Button>
+            <Button class="grade-btn bg-amber-400 text-black" onclick={() => handleGrade(3)}>3 - Medium</Button>
+            <Button class="grade-btn bg-lime-600 text-white" onclick={() => handleGrade(4)}>4 - Easy</Button>
+            <Button class="grade-btn bg-green-600 text-white" onclick={() => handleGrade(5)}>5 - Perfect</Button>
           </div>
         </div>
       {:else}
         <div class="flex justify-center mt-5">
-          <Button class="px-6 py-3 bg-green-600 text-white rounded text-base hover:bg-green-700" on:click={handleShowAnswer} size="lg">Show Answer (Space)</Button>
+          <Button class="px-6 py-3 bg-green-600 text-white rounded text-base hover:bg-green-700" onclick={handleShowAnswer} size="lg">Show Answer (Space)</Button>
         </div>
       {/if}
     </div>
 
     <!-- Footer actions -->
     <div class="flex justify-center gap-5 mt-5">
-      <Button class="px-4 py-2 bg-blue-600 text-white rounded text-sm" on:click={toggleFlag}>{currentRecord.isFlagged ? 'Unflag Item (F)' : 'Flag Item (F)'}</Button>
-      <Button class="px-4 py-2 bg-gray-500 text-white rounded text-sm" on:click={moveToNextItem} variant="secondary">Skip (S)</Button>
+      <Button class="px-4 py-2 bg-blue-600 text-white rounded text-sm" onclick={toggleFlag}>{currentRecord.isFlagged ? 'Unflag Item (F)' : 'Flag Item (F)'}</Button>
+      <Button class="px-4 py-2 bg-gray-500 text-white rounded text-sm" onclick={moveToNextItem} variant="secondary">Skip (S)</Button>
     </div>
   {:else}
     <!-- No items message -->
     <div class="flex flex-col items-center justify-center h-full text-center gap-4">
       <h2 class="text-2xl font-semibold">No items to review</h2>
       <p class="text-gray-500">You've completed all your reviews for now. Check back later for more items.</p>
-      <Button class="px-4 py-2 bg-red-600 text-white rounded text-sm" on:click={exitLearningMode} variant="destructive" size="sm">Exit Learning Mode</Button>
+      <Button class="px-4 py-2 bg-red-600 text-white rounded text-sm" onclick={exitLearningMode} variant="destructive" size="sm">Exit Learning Mode</Button>
     </div>
   {/if}
 </div>

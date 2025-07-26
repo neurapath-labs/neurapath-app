@@ -122,7 +122,7 @@
             <Button
               type="button"
               class="mt-2 px-3 py-1 rounded bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm"
-              on:click={() => (selectedFile = null)}
+              onclick={() => (selectedFile = null)}
               size="sm"
             >
               Remove
@@ -158,7 +158,7 @@
       <div class="flex justify-between">
         <Button
           type="button"
-          on:click={closePdfImport}
+          onclick={closePdfImport}
           disabled={isProcessing}
           variant="outline"
           size="sm"
@@ -167,7 +167,7 @@
         </Button>
         <Button
           type="button"
-          on:click={processPdf}
+          onclick={processPdf}
           disabled={isProcessing || !selectedFile}
           variant="outline"
           size="sm"

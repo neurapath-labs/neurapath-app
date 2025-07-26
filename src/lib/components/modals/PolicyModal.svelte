@@ -56,7 +56,7 @@
       <div class="flex justify-center mt-4">
         <Button
           type="button"
-          on:click={handleAgree}
+          onclick={handleAgree}
           variant="outline"
           size="sm"
         >

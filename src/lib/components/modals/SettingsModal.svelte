@@ -173,7 +173,7 @@
                     </td>
                     <td class="p-3 text-right">
                       <Button
-                        on:click={() => startRecording(shortcut.event)}
+                        onclick={() => startRecording(shortcut.event)}
                         disabled={isRecording && recordingEvent !== shortcut.event}
                         size="sm"
                         variant="outline"
@@ -192,8 +192,8 @@
           </div>
 
           <footer class="flex justify-between pt-4">
-            <Button variant="ghost" size="sm" on:click={resetToDefaults}>Reset to Defaults</Button>
-            <Button size="sm" on:click={saveChanges}>Save Changes</Button>
+            <Button variant="ghost" size="sm" onclick={resetToDefaults}>Reset to Defaults</Button>
+            <Button size="sm" onclick={saveChanges}>Save Changes</Button>
           </footer>
         </section>
 
@@ -228,7 +228,7 @@
           </div>
 
           <div class="flex justify-end">
-            <Button size="sm" class="bg-green-600 text-white hover:bg-green-700" on:click={saveApiKeys}>Save API Keys</Button>
+            <Button size="sm" class="bg-green-600 text-white hover:bg-green-700" onclick={saveApiKeys}>Save API Keys</Button>
           </div>
         </section>
       </div>

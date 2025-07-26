@@ -1,28 +1,28 @@
 <script lang="ts">
 	/* ---------- stores ---------- */
-	import { auth }       from '$lib/stores/auth.store';
-	import { database }   from '$lib/stores/database.store';
-	import { learning }   from '$lib/stores/learning.store';
-	import { ui }         from '$lib/stores/ui.store';
-	import { modal }      from '$lib/stores/modal.store';
-	import { theme }      from '$lib/stores/theme.store';
+	import { auth }        from '$lib/stores/auth.store';
+	import { database }    from '$lib/stores/database.store';
+	import { learning }    from '$lib/stores/learning.store';
+	import { ui }          from '$lib/stores/ui.store';
+	import { modal }       from '$lib/stores/modal.store';
+	import { theme }       from '$lib/stores/theme.store';
 	import { contextmenu } from '$lib/stores/contextmenu.store';
 	import type { Record } from '$lib/models';
 
 	import { onDestroy } from 'svelte';
 	import { Button }    from '$lib/components/ui/button';
 	import TreeItem      from '$lib/components/TreeItem.svelte';
-	
+
 	/* ---------- icons ---------- */
-	import UserIcon      from '@lucide/svelte/icons/user';
-	import MoonIcon      from '@lucide/svelte/icons/moon';
+	import UserIcon     from '@lucide/svelte/icons/user';
+	import MoonIcon     from '@lucide/svelte/icons/moon';
 	import SunIcon      from '@lucide/svelte/icons/sun';
-	import DatabaseIcon  from '@lucide/svelte/icons/database';
-	// import FileTextIcon  from '@lucide/svelte/icons/file-text';
-	import SearchIcon    from '@lucide/svelte/icons/search';
-	import FlagIcon      from '@lucide/svelte/icons/flag';
-	import BarChartIcon  from '@lucide/svelte/icons/bar-chart';
-	import LogOutIcon    from '@lucide/svelte/icons/log-out';
+	import DatabaseIcon from '@lucide/svelte/icons/database';
+	// import FileTextIcon from '@lucide/svelte/icons/file-text';
+	import SearchIcon   from '@lucide/svelte/icons/search';
+	import FlagIcon     from '@lucide/svelte/icons/flag';
+	import BarChartIcon from '@lucide/svelte/icons/bar-chart';
+	import LogOutIcon   from '@lucide/svelte/icons/log-out';
 
 	/* ---------- local state ---------- */
 	let learningMode = false;
@@ -38,7 +38,6 @@
 	const unsubUI = ui.subscribe(($u) => {
 		expandedFolders = $u.expandedFolders;
 		activeItemId   = $u.activeItemId;
-		// (spam‐free; remove if noisy)
 	});
 	const unsubTheme = theme.subscribe(($t) => (currentTheme = $t.currentTheme));
 
@@ -87,7 +86,6 @@
 		const el       = (e.target as HTMLElement).closest('[data-fullpath]');
 		const fullPath = el?.getAttribute('data-fullpath');
 
-		/* log for debugging */
 		console.log('[LeftSidebar] right‑click', {
 			fullPath,
 			x: e.clientX,
@@ -106,7 +104,7 @@
 
 <aside
 	class="grid-area[sidebar] flex h-screen w-[clamp(230px,26vw,280px)] min-w-[220px] flex-col gap-4 overflow-y-auto border-r border-black/5 bg-[rgb(var(--background-color_sidebar))] p-4 text-[rgb(var(--font-color))] select-none"
-	on:contextmenu|preventDefault={handleSidebarContextMenu}
+	oncontextmenu={handleSidebarContextMenu}
 >
 	<!-- header -->
 	<header class="flex gap-3">
@@ -123,44 +121,49 @@
 		id="learning-button"
 		variant="outline"
 		class={`rounded-md px-4 py-2 font-medium transition-colors ${
-			learningMode
-				? 'bg-red-500/90 text-white hover:bg-red-600'
-				: ''
+			learningMode ? 'bg-red-500/90 text-white hover:bg-red-600' : ''
 		}`}
-		on:click={toggleLearningMode}
+		onclick={toggleLearningMode}
 	>
 		{learningMode ? 'Stop learning!' : 'Engage!'}
 	</Button>
 
 	<!-- quick‑actions -->
 	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={() => modal.openSettingsModal()}>
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={() => modal.openSettingsModal()}>
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
 		</div>
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={toggleTheme}>
-			{#if currentTheme === "day"}
-			 <MoonIcon class='h-4 w-4' />
+
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={toggleTheme}>
+			{#if currentTheme === 'day'}
+				<MoonIcon class="h-4 w-4" />
 			{:else}
-			<SunIcon class='h-4 w-4' />
+				<SunIcon class="h-4 w-4" />
 			{/if}
 			<span id="darkmode-text">{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span>
 		</div>
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderDatabases}>
+
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderDatabases}>
 			<DatabaseIcon class="h-4 w-4" /><span>Shared databases</span>
 		</div>
-		<!-- <div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={openPdfImport}>
+
+		<!-- <div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={openPdfImport}>
 			<FileTextIcon class="h-4 w-4" /><span>Import PDF</span>
 		</div> -->
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderExplorer}>
+
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderExplorer}>
 			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>
 		</div>
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderFlagged}>
+
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderFlagged}>
 			<FlagIcon class="h-4 w-4" /><span>Flagged items</span>
 		</div>
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderStatistics}>
+
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderStatistics}>
 			<BarChartIcon class="h-4 w-4" /><span>Statistics</span>
 		</div>
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={handleLogout}>
+
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={handleLogout}>
 			<LogOutIcon class="h-4 w-4" /><span>Logout</span>
 		</div>
 	</nav>

@@ -153,7 +153,7 @@
       <div class="flex justify-end">
         <Button
           type="button"
-          on:click={closeSpotlightSearch}
+          onclick={closeSpotlightSearch}
           variant="outline"
           size="sm"
         >

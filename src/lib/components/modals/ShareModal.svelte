@@ -159,7 +159,7 @@
                 />
                 <Button
                   type="button"
-                  on:click={copyLinkToClipboard}
+                  onclick={copyLinkToClipboard}
                   disabled={isProcessing}
                   variant="outline"
                   size="sm"

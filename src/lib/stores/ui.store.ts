@@ -429,6 +429,7 @@ const openExportImport = () => {
     isPdfImportOpen: false,
     isShareModalOpen: false
   }));
+  console.log('[ui.store] ExportImport opened, isExportImportOpen should be true');
 };
 
 const closeExportImport = () => {

@@ -102,7 +102,7 @@
       <div class="flex justify-center mt-4">
         <Button
           type="button"
-          on:click={closeChangelog}
+          onclick={closeChangelog}
           variant="outline"
           size="sm"
         >

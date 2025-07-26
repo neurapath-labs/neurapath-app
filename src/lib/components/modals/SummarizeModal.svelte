@@ -117,8 +117,8 @@
 
       <!-- Actions -->
       <div class="flex justify-end gap-3">
-        <Button type="button" on:click={closeSummarizeModal} disabled={isProcessing} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-gray-100 text-gray-800 hover:bg-gray-200 text-sm" variant="outline" size="sm">Cancel</Button>
-        <Button type="button" on:click={handleSummarize} disabled={isProcessing || !selectionData.isSelected || !apiKey} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm" variant="outline" size="sm">
+        <Button type="button" onclick={closeSummarizeModal} disabled={isProcessing} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-gray-100 text-gray-800 hover:bg-gray-200 text-sm" variant="outline" size="sm">Cancel</Button>
+        <Button type="button" onclick={handleSummarize} disabled={isProcessing || !selectionData.isSelected || !apiKey} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm" variant="outline" size="sm">
           {isProcessing ? 'Summarizing...' : 'Summarize'}
         </Button>
       </div>

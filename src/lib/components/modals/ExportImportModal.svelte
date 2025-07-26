@@ -33,12 +33,14 @@
   let unsubscribeUI: () => void;
 
   onMount(() => {
+    console.log('[ExportImportModal] onMount called');
     unsubscribeDatabase = database.subscribe(($database) => {
       databaseItems = $database.items;
     });
 
     unsubscribeUI = ui.subscribe(($ui) => {
       isOpen = $ui.isExportImportOpen;
+      console.log('[ExportImportModal] isExportImportOpen changed to', isOpen);
     });
   });
 
@@ -159,7 +161,7 @@
           <div class="flex gap-3">
             <Button
               type="button"
-              on:click={exportToJson}
+              onclick={exportToJson}
               disabled={isExporting || databaseItems.length === 0}
               variant="outline"
               size="sm"
@@ -169,7 +171,7 @@
             </Button>
             <Button
               type="button"
-              on:click={exportToCsv}
+              onclick={exportToCsv}
               disabled={isExporting || databaseItems.length === 0}
               variant="outline"
               size="sm"
@@ -207,7 +209,7 @@
               <Button
                 type="button"
                 class="mt-2 px-3 py-1 rounded bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-xs"
-                on:click={() => (selectedFile = null)}
+                onclick={() => (selectedFile = null)}
                 size="sm"
               >
                 Remove
@@ -225,7 +227,7 @@
 
           <Button
             type="button"
-            on:click={importDatabase}
+            onclick={importDatabase}
             disabled={isImporting || !selectedFile}
             variant="outline"
             class="w-full"
