@@ -24,3 +24,6 @@ vite.config.ts.timestamp-*
 .roo/
 bun.lock
 package-lock.json
+
+*.md
+!README.md

@@ -1,80 +1,84 @@
 <script lang="ts">
+  import * as Dialog from '$lib/components/ui/dialog/index.js';
   import { Button } from '$lib/components/ui/button';
   import { database } from '$lib/stores/database.store';
   import { ui } from '$lib/stores/ui.store';
-  import type { Record } from '$lib/models';
   import { onMount, onDestroy } from 'svelte';
+  import type { Record } from '$lib/models';
   import FlagIcon from '@lucide/svelte/icons/flag';
 
-  // Using Svelte 5 runes for reactivity
+  // Svelte‑5 runes
   let items: Record[] = $state([]);
   let isOpen: boolean = $state(false);
 
-  // Subscribe to database and UI changes
-  let unsubscribeDatabase: () => void;
+  // Subscriptions
+  let unsubscribeDB: () => void;
   let unsubscribeUI: () => void;
 
   onMount(() => {
-    // Subscribe to database changes
-    unsubscribeDatabase = database.subscribe(($database) => {
-      items = $database.items.filter(item => item.isFlagged === true);
+    unsubscribeDB = database.subscribe(($db) => {
+      items = $db.items.filter((i) => i.isFlagged === true);
     });
-
-    // Subscribe to UI changes
     unsubscribeUI = ui.subscribe(($ui) => {
       isOpen = $ui.isFlaggedOpen;
     });
   });
 
   onDestroy(() => {
-    if (unsubscribeDatabase) unsubscribeDatabase();
-    if (unsubscribeUI) unsubscribeUI();
+    unsubscribeDB?.();
+    unsubscribeUI?.();
   });
 
-  // Function to close the flagged items modal
+  // Close helper
   function closeFlagged() {
     ui.closeFlagged();
   }
 </script>
 
-{#if isOpen}
-  <div id="modalbox-flagged" class="fixed inset-0 flex items-center justify-center z-10">
-    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[400px] h-[400px] max-h-[600px] grid grid-rows-[auto_1fr_auto] p-8 border border-[rgb(var(--background-color))] rounded overflow-scroll">
+<!-- FLAGGED DIALOG -->
+<Dialog.Root bind:open={isOpen}>
+  <Dialog.Portal>
+    <!-- Overlay (no fade) -->
+    <Dialog.Overlay class="fixed inset-0 bg-transparent z-50" />
+
+    <!-- Centered card -->
+    <Dialog.Content
+      class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[500px] max-h-[90vh]
+             grid grid-rows-[auto_1fr_auto] overflow-hidden rounded-lg border
+             border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))]
+             text-[rgb(var(--font-color))] p-6 shadow-lg focus:outline-none z-50"
+    >
       <!-- Header -->
-      <div class="flex flex-col items-center gap-2 mb-5">
-        <FlagIcon class="w-[72px] h-[72px]" />
-        <span class="text-2xl font-semibold whitespace-nowrap">Flagged Items</span>
+      <div class="flex items-center gap-3 mb-4">
+        <FlagIcon class="w-9 h-9" />
+        <h1 class="text-xl font-semibold">Flagged Items</h1>
       </div>
 
-      <!-- Flagged list -->
-      <table id="flagged-list" class="w-full table-auto text-sm mb-5">
-        <thead>
-          <tr class="border-b border-[rgb(var(--background-color))]">
-            <th class="text-left p-2">Name</th>
-            <th class="text-left p-2">Repetitions</th>
-            <th class="text-left p-2">E-factor</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each items as item}
-            <tr class="even:bg-[rgb(var(--background-color))] hover:bg-[rgb(var(--background-color))] hover:font-bold cursor-pointer border-b border-[rgb(var(--background-color))]">
-              <td class="p-2">{item.id}</td>
-              <td class="p-2">{item.totalRepetitionCount ?? 0}</td>
-              <td class="p-2">{item.efactor?.toFixed(2) ?? '2.50'}</td>
+      <!-- Table -->
+      <div class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]">
+        <table class="w-full text-sm">
+          <thead class="sticky top-0 bg-[rgb(var(--background-color_modalbox))]">
+            <tr class="border-b border-[rgb(var(--background-color))]">
+              <th class="p-3 text-left font-semibold">Name</th>
+              <th class="p-3 text-left font-semibold">Repetitions</th>
+              <th class="p-3 text-left font-semibold">E‑factor</th>
             </tr>
-          {/each}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {#each items as item}
+              <tr
+                class="border-b border-[rgb(var(--background-color))] even:bg-[rgba(var(--background-color),0.1)]
+                       hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer"
+              >
+                <td class="p-3">{item.id}</td>
+                <td class="p-3">{item.totalRepetitionCount ?? 0}</td>
+                <td class="p-3">{item.efactor?.toFixed(2) ?? '2.50'}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
 
-      <!-- Close button -->
-      <Button
-        class="absolute bottom-4 left-1/2 -translate-x-1/2"
-        on:click={closeFlagged}
-        type="button"
-        variant="outline"
-      >
-        Close
-      </Button>
-    </div>
-  </div>
-{/if}
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>

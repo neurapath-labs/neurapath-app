@@ -62,3 +62,41 @@ Secondary keywords:
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Neuraa",
+  "url": "https://neurapath.io",
+  "description": "Evidence-based learning platform implementing spaced repetition and incremental reading",
+  "keywords": "learning platform, spaced repetition, evidence-based learning, educational technology"
+}
+
+### Educational Occupational Program Schema
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOccupationalProgram",
+  "name": "Evidence-Based Learning Techniques",
+  "description": "Master learning techniques based on cognitive science research including spaced repetition, incremental reading, and active recall",
+  "provider": {
+    "@type": "Organization",
+    "name": "Neuraa"
+  },
+  "occupationalCategory": "Education",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+
+## Sitemap Structure
+- Home page (/)
+- Features page (/features)
+- Documentation page (/docs)
+- Login page (/login)
+- Privacy policy (/privacy)
+- Terms of service (/terms)
+
+## Robots.txt
+User-agent: *
+Allow: /
+Sitemap: https://neurapath.io/sitemap.xml
+
+## Canonical URLs
+All pages should have self-referential canonical URLs to prevent duplicate content issues.

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as Dialog from "$lib/components/ui/dialog/index.js";
   import { ui } from '$lib/stores/ui.store';
   import { onMount, onDestroy } from 'svelte';
   import { Button } from "$lib/components/ui/button";
@@ -15,7 +16,6 @@
   let unsubscribeUI: (() => void) | undefined;
 
   onMount(() => {
-    // Subscribe to UI changes
     unsubscribeUI = ui.subscribe(($ui) => {
       isOpen = $ui.isDatabasesOpen;
       if (isOpen && databases.length === 0) {
@@ -28,7 +28,7 @@
     if (unsubscribeUI) unsubscribeUI();
   });
 
-  // Function to load public databases
+  // Load public databases
   const loadDatabases = async () => {
     isLoading = true;
     try {
@@ -40,68 +40,68 @@
     }
   };
 
-  // Function to close the databases modal
+  // Close & navigate helpers
   function closeDatabases() {
     ui.closeDatabases();
   }
-  
-  // Function to open export/import modal
   function openExportImport() {
     ui.closeDatabases();
     ui.openExportImport();
   }
 </script>
 
-{#if isOpen}
-  <div id="modalbox-databases" class="fixed inset-0 flex items-center justify-center z-10">
-    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[400px] h-[400px] max-h-[600px] grid grid-rows-[auto_1fr_auto] p-8 border border-[rgb(var(--background-color))] rounded overflow-scroll">
+<!-- DATABASES DIALOG -->
+<Dialog.Root bind:open={isOpen}>
+  <Dialog.Portal>
+    <!-- Overlay without dim -->
+    <Dialog.Overlay class="fixed inset-0 bg-transparent z-50" />
+
+    <!-- Centered card -->
+    <Dialog.Content
+      class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[500px] max-h-[90vh] grid grid-rows-[auto_1fr_auto] overflow-hidden rounded-lg border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] p-6 shadow-lg focus:outline-none z-50"
+    >
       <!-- Header -->
-      <div class="flex flex-col items-center gap-2 mb-5">
-        <DatabaseIcon class="w-[72px] h-[72px]" />
-        <span class="text-2xl font-semibold whitespace-nowrap">Shared Databases</span>
+      <div class="flex items-center gap-3 mb-4">
+        <DatabaseIcon class="w-9 h-9" />
+        <h1 class="text-xl font-semibold">Shared Databases</h1>
       </div>
 
-      <!-- Actions -->
-      <div class="mb-5">
-        <Button
-          class="px-4 py-2 rounded bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
-          on:click={openExportImport}
-          type="button"
-        >
-          Export/Import Database
-        </Button>
-      </div>
+      <!-- Body -->
+      <div class="flex flex-col space-y-6 overflow-hidden">
+        <!-- Actions -->
+        <div>
+          <Button class="w-full" on:click={openExportImport}>Export / Import Database</Button>
+        </div>
 
-      <!-- Database list -->
-      <table id="database-list" class="w-full table-auto text-sm mb-5">
-        <thead>
-          <tr class="border-b border-[rgb(var(--background-color))]">
-            <th class="text-left p-2">Database</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#if isLoading}
-            <tr>
-              <td class="p-2">Loading...</td>
-            </tr>
-          {:else}
-            {#each databases as database}
-              <tr class="border-b border-[rgb(var(--background-color))] hover:bg-[rgb(var(--background-color))] cursor-pointer">
-                <td class="p-2">{database.name || database.id}</td>
+        <!-- Database list -->
+        <div class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]">
+          <table class="w-full text-sm">
+            <thead class="sticky top-0 bg-[rgb(var(--background-color_modalbox))]">
+              <tr class="border-b border-[rgb(var(--background-color))]">
+                <th class="p-3 text-left font-semibold">Database</th>
               </tr>
-            {/each}
-          {/if}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {#if isLoading}
+                <tr><td class="p-3">Loading...</td></tr>
+              {:else}
+                {#each databases as database}
+                  <tr class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer">
+                    <td class="p-3">{database.name || database.id}</td>
+                  </tr>
+                {/each}
+              {/if}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-      <!-- Close button -->
-      <Button
-        class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
-        on:click={closeDatabases}
-        type="button"
-      >
-        Close
-      </Button>
-    </div>
-  </div>
-{/if}
+      <!-- Footer (Close) -->
+      <div class="mt-4 flex justify-center">
+        <Dialog.Close asChild>
+          <Button variant="outline" on:click={closeDatabases}>Close</Button>
+        </Dialog.Close>
+      </div>
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>

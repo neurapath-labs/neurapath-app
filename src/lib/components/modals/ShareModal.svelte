@@ -195,18 +195,6 @@
           </p>
         </div>
       </div>
-
-      <!-- Actions -->
-      <div class="flex justify-end">
-        <Button
-          type="button"
-          on:click={closeShareModal}
-          disabled={isProcessing}
-          variant="outline"
-        >
-          Close
-        </Button>
-      </div>
     </div>
   </div>
 {/if}

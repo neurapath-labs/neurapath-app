@@ -5,6 +5,7 @@
   import type { Shortcut } from '$lib/models';
   import { modal } from '$lib/stores/modal.store';
   import SettingsIcon from '@lucide/svelte/icons/settings';
+  import { Input } from "$lib/components/ui/input";
 
   // Using Svelte 5 runes for reactivity
   let shortcuts: Shortcut[] = $state([]);
@@ -123,7 +124,7 @@
 <Dialog.Root bind:open={isSettingsModalOpen}>
   <Dialog.Portal>
     <!-- Transparent overlay keeps outside‑click close but removes fade -->
-    <Dialog.Overlay class="fixed inset-0 bg-transparent z-50" />
+    <Dialog.Overlay class="fixed inset-0 bg-transparent z-10" />
 
     <!-- Centered content card -->
     <Dialog.Content
@@ -142,7 +143,7 @@
         <section class="flex flex-col h-full">
           <header class="flex items-center mb-4 gap-4 flex-wrap">
             <h2 class="text-lg font-bold flex-1">Keyboard Shortcuts</h2>
-            <input
+            <Input
               type="text"
               placeholder="Filter..."
               bind:value={filterText}
@@ -203,7 +204,7 @@
           <div class="grid gap-6 md:grid-cols-2">
             <div>
               <label for="openai-api-key" class="block text-sm font-medium mb-1">OpenAI API Key</label>
-              <input
+              <Input
                 id="openai-api-key"
                 type="password"
                 bind:value={openaiApiKey}
@@ -215,7 +216,7 @@
 
             <div>
               <label for="anthropic-api-key" class="block text-sm font-medium mb-1">Anthropic API Key</label>
-              <input
+              <Input
                 id="anthropic-api-key"
                 type="password"
                 bind:value={anthropicApiKey}

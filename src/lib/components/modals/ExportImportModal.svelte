@@ -235,17 +235,6 @@
         </div>
       </div>
 
-      <!-- Footer buttons -->
-      <div class="flex justify-end mt-8">
-        <Button
-          type="button"
-          on:click={closeExportImport}
-          variant="outline"
-          size="sm"
-        >
-          Close
-        </Button>
-      </div>
     </div>
   </div>
 {/if}
