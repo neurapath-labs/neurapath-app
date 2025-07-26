@@ -299,9 +299,30 @@ const closePolicy = () => {
 };
 
 const openTutorial = () => {
+  console.log('[ui.store] Opening Tutorial, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isTutorialOpen: true
+    isTutorialOpen: true,
+    isExplorerOpen: false,
+    isFlaggedOpen: false,
+    isStatisticsOpen: false,
+    isDatabasesOpen: false,
+    isChangelogOpen: false,
+    isPolicyOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isPdfImportOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
@@ -313,9 +334,30 @@ const closeTutorial = () => {
 };
 
 const openSpotlightSearch = () => {
+  console.log('[ui.store] Opening SpotlightSearch, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isSpotlightSearchModalOpen: true
+    isSpotlightSearchModalOpen: true,
+    isExplorerOpen: false,
+    isFlaggedOpen: false,
+    isStatisticsOpen: false,
+    isDatabasesOpen: false,
+    isChangelogOpen: false,
+    isPolicyOpen: false,
+    isTutorialOpen: false,
+    isPdfImportOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
@@ -327,9 +369,30 @@ const closeSpotlightSearch = () => {
 };
 
 const openPdfImport = () => {
+  console.log('[ui.store] Opening PdfImport, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isPdfImportOpen: true
+    isPdfImportOpen: true,
+    isExplorerOpen: false,
+    isFlaggedOpen: false,
+    isStatisticsOpen: false,
+    isDatabasesOpen: false,
+    isChangelogOpen: false,
+    isPolicyOpen: false,
+    isTutorialOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
@@ -341,9 +404,30 @@ const closePdfImport = () => {
 };
 
 const openExportImport = () => {
+  console.log('[ui.store] Opening ExportImport, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isExportImportOpen: true
+    isExportImportOpen: true,
+    isExplorerOpen: false,
+    isFlaggedOpen: false,
+    isStatisticsOpen: false,
+    isDatabasesOpen: false,
+    isChangelogOpen: false,
+    isPolicyOpen: false,
+    isTutorialOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isPdfImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
