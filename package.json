@@ -25,7 +25,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "@types/pdfjs-dist": "^2.10.378",
     "clsx": "^2.1.1",
-    "mode-watcher": "^1.0.8",
+    "mode-watcher": "^1.1.0",
     "svelte": "^5.36.17",
     "svelte-check": "^4.3.0",
     "svelte-sonner": "^1.0.5",
@@ -39,7 +39,7 @@
   "dependencies": {
     "@tsndr/cloudflare-worker-jwt": "^3.2.0",
     "bcrypt-ts": "^7.1.0",
-    "bits-ui": "^2.8.12",
+    "bits-ui": "^2.8.13",
     "pdfjs-dist": "^5.3.93",
     "quill": "^2.0.3"
   }

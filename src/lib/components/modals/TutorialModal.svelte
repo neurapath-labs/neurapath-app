@@ -1,6 +1,15 @@
 <script lang="ts">
   import { ui } from '$lib/stores/ui.store';
   import { onMount, onDestroy } from 'svelte';
+  import BookOpenIcon from '@lucide/svelte/icons/book-open';
+  import UserIcon from '@lucide/svelte/icons/user';
+  import MoonIcon from '@lucide/svelte/icons/moon';
+  import DatabaseIcon from '@lucide/svelte/icons/database';
+  import SearchIcon from '@lucide/svelte/icons/search';
+  import FlagOffIcon from '@lucide/svelte/icons/flag-off';
+  import BarChartIcon from '@lucide/svelte/icons/bar-chart';
+  import WaveSquareIcon from '@lucide/svelte/icons/wave-square';
+  import TrophyIcon from '@lucide/svelte/icons/trophy';
 
   let isOpen: boolean = $state(false);
   let currentStep: number = $state(1);
@@ -39,7 +48,7 @@
       <div>
         {#if currentStep === 1}
           <div class="flex flex-col items-center gap-2 mb-4">
-            <img src="/img/tutorial.svg" alt="Tutorial icon" class="w-[72px]" />
+            <BookOpenIcon class="w-[72px] h-[72px]" />
             <span class="text-2xl font-semibold whitespace-nowrap">Quick start (1/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
@@ -130,10 +139,38 @@
 <!-- Step component -->
 <script context="module" lang="ts">
   export function Step({ title, img, $$slots }: { title: string; img: string; $$slots: any }) {
+    // Map image paths to Lucide icons
+    const getIconComponent = (imgPath: string) => {
+      switch (imgPath) {
+        case '/img/tutorial.svg':
+          return BookOpenIcon;
+        case '/img/user.svg':
+          return UserIcon;
+        case '/img/night-mode.svg':
+          return MoonIcon;
+        case '/img/database.svg':
+          return DatabaseIcon;
+        case '/img/find.svg':
+          return SearchIcon;
+        case '/img/unflag.svg':
+          return FlagOffIcon;
+        case '/img/statistics.svg':
+          return BarChartIcon;
+        case '/img/sine.svg':
+          return WaveformIcon;
+        case '/img/trophy.svg':
+          return TrophyIcon;
+        default:
+          return BookOpenIcon;
+      }
+    };
+
+    const IconComponent = getIconComponent(img);
+
     return (
       <div>
         <div class="flex flex-col items-center gap-2 mb-4">
-          <img src={img} alt="icon" class="w-[72px]" />
+          <IconComponent class="w-[72px] h-[72px]" />
           <span class="text-2xl font-semibold whitespace-nowrap">{title}</span>
         </div>
         <div class="leading-relaxed space-y-3 text-sm">{$$slots.default()}</div>

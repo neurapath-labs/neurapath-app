@@ -3,6 +3,7 @@
   import { modal } from '$lib/stores/modal.store';
   import type { Record } from '$lib/models';
   import { onMount, onDestroy, tick } from 'svelte';
+  import SearchIcon from '@lucide/svelte/icons/search';
 
   let searchQuery: string = $state('');
   let searchResults: Record[] = $state([]);
@@ -109,7 +110,7 @@
     <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[500px] h-[400px] p-8 border border-[rgb(var(--background-color))] rounded grid grid-rows-[auto_auto_1fr_auto] overflow-hidden">
       <!-- Header -->
       <div class="flex flex-col items-center gap-2 mb-4">
-        <img src="/img/loupe.svg" alt="Search icon" class="w-[72px]" />
+        <SearchIcon class="w-[72px] h-[72px]" />
         <span class="text-2xl font-semibold whitespace-nowrap">Spotlight Search</span>
       </div>
 
