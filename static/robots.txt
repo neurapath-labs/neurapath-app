@@ -29,3 +29,9 @@ Disallow: /*.tmp$
 Disallow: /*.temp$
 Disallow: /*.bak$
 Disallow: /*.backup$
+
+# Allow crawling of documentation and public pages
+Allow: /features
+Allow: /docs
+Allow: /privacy
+Allow: /terms
