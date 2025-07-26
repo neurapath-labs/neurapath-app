@@ -4,8 +4,8 @@
   import { learning } from '$lib/stores/learning.store';
   import { database } from '$lib/stores/database.store';
   import { profile } from '$lib/stores/profile.store';
-  import { modal } from '$lib/stores/modal.store';
   import type { Record, Profile } from '$lib/models';
+  import { toast } from "svelte-sonner";
   import { browser } from '$app/environment';
 
   let questionEditor: HTMLDivElement | null = $state(null);

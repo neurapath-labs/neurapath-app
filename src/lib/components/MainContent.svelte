@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
-  import 'quill/dist/quill.bubble.css';
   import { database } from '$lib/stores/database.store';
   import { learning } from '$lib/stores/learning.store';
   import { selection } from '$lib/stores/selection.store';
