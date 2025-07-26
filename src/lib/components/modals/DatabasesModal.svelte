@@ -96,12 +96,6 @@
         </div>
       </div>
 
-      <!-- Footer (Close) -->
-      <div class="mt-4 flex justify-center">
-        <Dialog.Close asChild>
-          <Button variant="outline" on:click={closeDatabases}>Close</Button>
-        </Dialog.Close>
-      </div>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
