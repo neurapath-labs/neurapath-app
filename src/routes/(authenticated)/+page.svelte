@@ -1,112 +1,67 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { database } from '$lib/stores/database.store';
-  import { profile } from '$lib/stores/profile.store';
-  import { learning } from '$lib/stores/learning.store';
-  import { selection } from '$lib/stores/selection.store';
-  import { contextmenu } from '$lib/stores/contextmenu.store';
-  import { modal } from '$lib/stores/modal.store';
-  import { ui } from '$lib/stores/ui.store';
-  import { auth } from '$lib/stores/auth.store';
-  import type { Record } from '$lib/models';
+	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { database } from '$lib/stores/database.store';
+	import type { Record } from '$lib/models';
 
-  let authState: { isLoggedIn: boolean; user: { username: string } | null } | undefined;
+	/* -------------------------------------
+	   Grab authenticated user from parent
+	------------------------------------- */
+	export let data: { user: { username: string } };
 
-  // Test database operations
-  const testDatabaseOperations = async () => {
-    try {
-      console.log('Testing database operations...');
-      
-      // Test adding a record
-      const testRecord: Record = {
-        id: "test-record",
-        contentType: "Extract",
-        content: {
-          ops: [
-            {
-              insert: "This is a test record"
-            }
-          ]
-        }
-      };
-      
-      await database.addRecord(testRecord);
-      console.log('✓ Added test record');
-      
-      // Test updating a record
-      await database.updateRecordRemotely("test-record", {
-        content: {
-          ops: [
-            {
-              insert: "This is an updated test record"
-            }
-          ]
-        }
-      });
-      console.log('✓ Updated test record');
-      
-      // Test retrieving a record
-      const retrievedRecord = database.getRecordById("test-record");
-      console.log('✓ Retrieved test record:', retrievedRecord);
-      
-      // Test removing a record
-      await database.removeRecordById("test-record");
-      console.log('✓ Removed test record');
-      
-      console.log('All database operations completed successfully!');
-    } catch (error) {
-      console.error('Error testing database operations:', error);
-    }
-  };
+	/* -------------------------------------
+	   Demo CRUD flow on mount
+	------------------------------------- */
+	onMount(async () => {
+		try {
+			const username = data.user.username;
 
-  // Initialize the app with database data
-  onMount(async () => {
-    try {
-      // Set current user ID for database operations
-      const unsubscribe = auth.subscribe((state) => {
-        authState = state;
-      });
-      
-      let userId = 'demo-user';
-      if (authState && authState.isLoggedIn && authState.user) {
-        userId = authState.user.username;
-      }
-      
-      database.setCurrentUserId(userId);
-      await database.loadDatabase(userId);
-      
-      // Clean up subscription
-      unsubscribe();
-      
-      console.log('App initialized with database data');
-      
-      // Run test operations
-      // await testDatabaseOperations();
-    } catch (error) {
-      console.error('Error initializing app:', error);
-      // Fallback to default initialization
-      database.setCurrentUserId(null);
-    }
-  });
+			// Tell the store which user we’re dealing with
+			database.setCurrentUserId(username);
+
+			// Pull the entire DB blob from the Worker
+			await database.loadDatabase(username);
+
+			/* -------------------------------------------------
+			   OPTIONAL: quick smoke‑test of CRUD operations
+			 ------------------------------------------------- */
+			/*
+			const testRecord: Record = {
+				id: crypto.randomUUID(),
+				contentType: 'Extract',
+				content: { ops: [{ insert: 'This is a test record' }] }
+			};
+
+			await database.addRecord(testRecord);
+			await database.updateRecordRemotely(testRecord.id, {
+				content: { ops: [{ insert: 'Updated record' }] }
+			});
+			console.log('Retrieved', database.getRecordById(testRecord.id));
+			await database.removeRecordById(testRecord.id);
+			*/
+		} catch (err) {
+			console.error('Failed to initialise DB', err);
+			// fall back to anon mode
+			database.setCurrentUserId(null);
+		}
+	});
 </script>
 
 <div id="app">
-  <h1>Neurapath App</h1>
-  <p>Welcome to the Neurapath application. This is a test page to verify the basic functionality of the migrated components.</p>
+	<h1>Neurapath</h1>
+	<p>Welcome {data.user.username}! Your private database is now loaded.</p>
 </div>
 
 <style>
-  #app {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  h1 {
-    color: rgb(var(--font-color));
-  }
-  
-  p {
-    color: rgb(var(--font-color));
-    font-size: var(--font-size);
-  }
+	#app {
+		padding: 20px;
+		text-align: center;
+	}
+	h1 {
+		color: rgb(var(--font-color));
+	}
+	p {
+		color: rgb(var(--font-color));
+		font-size: var(--font-size);
+	}
 </style>

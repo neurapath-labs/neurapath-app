@@ -1,16 +1,24 @@
 import { redirect } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ cookies }) => {
+/**
+ * Clears the JWT cookie and redirects the user to the login page.
+ * We support both GET (link‑click) and POST (form‑submit / fetch) requests.
+ */
+const handler: RequestHandler = async ({ cookies }) => {
   // Remove the token cookie
   cookies.set('token', '', {
     path: '/',
     httpOnly: true,
-    secure: false,
+    secure: !dev,      // secure in prod, loose in dev
     sameSite: 'strict',
-    maxAge: 0 // Expire immediately
+    maxAge: 0          // Expire immediately
   });
-  
-  // Redirect to login page
-  throw redirect(302, '/login');
+
+  // Send the user back to the login screen
+  throw redirect(303, '/login');
 };
+
+export const GET = handler;
+export const POST = handler;

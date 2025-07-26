@@ -1,84 +1,79 @@
-import { compare, hash } from 'bcrypt-ts';
-import jwt from "@tsndr/cloudflare-worker-jwt";
-import { getUserByUsername, createUser as createDatabaseUser } from './database.service';
+/* src/lib/user.service.ts */
+import jwt from '@tsndr/cloudflare-worker-jwt';
+import {
+  login as backendLogin,
+  register as backendRegister
+} from './database.service';
+
 import type { User } from '$lib/models';
 import { JWT_SECRET } from '$env/static/private';
 
-const SALT_ROUNDS = 10;
+/* ------------------------------------------------------------------ */
+/*  Auth helpers                                                      */
+/* ------------------------------------------------------------------ */
 
-export const authenticateUser = async (username: string, password: string): Promise<User | null> => {
+/**
+ * Attempt a login against the Cloudflare‑Worker backend.
+ * Returns a { id, username } object on success or `null` on failure.
+ */
+export const authenticateUser = async (
+  username: string,
+  password: string
+): Promise<User | null> => {
   try {
-    // Find user by username from database
-    const user = await getUserByUsername(username);
-    
-    if (!user) {
-      return null;
-    }
-    
-    // Check if password matches
-    const isPasswordValid = await compare(password, user.passwordHash);
-    
-    if (!isPasswordValid) {
-      return null;
-    }
-    
-    // Return user without password hash
-    const { ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    // Will throw if credentials are wrong.
+    await backendLogin(username, password);
+
+    return { id: username, username };
   } catch (error) {
     console.error('Authentication error:', error);
     return null;
   }
 };
 
-export const createUser = async (username: string, password: string): Promise<User> => {
-  // Check if user already exists
-  const existingUser = await getUserByUsername(username);
-  if (existingUser) {
-    throw new Error('Username already exists');
-  }
-  
-  // Validate username
-  if (username.length < 3) {
-    throw new Error('Username must be at least 3 characters');
-  }
-  
-  // Validate password
-  if (password.length < 6) {
-    throw new Error('Password must be at least 6 characters');
-  }
-  
-  // Hash password
-  const passwordHash = await hash(password, SALT_ROUNDS);
-  
-  // Create user in database
-  const user = await createDatabaseUser({
-    username,
-    passwordHash
-  });
-  
-  // Return user without password hash
-  const { passwordHash: _, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+/**
+ * Create a new user account via `/user/register` on the Worker.
+ * Basic frontend validation is still done here; the Worker will run
+ * its own checks too.
+ */
+export const createUser = async (
+  username: string,
+  password: string
+): Promise<User> => {
+  // Basic validation
+  if (username.length < 3) throw new Error('Username must be at least 3 characters');
+  if (password.length < 6) throw new Error('Password must be at least 6 characters');
+
+  // Backend will throw if the username already exists
+  await backendRegister(username, password);
+
+  return { id: username, username };
 };
 
+/* ------------------------------------------------------------------ */
+/*  JWT helpers (client‑side session)                                 */
+/* ------------------------------------------------------------------ */
+
 export const generateToken = async (user: User): Promise<string> => {
-  return await jwt.sign(
-    { 
-      userId: user.id, 
+  return jwt.sign(
+    {
+      userId: user.id,
       username: user.username,
-      exp: Math.floor(Date.now() / 1000) + (2 * (60 * 60)) // Expires: Now + 2h
-    }, JWT_SECRET);
+      // Expires in 2 hours
+      exp: Math.floor(Date.now() / 1000) + 2 * 60 * 60
+    },
+    JWT_SECRET
+  );
 };
 
 export const verifyToken = async (token: string): Promise<User | null> => {
   try {
-    const decoded = await jwt.verify(token, JWT_SECRET) as unknown as { userId: string; username: string };
-    return {
-      id: decoded.userId,
-      username: decoded.username
+    const decoded = (await jwt.verify(token, JWT_SECRET)) as unknown as {
+      userId: string;
+      username: string;
     };
-  } catch (_error) {
+    return { id: decoded.userId, username: decoded.username };
+  } catch {
     return null;
   }
 };

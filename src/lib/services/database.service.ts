@@ -1,177 +1,166 @@
-const BASE_URL = "https://neurapath-backend.neurapath.workers.dev/";
-import type { Database, User, UserWithPasswordHash } from '$lib/models';
+/* src/lib/database.service.ts */
+import type {
+  Database,
+  Record as DBRecord,
+  User
+} from '$lib/models';
 
-// In-memory storage for users (in a real app, this would be a database)
-let users: UserWithPasswordHash[] = [
-  {
-    id: '1',
-    username: 'admin',
-    // Password is 'password' hashed with bcrypt-ts
-    passwordHash: '$2b$10$8K1p/a0dhrxiowP.dnkgNORTWgdEDHn5L2/xjpEWuC.QQv4rKO9jO'
+const BASE = 'https://neurapath-backend.neurapath.workers.dev';
+
+/* ---------- helpers ---------- */
+function buildHeaders(username?: string, password?: string): Headers {
+  const headers = new Headers({ 'Content-Type': 'application/json' });
+  if (username && password) {
+    // Basic <base64(username:password)>
+    headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
   }
-];
+  return headers;
+}
 
-export const getPublicDatabases = async (): Promise<Database[]> => {
-  try {
-    // Get username and password from localforage
-    // const username = await localforage.getItem<string>('username');
-    // const password = await localforage.getItem<string>('password');
-
-    const username = "test";
-    const password = "test";
-
-    // Check if username and password exist
-    if (!username || !password) {
-      console.error('Username or password not found in local storage');
-      // Return sample data for testing
-      return [
-        { id: '1', name: 'Sample Database 1' },
-        { id: '2', name: 'Sample Database 2' },
-        { id: '3', name: 'Sample Database 3' }
-      ];
-    }
-
-    // Create headers with Basic authentication
-    const headers = new Headers();
-    headers.append('Authorization', `Basic ${username}:${password}`);
-
-    // Set up request options
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      headers: headers
-    };
-
-    // Make the API call
-    const response = await fetch('https://neurapath-backend.neurapath.workers.dev/public/data', requestOptions);
-    const data = await response.json();
-
-    // Check for error in response
-    if (data.error && data.error === 403) {
-      console.error('Access forbidden when fetching public databases');
-      return [];
-    }
-
-    // Return the databases array or empty array if not present
-    return data.databases || [];
-  } catch (error) {
-    console.error('Error fetching public databases:', error);
-    // Return sample data for testing
-    return [
-      { id: '1', name: 'Sample Database 1' },
-      { id: '2', name: 'Sample Database 2' },
-      { id: '3', name: 'Sample Database 3' }
-    ];
+async function handle<ResponseShape = unknown>(promise: Promise<Response>) {
+  const res = await promise;
+  const json = await res.json();
+  if (!res.ok || json?.error) {
+    throw new Error(json?.message ?? `Request failed with status ${res.status}`);
   }
-};
+  return json as ResponseShape;
+}
 
-export const getDatabaseByID = async (id: string) => {
-  try {
-    const response = await fetch(`${BASE_URL}${id}.json`);
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
-    return {};
-  } catch (error) {
-    console.error('Error fetching database:', error);
-    throw new Error('Failed to fetch database');
-  }
-};
-
-export const createRecord = async (id: string, record: any) => {
-  try {
-    const response = await fetch(`${BASE_URL}${id}.json`, {
+/* ---------- auth / user ---------- */
+export async function register(username: string, password: string) {
+  return handle(
+    fetch(`${BASE}/user/register`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(record),
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
-    throw new Error('Failed to create record');
-  } catch (error) {
-    console.error('Error creating record:', error);
-    throw error;
-  }
-};
+      headers: buildHeaders(username, password)
+    })
+  );
+}
 
-export const updateRecord = async (id: string, record: any) => {
-  try {
-    const response = await fetch(`${BASE_URL}${id}.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(record),
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
-    throw new Error('Failed to update record');
-  } catch (error) {
-    console.error('Error updating record:', error);
-    throw error;
-  }
-};
+export async function login(username: string, password: string) {
+  // successful response ⇒ credentials are valid
+  return handle<unknown>(
+    fetch(`${BASE}/user/data`, {
+      method: 'GET',
+      headers: buildHeaders(username, password)
+    })
+  );
+}
 
-export const deleteRecord = async (id: string) => {
-  try {
-    const response = await fetch(`${BASE_URL}${id}.json`, {
-      method: 'DELETE',
-    });
-    
-    if (response.ok) {
-      return true;
-    }
-    throw new Error('Failed to delete record');
-  } catch (error) {
-    console.error('Error deleting record:', error);
-    throw error;
-  }
-};
+export async function deleteAccount(username: string, password: string) {
+  return handle(
+    fetch(`${BASE}/user/delete`, {
+      method: 'POST',
+      headers: buildHeaders(username, password)
+    })
+  );
+}
 
-export const updateDatabase = async (id: string, database: any) => {
-  try {
-    const response = await fetch(`${BASE_URL}${id}.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(database),
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
-    throw new Error('Failed to update database');
-  } catch (error) {
-    console.error('Error updating database:', error);
-    throw error;
-  }
-};
+export async function setDatabasePublic(
+  username: string,
+  password: string,
+  value: boolean
+) {
+  return handle(
+    fetch(`${BASE}/user/set/public/${value}`, {
+      method: 'POST',
+      headers: buildHeaders(username, password)
+    })
+  );
+}
 
-// User-related functions
-export const getUserByUsername = async (username: string): Promise<UserWithPasswordHash | null> => {
-  // In a real app, this would query the database
-  // For now, we're using in-memory storage
-  const user = users.find(u => u.username === username);
-  return user || null;
-};
+/* ---------- current user’s database ---------- */
+export async function fetchMyDatabase(username: string, password: string) {
+  return handle<Record<string, unknown>>(
+    fetch(`${BASE}/user/data`, {
+      method: 'GET',
+      headers: buildHeaders(username, password)
+    })
+  );
+}
 
-export const createUser = async (user: Omit<UserWithPasswordHash, 'id'>): Promise<UserWithPasswordHash> => {
-  // In a real app, this would insert into the database
-  // For now, we're using in-memory storage
-  const newUser = {
-    id: String(users.length + 1),
-    ...user
-  };
-  users.push(newUser);
-  return newUser;
-};
+export async function saveMyDatabase(
+  username: string,
+  password: string,
+  data: Record<string, unknown>
+) {
+  return handle(
+    fetch(`${BASE}/user/data`, {
+      method: 'POST',
+      headers: buildHeaders(username, password),
+      body: JSON.stringify(data)
+    })
+  );
+}
+
+/* ---------- other people’s public databases ---------- */
+export async function getPublicDatabases(): Promise<Database[]> {
+  const { databases = [] } = await handle<{ databases: string[] }>(
+    fetch(`${BASE}/public/data`)
+  );
+
+  // Map simple usernames → UI‑friendly objects
+  return databases.map((name) => ({ id: name, name }));
+}
+
+export async function fetchPublicDatabaseByUser(username: string) {
+  return handle<Record<string, unknown>>(
+    fetch(`${BASE}/user/data/${username}`)
+  );
+}
+
+/* ---------- convenience helpers for record‑level ops ---------- */
+// We manipulate the whole DB blob on the server, but expose record‑level
+// helpers in the frontend so components stay simple.
+
+export async function addRecord(
+  username: string,
+  password: string,
+  record: DBRecord
+) {
+  const db = await fetchMyDatabase(username, password);
+  db[record.id] = record;
+  return saveMyDatabase(username, password, db);
+}
+
+export async function updateRecord(
+  username: string,
+  password: string,
+  record: DBRecord
+) {
+  return addRecord(username, password, record); // overwrite
+}
+
+export async function deleteRecord(
+  username: string,
+  password: string,
+  id: string
+) {
+  const db = await fetchMyDatabase(username, password);
+  delete db[id];
+  return saveMyDatabase(username, password, db);
+}
+
+/* ---------- leaderboard (optional UI tab) ---------- */
+export async function getLeaderboard() {
+  return handle<{ users: { Username: string; Repetitions: number; Retention: number }[] }>(
+    fetch(`${BASE}/leaderboard`)
+  );
+}
+
+export async function incrementLeaderboard(username: string) {
+  return handle(
+    fetch(`${BASE}/leaderboard/${username}/increase`, {
+      method: 'POST',
+      headers: buildHeaders()
+    })
+  );
+}
+
+export async function decrementLeaderboard(username: string) {
+  return handle(
+    fetch(`${BASE}/leaderboard/${username}/decrease`, {
+      method: 'POST',
+      headers: buildHeaders()
+    })
+  );
+}

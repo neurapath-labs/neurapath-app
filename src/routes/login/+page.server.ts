@@ -1,46 +1,49 @@
-import { redirect } from '@sveltejs/kit';
+import { redirect, fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
-import { authenticateUser, generateToken } from '$lib/services/user.service';
+import { authenticateUser, createUser, generateToken } from '$lib/services/user.service';
+import { dev } from '$app/environment';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  if (locals.user) {
-    throw redirect(302, '/');
-  }
+  if (locals.user) throw redirect(302, '/');
+  return {};
 };
 
 export const actions: Actions = {
   login: async ({ request, cookies }) => {
     const data = await request.formData();
-    const username = data.get('username');
-    const password = data.get('password');
+    const username = (data.get('username') ?? '').toString().trim();
+    const password = (data.get('password') ?? '').toString();
 
-    if (typeof username !== 'string' || typeof password !== 'string') {
-      return {
-        error: 'Invalid input'
-      };
+    if (!username || !password) {
+      return fail(400, { error: 'Invalid input' });
     }
 
-    // Authenticate user
-    const user = await authenticateUser(username, password);
-    
-    if (user) {
-      // Generate JWT token
-      const token = generateToken(user);
-      
-      // Set secure cookie
-      cookies.set('token', await token, {
+    try {
+      // 1) Try to authenticate
+      let user = await authenticateUser(username, password);
+
+      // 2) If not found/invalid, auto-register and then proceed
+      if (!user) {
+        user = await createUser(username, password);
+      }
+
+      // 3) Issue JWT & set cookie
+      const token = await generateToken(user);
+
+      cookies.set('token', token, {
         path: '/',
         httpOnly: true,
-        secure: false,
+        secure: !dev,
         sameSite: 'strict',
-        maxAge: 60 * 60 // 1 hour
+        maxAge: 60 * 60 * 2 // 2 hours
       });
-      
-      throw redirect(302, '/');
-    }
 
-    return {
-      error: 'Invalid credentials',
-    };
-  },
+      throw redirect(303, '/');
+    } catch (error: any) {
+      console.error(error);
+      return fail(401, {
+        error: error?.message ?? 'Invalid credentials'
+      });
+    }
+  }
 };
