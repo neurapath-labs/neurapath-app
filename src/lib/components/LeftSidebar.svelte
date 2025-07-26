@@ -10,6 +10,7 @@
   import type { Record } from '$lib/models';
   import { onMount, onDestroy } from 'svelte';
   import { createID } from '$lib/utils/helpers';
+  import { Button } from "$lib/components/ui/button/index.js";
 
   let learningMode = false;
   let databaseItems: Record[] = [];
@@ -121,12 +122,14 @@
     </div>
   </header>
 
-  <button
+
+  <Button
     id="learning-button"
+    variant="outline"
     class={learningMode ? 'stop' : 'start'}
     on:click={toggleLearningMode}>
     {learningMode ? 'Stop learning!' : 'Engage!'}
-  </button>
+  </Button>
 
   <nav id="quick-actions">
     <div class="action" on:click={() => modal.openSettingsModal()}>
