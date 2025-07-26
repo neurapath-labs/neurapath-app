@@ -109,7 +109,7 @@
 	/* ---------- command handlers ---------- */
 	const toggleLearningMode = () => learning.toggleLearningMode();
 	const handleLogout = async () => {
-		await auth.logout();
+		await auth.logout();      
 		window.location.href = '/login';
 	};
 	const openPdfImport = () => ui.openPdfImport();
@@ -121,203 +121,70 @@
 		theme.setTheme(currentTheme === 'day' ? 'night' : 'day');
 </script>
 
-<!-- ---------- markup ---------- -->
-<aside id="sidebar-left">
-	<header id="logo-area">
-		<img src="/img/logo.svg" alt="neurapath logo" />
-		<div>
-			<h1>Neuraa</h1>
-			<p class="meta"><span>Last saved:</span><span id="sidebar-last-saved">‑</span></p>
-			<p class="meta"
-				><span>Due today:</span><span id="sidebar-due-items">{dueCount}</span></p
-			>
+<!-- ---------- markup (tailwind classes) ---------- -->
+<aside
+	class="grid-area[sidebar] flex h-screen w-[clamp(230px,26vw,280px)] min-w-[220px] flex-col gap-4 overflow-y-auto border-r border-black/5 bg-[rgb(var(--background-color_sidebar))] p-4 text-[rgb(var(--font-color))] select-none"
+>
+	<!-- header -->
+	<header class="flex gap-3">
+		<img src="/img/logo.svg" alt="neurapath logo" class="h-12 w-12" />
+		<div class="space-y-1">
+			<h1 class="m-0 text-xl leading-tight">Neuraa</h1>
+			<p class="text-xs"><span>Last saved:</span> <span id="sidebar-last-saved">‑</span></p>
+			<p class="text-xs">
+				<span>Due today:</span>
+				<span id="sidebar-due-items">{dueCount}</span>
+			</p>
 		</div>
 	</header>
 
-	<Button
-		id="learning-button"
-		variant="outline"
-		class={learningMode ? 'stop' : 'start'}
-		on:click={toggleLearningMode}
-	>
-		{learningMode ? 'Stop learning!' : 'Engage!'}
-	</Button>
+<Button
+	id="learning-button"
+	variant="outline"
+	class={`rounded-md px-4 py-2 font-medium transition-colors
+		${learningMode
+			? 'bg-red-500/90 text-white hover:bg-red-600'
+			: 'bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color_button-hover))]'
+		}`}
+	on:click={toggleLearningMode}
+>
+	{learningMode ? 'Stop learning!' : 'Engage!'}
+</Button>
 
-	<nav id="quick-actions">
-		<div class="action" on:click={() => modal.openSettingsModal()}>
-			<img src="/img/user.svg" alt="" /><span>Settings</span>
+	<!-- quick‑actions -->
+	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={() => modal.openSettingsModal()}>
+			<img src="/img/user.svg" alt="" class="h-4 w-4" /><span>Settings</span>
 		</div>
-		<div class="action" id="header-darkmode-button" on:click={toggleTheme}>
-			<img src="/img/night-mode.svg" alt="" /><span id="darkmode-text"
-				>{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span
-			>
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={toggleTheme}>
+			<img src="/img/night-mode.svg" alt="" class="h-4 w-4" /><span id="darkmode-text">{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span>
 		</div>
-		<div class="action" on:click={renderDatabases}>
-			<img src="/img/database.svg" alt="" /><span>Shared databases</span>
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderDatabases}>
+			<img src="/img/database.svg" alt="" class="h-4 w-4" /><span>Shared databases</span>
 		</div>
-		<div class="action" on:click={openPdfImport}>
-			<img src="/img/extract.svg" alt="" /><span>Import PDF</span>
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={openPdfImport}>
+			<img src="/img/extract.svg" alt="" class="h-4 w-4" /><span>Import PDF</span>
 		</div>
-		<div class="action" on:click={renderExplorer}>
-			<img src="/img/find.svg" alt="" /><span>Item explorer</span>
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderExplorer}>
+			<img src="/img/find.svg" alt="" class="h-4 w-4" /><span>Item explorer</span>
 		</div>
-		<div class="action" on:click={renderFlagged}>
-			<img src="/img/unflag.svg" alt="" /><span>Flagged items</span>
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderFlagged}>
+			<img src="/img/unflag.svg" alt="" class="h-4 w-4" /><span>Flagged items</span>
 		</div>
-		<div class="action" on:click={renderStatistics}>
-			<img src="/img/statistics.svg" alt="" /><span>Statistics</span>
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderStatistics}>
+			<img src="/img/statistics.svg" alt="" class="h-4 w-4" /><span>Statistics</span>
 		</div>
-		<div class="action" on:click={handleLogout}>
-			<img src="/img/lock.svg" alt="" /><span>Logout</span>
+		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={handleLogout}>
+			<img src="/img/lock.svg" alt="" class="h-4 w-4" /><span>Logout</span>
 		</div>
 	</nav>
 
-	<section id="content-structure">
+	<!-- content structure -->
+	<section id="content-structure" class="mt-2 pr-2">
 		{#if $database.items.length}
 			{@html renderTree(renderFolders($database.items))}
 		{:else}
-			<p class="empty">Quick start</p>
+			<p class="text-sm opacity-60">Quick start</p>
 		{/if}
 	</section>
 </aside>
-
-<style>
-	:root {
-		--sb-w: clamp(230px, 26vw, 280px);
-		--sb-bg: rgb(var(--background-color_sidebar));
-		--sb-fg: rgb(var(--font-color));
-		--sb-accent: rgb(var(--background-color_button));
-		--sb-accent-hover: rgb(var(--background-color_button-hover));
-	}
-
-	#sidebar-left {
-		grid-area: sidebar;
-		width: var(--sb-w);
-		min-width: 220px;
-		height: 100vh;
-		background: var(--sb-bg);
-		color: var(--sb-fg);
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		padding: 1rem;
-		overflow-y: auto;
-		border-right: 1px solid rgba(0, 0, 0, 0.06);
-		-webkit-user-select: none;
-		user-select: none;
-	}
-
-	#logo-area {
-		display: flex;
-		gap: 0.75rem;
-		align-items: flex-start;
-	}
-	#logo-area img {
-		width: 48px;
-		height: 48px;
-	}
-	#logo-area h1 {
-		margin: 0;
-		font-size: 1.4rem;
-		line-height: 1.1;
-	}
-	.tagline {
-		font-style: italic;
-		font-size: 0.75rem;
-		margin: 0;
-	}
-	.meta {
-		font-size: 0.75rem;
-		margin: 0.15rem 0;
-		display: flex;
-		gap: 0.25rem;
-	}
-
-	#learning-button {
-		border: 0;
-		border-radius: 0.5rem;
-		padding: 0.5rem 1rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: background 0.15s;
-	}
-	#learning-button.start {
-		background: var(--sb-accent);
-		color: var(--sb-fg);
-	}
-	#learning-button.stop {
-		background: rgba(255, 101, 101, 0.9);
-		color: #fff;
-	}
-	#learning-button:hover {
-		background: var(--sb-accent-hover);
-	}
-
-	#quick-actions {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		font-size: 0.9rem;
-	}
-	.action {
-		display: flex;
-		align-items: center;
-		gap: 0.65rem;
-		padding: 0.45rem 0.6rem;
-		border-radius: 0.4rem;
-		cursor: pointer;
-		transition: background 0.15s;
-		white-space: nowrap;
-	}
-	.action img {
-		width: 18px;
-		height: 18px;
-		flex-shrink: 0;
-	}
-	.action:hover {
-		background: rgba(0, 0, 0, 0.06);
-	}
-	.action:active {
-		background: rgba(0, 0, 0, 0.12);
-	}
-
-	#content-structure {
-		margin-top: 0.5rem;
-		padding-right: 0.5rem;
-	}
-	.menuSubItem > p {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.35rem 0.4rem;
-		border-radius: 0.35rem;
-		cursor: pointer;
-		font-size: 0.85rem;
-		max-width: 100%;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-	.menuSubItem > p:hover {
-		background: rgba(0, 0, 0, 0.06);
-	}
-	.menuSubItem > p.active {
-		background: rgba(var(--background-color_button), 0.45);
-	}
-	.threeIcon {
-		width: 18px;
-		height: 18px;
-		flex-shrink: 0;
-	}
-	.empty {
-		opacity: 0.6;
-		font-size: 0.85rem;
-	}
-
-	#sidebar-left::-webkit-scrollbar {
-		width: 6px;
-	}
-	#sidebar-left::-webkit-scrollbar-thumb {
-		background: rgba(0, 0, 0, 0.15);
-		border-radius: 3px;
-	}
-</style>
