@@ -28,13 +28,26 @@
 	});
 </script>
 
-<div id="wrapper">
-	<LeftSidebar />
-	<MainContent>
-		{@render children()}
-	</MainContent>
-	<RightSidebar />
-</div>
+<!-- Header -->
+<header role="banner">
+	<!-- Navigation will be handled by LeftSidebar -->
+</header>
+
+<!-- Main content area -->
+<main id="main-content" role="main">
+	<div id="wrapper">
+		<LeftSidebar />
+		<MainContent>
+			{@render children()}
+		</MainContent>
+		<RightSidebar />
+	</div>
+</main>
+
+<!-- Footer -->
+<footer role="contentinfo">
+	<!-- Footer content -->
+</footer>
 
 <ExplorerModal />
 <FlaggedItemsModal />

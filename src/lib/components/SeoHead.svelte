@@ -6,11 +6,11 @@
   export let keywords: string = 'evidence-based learning, spaced repetition, incremental reading, active recall, learning platform, educational technology';
   export let ogTitle: string = 'Neuraa - Evidence-Based Learning Platform';
   export let ogDescription: string = 'Boost your learning with Neuraa\'s evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques.';
-  export let ogImage: string = '/img/logo/logo.svg';
+  export let ogImage: string = '/img/preview/og-image.svg';
   export let ogUrl: string = '';
   export let twitterTitle: string = 'Neuraa - Evidence-Based Learning Platform';
   export let twitterDescription: string = 'Boost your learning with Neuraa\'s evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques.';
-  export let twitterImage: string = '/img/logo/logo.svg';
+  export let twitterImage: string = '/img/preview/twitter-image.svg';
   export let canonicalUrl: string = '';
   export let schema: Record<string, any>[] = [];
   
