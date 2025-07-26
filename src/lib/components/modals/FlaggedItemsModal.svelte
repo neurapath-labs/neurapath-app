@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { database } from '$lib/stores/database.store';
   import { ui } from '$lib/stores/ui.store';
   import type { Record } from '$lib/models';
@@ -66,13 +67,14 @@
       </table>
 
       <!-- Close button -->
-      <button
-        class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
+      <Button
+        class="absolute bottom-4 left-1/2 -translate-x-1/2"
         on:click={closeFlagged}
         type="button"
+        variant="outline"
       >
         Close
-      </button>
+      </Button>
     </div>
   </div>
 {/if}

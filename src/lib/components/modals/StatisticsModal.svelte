@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { database } from '$lib/stores/database.store';
   import { ui } from '$lib/stores/ui.store';
   import { profile } from '$lib/stores/profile.store';
@@ -178,7 +179,7 @@
 
       <!-- Close -->
       <div class="flex justify-center">
-        <button type="button" on:click={closeStatistics} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm">Close</button>
+        <Button type="button" on:click={closeStatistics} variant="outline" size="sm">Close</Button>
       </div>
     </div>
   </div>
