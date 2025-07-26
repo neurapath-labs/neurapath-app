@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { ui } from '$lib/stores/ui.store';
   import { database } from '$lib/stores/database.store';
   import { onMount, onDestroy } from 'svelte';
@@ -156,22 +157,26 @@
             <p class="text-sm italic mb-4">Your database is currently empty.</p>
           {/if}
           <div class="flex gap-3">
-            <button
+            <Button
               type="button"
               on:click={exportToJson}
               disabled={isExporting || databaseItems.length === 0}
-              class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              variant="outline"
+              size="sm"
+              class="flex-1"
             >
               {isExporting ? 'Exporting...' : 'Export to JSON'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               on:click={exportToCsv}
               disabled={isExporting || databaseItems.length === 0}
-              class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              variant="outline"
+              size="sm"
+              class="flex-1"
             >
               {isExporting ? 'Exporting...' : 'Export to CSV'}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -199,13 +204,14 @@
           >
             {#if selectedFile}
               <p class="text-sm">Selected file: {selectedFile.name}</p>
-              <button
+              <Button
                 type="button"
                 class="mt-2 px-3 py-1 rounded bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-xs"
                 on:click={() => (selectedFile = null)}
+                size="sm"
               >
                 Remove
-              </button>
+              </Button>
             {:else}
               <p class="text-sm">Drag and drop a {importFormat.toUpperCase()} file here or click to select</p>
               <input
@@ -217,26 +223,28 @@
             {/if}
           </div>
 
-          <button
+          <Button
             type="button"
             on:click={importDatabase}
             disabled={isImporting || !selectedFile}
-            class="w-full px-4 py-3 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            variant="outline"
+            class="w-full"
           >
             {isImporting ? 'Importing...' : 'Import Database'}
-          </button>
+          </Button>
         </div>
       </div>
 
       <!-- Footer buttons -->
       <div class="flex justify-end mt-8">
-        <button
+        <Button
           type="button"
           on:click={closeExportImport}
-          class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm"
+          variant="outline"
+          size="sm"
         >
           Close
-        </button>
+        </Button>
       </div>
     </div>
   </div>

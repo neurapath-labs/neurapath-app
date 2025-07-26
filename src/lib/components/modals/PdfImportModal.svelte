@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { ui } from '$lib/stores/ui.store';
   import { database } from '$lib/stores/database.store';
   import { onMount, onDestroy } from 'svelte';
@@ -118,13 +119,14 @@
         >
           {#if selectedFile}
             <p class="text-sm">Selected file: {selectedFile.name}</p>
-            <button
+            <Button
               type="button"
               class="mt-2 px-3 py-1 rounded bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm"
               on:click={() => (selectedFile = null)}
+              size="sm"
             >
               Remove
-            </button>
+            </Button>
           {:else}
             <p class="text-sm">Drag and drop a PDF file here or click to select</p>
             <input
@@ -154,22 +156,24 @@
 
       <!-- Buttons -->
       <div class="flex justify-between">
-        <button
+        <Button
           type="button"
           on:click={closePdfImport}
           disabled={isProcessing}
-          class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          variant="outline"
+          size="sm"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           on:click={processPdf}
           disabled={isProcessing || !selectedFile}
-          class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          variant="outline"
+          size="sm"
         >
           {isProcessing ? 'Processing...' : 'Import PDF'}
-        </button>
+        </Button>
       </div>
     </div>
   </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { ui } from '$lib/stores/ui.store';
   import { onMount, onDestroy } from 'svelte';
   import ScrollTextIcon from '@lucide/svelte/icons/scroll-text';
@@ -99,13 +100,14 @@
 
       <!-- Action -->
       <div class="flex justify-center mt-4">
-        <button
+        <Button
           type="button"
           on:click={closeChangelog}
-          class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm"
+          variant="outline"
+          size="sm"
         >
           I'm ready!
-        </button>
+        </Button>
       </div>
     </div>
   </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { profile } from '$lib/stores/profile.store';
   import type { Shortcut } from '$lib/models';
   import { modal } from '$lib/stores/modal.store';
@@ -206,18 +207,20 @@
                       {/if}
                     </td>
                     <td class="p-3">
-                      <button
+                      <Button
                         class="px-3 py-1 text-xs rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[rgba(var(--background-color_button-hover))]"
                         on:click={() => startRecording(shortcut.event)}
                         disabled={isRecording && recordingEvent !== shortcut.event}
                         type="button"
+                        variant="outline"
+                        size="sm"
                       >
                         {#if isRecording && recordingEvent === shortcut.event}
                           Recording...
                         {:else}
                           Change
                         {/if}
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 {/each}
@@ -226,20 +229,23 @@
           </div>
 
           <div class="flex justify-between mb-5">
-            <button
+            <Button
               class="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700"
               on:click={resetToDefaults}
               type="button"
+              variant="destructive"
+              size="sm"
             >
               Reset to Defaults
-            </button>
-            <button
+            </Button>
+            <Button
               class="px-4 py-2 text-sm rounded bg-green-600 text-white hover:bg-green-700"
               on:click={saveChanges}
               type="button"
+              size="sm"
             >
               Save Changes
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -276,24 +282,26 @@
           </div>
 
           <div class="flex justify-end mb-5">
-            <button
+            <Button
               class="px-4 py-2 text-sm rounded bg-green-600 text-white hover:bg-green-700"
               on:click={saveApiKeys}
               type="button"
+              size="sm"
             >
               Save API Keys
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
-      <button
+      <Button
         class="absolute bottom-4 left-1/2 -translate-x-1/2 border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] px-4 py-2 rounded hover:bg-[rgba(var(--background-color_button-hover))]"
         on:click={closeSettings}
         type="button"
+        variant="outline"
       >
         Close
-      </button>
+      </Button>
     </div>
   </div>
 {/if}

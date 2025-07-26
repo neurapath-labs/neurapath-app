@@ -15,7 +15,8 @@
     "cf:deploy:prod": "bun run build && wrangler pages deploy .svelte-kit/cloudflare --env production"
   },
   "devDependencies": {
-    "@lucide/svelte": "^0.525.0",
+    "@internationalized/date": "^3.8.1",
+    "@lucide/svelte": "^0.515.0",
     "@sveltejs/adapter-auto": "^6.0.1",
     "@sveltejs/adapter-cloudflare": "^7.1.1",
     "@sveltejs/kit": "^2.26.1",

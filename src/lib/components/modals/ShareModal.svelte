@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { ui } from '$lib/stores/ui.store';
   import { modal } from '$lib/stores/modal.store';
   import { database } from '$lib/stores/database.store';
@@ -156,14 +157,15 @@
                   readonly
                   class="flex-1 px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm"
                 />
-                <button
+                <Button
                   type="button"
                   on:click={copyLinkToClipboard}
                   disabled={isProcessing}
-                  class="px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  variant="outline"
+                  size="sm"
                 >
                   Copy
-                </button>
+                </Button>
               </div>
             </div>
           {/if}
@@ -196,14 +198,14 @@
 
       <!-- Actions -->
       <div class="flex justify-end">
-        <button
+        <Button
           type="button"
           on:click={closeShareModal}
           disabled={isProcessing}
-          class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed"
+          variant="outline"
         >
           Close
-        </button>
+        </Button>
       </div>
     </div>
   </div>

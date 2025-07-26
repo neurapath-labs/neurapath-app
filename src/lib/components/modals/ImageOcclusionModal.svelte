@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { database } from '$lib/stores/database.store';
   import { modal } from '$lib/stores/modal.store';
   import { occlusion } from '$lib/stores/occlusion.store';
@@ -226,7 +227,7 @@
             {#each occlusions as occlusionItem, i}
               <li class="occlusion-item">
                 <span>Occlusion {i + 1}</span>
-                <button class="remove-button" onclick={() => removeOcclusion(i)} type="button">Remove</button>
+                <Button class="remove-button" onclick={() => removeOcclusion(i)} type="button" size="sm">Remove</Button>
               </li>
             {/each}
           </ul>
@@ -236,21 +237,23 @@
       </div>
       
       <div class="modalbox-button-container">
-        <button 
-          class="modalbox-button" 
+        <Button
+          class="modalbox-button"
           onclick={cancelOcclusion}
           type="button"
+          variant="outline"
         >
           Cancel
-        </button>
-        <button 
-          class="modalbox-button" 
+        </Button>
+        <Button
+          class="modalbox-button"
           onclick={saveOcclusion}
           type="button"
           disabled={occlusions.length === 0}
+          variant="outline"
         >
           Save Occlusion
-        </button>
+        </Button>
       </div>
     </div>
   </div>
