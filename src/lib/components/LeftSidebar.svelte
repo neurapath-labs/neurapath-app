@@ -16,6 +16,7 @@
 	/* ---------- icons ---------- */
 	import UserIcon      from '@lucide/svelte/icons/user';
 	import MoonIcon      from '@lucide/svelte/icons/moon';
+	import SunIcon      from '@lucide/svelte/icons/sun';
 	import DatabaseIcon  from '@lucide/svelte/icons/database';
 	import FileTextIcon  from '@lucide/svelte/icons/file-text';
 	import SearchIcon    from '@lucide/svelte/icons/search';
@@ -137,7 +138,12 @@
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={toggleTheme}>
-			<MoonIcon class="h-4 w-4" /><span id="darkmode-text">{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span>
+			{#if currentTheme === "day"}
+			 <MoonIcon class='h-4 w-4' />
+			{:else}
+			<SunIcon class='h-4 w-4' />
+			{/if}
+			<span id="darkmode-text">{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderDatabases}>
 			<DatabaseIcon class="h-4 w-4" /><span>Shared databases</span>

@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { ui } from './ui.store';
 
 interface ModalState {
   isLoginModalOpen: boolean;
@@ -33,9 +34,18 @@ const initialState: ModalState = {
 const { subscribe, set, update } = writable(initialState);
 
 const openLoginModal = () => {
+  console.log('[modal.store] Opening LoginModal, closing others');
   update(state => ({
     ...state,
-    isLoginModalOpen: true
+    isLoginModalOpen: true,
+    isSettingsModalOpen: false,
+    isDatabaseModalOpen: false,
+    isStatisticsModalOpen: false,
+    isTutorialModalOpen: false,
+    isOcclusionCreateModalOpen: false,
+    isOcclusionLearningModalOpen: false,
+    isSummaryModalOpen: false,
+    isSpotlightSearchModalOpen: false
   }));
 };
 
@@ -47,9 +57,30 @@ const closeLoginModal = () => {
 };
 
 const openSettingsModal = () => {
+  console.log('[modal.store] Opening SettingsModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
-    isSettingsModalOpen: true
+    isSettingsModalOpen: true,
+    isLoginModalOpen: false,
+    isDatabaseModalOpen: false,
+    isStatisticsModalOpen: false,
+    isTutorialModalOpen: false,
+    isOcclusionCreateModalOpen: false,
+    isOcclusionLearningModalOpen: false,
+    isSummaryModalOpen: false,
+    isSpotlightSearchModalOpen: false
   }));
 };
 
@@ -61,9 +92,30 @@ const closeSettingsModal = () => {
 };
 
 const openDatabaseModal = () => {
+  console.log('[modal.store] Opening DatabaseModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
-    isDatabaseModalOpen: true
+    isDatabaseModalOpen: true,
+    isLoginModalOpen: false,
+    isSettingsModalOpen: false,
+    isStatisticsModalOpen: false,
+    isTutorialModalOpen: false,
+    isOcclusionCreateModalOpen: false,
+    isOcclusionLearningModalOpen: false,
+    isSummaryModalOpen: false,
+    isSpotlightSearchModalOpen: false
   }));
 };
 
@@ -205,5 +257,16 @@ export const modal = {
   openSpotlightSearchModal,
   closeSpotlightSearchModal,
   showAlert,
-  closeAlert
+  closeAlert,
+  closeAllModals: () => {
+    closeLoginModal();
+    closeSettingsModal();
+    closeDatabaseModal();
+    closeStatisticsModal();
+    closeTutorialModal();
+    closeOcclusionCreateModal();
+    closeOcclusionLearningModal();
+    closeSummaryModal();
+    closeSpotlightSearchModal();
+  }
 };

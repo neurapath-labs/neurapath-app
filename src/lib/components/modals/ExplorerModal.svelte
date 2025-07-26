@@ -1,6 +1,5 @@
 <script lang="ts">
   import * as Dialog from "$lib/components/ui/dialog/index.js";
-  import { Button } from '$lib/components/ui/button';
   import { database } from '$lib/stores/database.store';
   import { ui } from '$lib/stores/ui.store';
   import { onMount, onDestroy } from 'svelte';
@@ -79,12 +78,6 @@
         </table>
       </div>
 
-      <!-- Footer close -->
-      <div class="mt-4 flex justify-center">
-        <Dialog.Close asChild>
-          <Button variant="outline" on:click={closeExplorer}>Close</Button>
-        </Dialog.Close>
-      </div>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>

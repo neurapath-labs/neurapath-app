@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { modal } from './modal.store';
 
 interface UIState {
   expandedFolders: Set<string>;
@@ -88,9 +89,20 @@ const toggleSpotlightMode = () => {
 };
 
 const openExplorer = () => {
+  console.log('[ui.store] Opening Explorer, closing other UI modals');
   update(state => ({
     ...state,
-    isExplorerOpen: true
+    isExplorerOpen: true,
+    isFlaggedOpen: false,
+    isStatisticsOpen: false,
+    isDatabasesOpen: false,
+    isChangelogOpen: false,
+    isPolicyOpen: false,
+    isTutorialOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isPdfImportOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
@@ -116,9 +128,30 @@ const closeFlagged = () => {
 };
 
 const openStatistics = () => {
+  console.log('[ui.store] Opening Statistics, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isStatisticsOpen: true
+    isStatisticsOpen: true,
+    isExplorerOpen: false,
+    isFlaggedOpen: false,
+    isDatabasesOpen: false,
+    isChangelogOpen: false,
+    isPolicyOpen: false,
+    isTutorialOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isPdfImportOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
@@ -130,9 +163,30 @@ const closeStatistics = () => {
 };
 
 const openDatabases = () => {
+  console.log('[ui.store] Opening Databases, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isDatabasesOpen: true
+    isDatabasesOpen: true,
+    isExplorerOpen: false,
+    isFlaggedOpen: false,
+    isStatisticsOpen: false,
+    isChangelogOpen: false,
+    isPolicyOpen: false,
+    isTutorialOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isPdfImportOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
@@ -272,5 +326,18 @@ export const ui = {
   openExportImport,
   closeExportImport,
   openShareModal,
-  closeShareModal
+  closeShareModal,
+  closeAllModals: () => {
+    closeExplorer();
+    closeFlagged();
+    closeStatistics();
+    closeDatabases();
+    closeChangelog();
+    closePolicy();
+    closeTutorial();
+    closeSpotlightSearch();
+    closePdfImport();
+    closeExportImport();
+    closeShareModal();
+  }
 };
