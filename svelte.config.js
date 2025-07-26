@@ -16,6 +16,9 @@ export default {
 				include: ['/*'],
 				exclude: ['<all>']
 			}
-		})
+		}),
+	alias: {
+      "@/*": "./src/lib/*",
+    },
 	}
 };

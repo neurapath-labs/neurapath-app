@@ -1,39 +1,49 @@
 <script lang="ts">
 	/* ---------- stores ---------- */
-	import { auth } from '$lib/stores/auth.store';
-	import { database } from '$lib/stores/database.store';
-	import { learning } from '$lib/stores/learning.store';
-	import { ui } from '$lib/stores/ui.store';
-	import { modal } from '$lib/stores/modal.store';
-	import { theme } from '$lib/stores/theme.store';
+	import { auth }       from '$lib/stores/auth.store';
+	import { database }   from '$lib/stores/database.store';
+	import { learning }   from '$lib/stores/learning.store';
+	import { ui }         from '$lib/stores/ui.store';
+	import { modal }      from '$lib/stores/modal.store';
+	import { theme }      from '$lib/stores/theme.store';
+	import { contextmenu } from '$lib/stores/contextmenu.store';
 	import type { Record } from '$lib/models';
 
 	import { onDestroy } from 'svelte';
-	import { Button } from '$lib/components/ui/button';
+	import { Button }    from '$lib/components/ui/button';
+	import TreeItem      from '$lib/components/TreeItem.svelte';
+	
+	/* ---------- icons ---------- */
+	import UserIcon      from '@lucide/svelte/icons/user';
+	import MoonIcon      from '@lucide/svelte/icons/moon';
+	import DatabaseIcon  from '@lucide/svelte/icons/database';
+	import FileTextIcon  from '@lucide/svelte/icons/file-text';
+	import SearchIcon    from '@lucide/svelte/icons/search';
+	import FlagIcon      from '@lucide/svelte/icons/flag';
+	import BarChartIcon  from '@lucide/svelte/icons/bar-chart';
+	import LogOutIcon    from '@lucide/svelte/icons/log-out';
 
-	/* ---------- local state ---------- */
+	/* ---------- local state ---------- */
 	let learningMode = false;
 	let expandedFolders: Set<string> = new Set();
 	let activeItemId: string | null = null;
 	let currentTheme = 'day';
 
-	/* ---------- lightweight subscriptions ---------- */
-	const unsubLearning = learning.subscribe(
-		($l) => (learningMode = $l.isInLearningMode)
-	);
+	/* ---------- subscriptions ---------- */
+	const unsubLearning = learning.subscribe(($l) => {
+		learningMode = $l.isInLearningMode;
+		console.log('[LeftSidebar] learning.isInLearningMode →', learningMode);
+	});
 	const unsubUI = ui.subscribe(($u) => {
 		expandedFolders = $u.expandedFolders;
-		activeItemId = $u.activeItemId;
+		activeItemId   = $u.activeItemId;
+		// (spam‐free; remove if noisy)
 	});
 	const unsubTheme = theme.subscribe(($t) => (currentTheme = $t.currentTheme));
 
-	onDestroy(() => {
-		unsubLearning();
-		unsubUI();
-		unsubTheme();
-	});
+	onDestroy(() => { unsubLearning(); unsubUI(); unsubTheme(); });
 
-	/* ---------- derived value ---------- */
+	/* ---------- derived ---------- */
 	$: dueCount =
 		$database.items.filter(
 			(i) =>
@@ -42,88 +52,60 @@
 				new Date(i.dueDate) <= new Date()
 		).length;
 
-	/* ---------- helpers ---------- */
-	interface TreeNode {
-		[k: string]: TreeNode | Record | undefined;
-		_item?: Record;
-	}
-
+	/* ---------- folder util ---------- */
+	interface TreeNode { [k: string]: TreeNode | Record | undefined; _item?: Record }
 	const renderFolders = (items: Record[]): TreeNode => {
 		const tree: TreeNode = {};
-		items.forEach((item) => {
+		for (const item of items) {
 			const parts = item.id.split('/');
-			let cursor: TreeNode = tree;
-			parts.forEach((part, idx) => {
-				cursor[part] ||= {};
-				if (idx === parts.length - 1) (cursor[part] as TreeNode)._item = item;
-				cursor = cursor[part] as TreeNode;
+			let cur: TreeNode = tree;
+			parts.forEach((part, i) => {
+				cur[part] ||= {};
+				if (i === parts.length - 1) (cur[part] as TreeNode)._item = item;
+				cur = cur[part] as TreeNode;
 			});
-		});
+		}
 		return tree;
 	};
 
-	const renderTree = (tree: TreeNode, path: string[] = []): string =>
-		Object.keys(tree)
-			.filter((k) => k !== '_item')
-			.map((k) => {
-				const nowPath = [...path, k];
-				const fullPath = nowPath.join('/');
-				const node = tree[k] as TreeNode;
-				const item = node._item;
-				const expanded = expandedFolders.has(fullPath);
-
-				return `
-          <div class="menuSubItem">
-            <p data-id="${fullPath}"
-               data-fullpath="${fullPath}"
-               class="${item ? item.contentType.toLowerCase() : 'folder'} ${
-					activeItemId === fullPath ? 'active' : ''
-				}">
-              ${
-					item && item.contentType === 'Folder'
-						? `<img class="threeIcon" style="width: 18px; flex-shrink: 0;" src="/img/${
-								expanded ? 'folderopen' : 'folderclose'
-						  }.svg">`
-						: item && item.contentType === 'Cloze'
-						? '<img class="threeIcon" style="width: 18px;" src="/img/cloze.svg">'
-						: item && item.contentType === 'Extract'
-						? '<img class="threeIcon" style="width: 18px;" src="/img/extract.svg">'
-						: item && item.contentType === 'Occlusion'
-						? '<img class="threeIcon" src="/img/occlusion2.svg">'
-						: '<img class="threeIcon" src="/img/folderclose.svg">'
-				}
-              ${k} ${item && item.isFlagged ? '🚩' : ''}
-            </p>
-            ${
-						Object.keys(node).filter((c) => c !== '_item').length && expanded
-							? `<div class="menuSubItemChildren">${renderTree(
-									node,
-									nowPath
-							  )}</div>`
-							: ''
-					}
-          </div>`;
-			})
-			.join('');
-
-	/* ---------- command handlers ---------- */
+	/* ---------- header / quick‑action handlers ---------- */
 	const toggleLearningMode = () => learning.toggleLearningMode();
-	const handleLogout = async () => {
-		await auth.logout();      
-		window.location.href = '/login';
-	};
-	const openPdfImport = () => ui.openPdfImport();
-	const renderExplorer = () => ui.openExplorer();
-	const renderFlagged = () => ui.openFlagged();
-	const renderStatistics = () => ui.openStatistics();
-	const renderDatabases = () => ui.openDatabases();
-	const toggleTheme = () =>
-		theme.setTheme(currentTheme === 'day' ? 'night' : 'day');
+	const handleLogout       = async () => { await auth.logout(); window.location.href = '/login'; };
+	const openPdfImport      = () => ui.openPdfImport();
+	const renderExplorer     = () => ui.openExplorer();
+	const renderFlagged      = () => ui.openFlagged();
+	const renderStatistics   = () => ui.openStatistics();
+	const renderDatabases    = () => ui.openDatabases();
+	const toggleTheme        = () => theme.setTheme(currentTheme === 'day' ? 'night' : 'day');
+
+	/* ---------- universal sidebar context menu ---------- */
+	function handleSidebarContextMenu(e: MouseEvent) {
+		e.preventDefault();
+
+		/* is the click on a record element? */
+		const el       = (e.target as HTMLElement).closest('[data-fullpath]');
+		const fullPath = el?.getAttribute('data-fullpath');
+
+		/* log for debugging */
+		console.log('[LeftSidebar] right‑click', {
+			fullPath,
+			x: e.clientX,
+			y: e.clientY,
+			type: fullPath ? 'sidebar-item' : 'sidebar-background'
+		});
+
+		contextmenu.showContextMenu(
+			e.clientX,
+			e.clientY,
+			fullPath ?? null,
+			fullPath ? 'sidebar-item' : 'sidebar-background'
+		);
+	}
 </script>
 
-<!-- ---------- markup (tailwind classes) ---------- -->
 <aside
 	class="grid-area[sidebar] flex h-screen w-[clamp(230px,26vw,280px)] min-w-[220px] flex-col gap-4 overflow-y-auto border-r border-black/5 bg-[rgb(var(--background-color_sidebar))] p-4 text-[rgb(var(--font-color))] select-none"
+	on:contextmenu|preventDefault={handleSidebarContextMenu}
 >
 	<!-- header -->
 	<header class="flex gap-3">
@@ -131,58 +113,58 @@
 		<div class="space-y-1">
 			<h1 class="m-0 text-xl leading-tight">Neuraa</h1>
 			<p class="text-xs"><span>Last saved:</span> <span id="sidebar-last-saved">‑</span></p>
-			<p class="text-xs">
-				<span>Due today:</span>
-				<span id="sidebar-due-items">{dueCount}</span>
-			</p>
+			<p class="text-xs"><span>Due today:</span> <span id="sidebar-due-items">{dueCount}</span></p>
 		</div>
 	</header>
 
-<Button
-	id="learning-button"
-	variant="outline"
-	class={`rounded-md px-4 py-2 font-medium transition-colors
-		${learningMode
-			? 'bg-red-500/90 text-white hover:bg-red-600'
-			: 'bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color_button-hover))]'
+	<!-- learning button -->
+	<Button
+		id="learning-button"
+		variant="outline"
+		class={`rounded-md px-4 py-2 font-medium transition-colors ${
+			learningMode
+				? 'bg-red-500/90 text-white hover:bg-red-600'
+				: 'bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color_button-hover))]'
 		}`}
-	on:click={toggleLearningMode}
->
-	{learningMode ? 'Stop learning!' : 'Engage!'}
-</Button>
+		on:click={toggleLearningMode}
+	>
+		{learningMode ? 'Stop learning!' : 'Engage!'}
+	</Button>
 
 	<!-- quick‑actions -->
 	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={() => modal.openSettingsModal()}>
-			<img src="/img/user.svg" alt="" class="h-4 w-4" /><span>Settings</span>
+			<UserIcon class="h-4 w-4" /><span>Settings</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={toggleTheme}>
-			<img src="/img/night-mode.svg" alt="" class="h-4 w-4" /><span id="darkmode-text">{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span>
+			<MoonIcon class="h-4 w-4" /><span id="darkmode-text">{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderDatabases}>
-			<img src="/img/database.svg" alt="" class="h-4 w-4" /><span>Shared databases</span>
+			<DatabaseIcon class="h-4 w-4" /><span>Shared databases</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={openPdfImport}>
-			<img src="/img/extract.svg" alt="" class="h-4 w-4" /><span>Import PDF</span>
+			<FileTextIcon class="h-4 w-4" /><span>Import PDF</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderExplorer}>
-			<img src="/img/find.svg" alt="" class="h-4 w-4" /><span>Item explorer</span>
+			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderFlagged}>
-			<img src="/img/unflag.svg" alt="" class="h-4 w-4" /><span>Flagged items</span>
+			<FlagIcon class="h-4 w-4" /><span>Flagged items</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderStatistics}>
-			<img src="/img/statistics.svg" alt="" class="h-4 w-4" /><span>Statistics</span>
+			<BarChartIcon class="h-4 w-4" /><span>Statistics</span>
 		</div>
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={handleLogout}>
-			<img src="/img/lock.svg" alt="" class="h-4 w-4" /><span>Logout</span>
+			<LogOutIcon class="h-4 w-4" /><span>Logout</span>
 		</div>
 	</nav>
 
-	<!-- content structure -->
+	<!-- tree -->
 	<section id="content-structure" class="mt-2 pr-2">
 		{#if $database.items.length}
-			{@html renderTree(renderFolders($database.items))}
+			{#each Object.entries(renderFolders($database.items)) as [key, node]}
+				<TreeItem {node} path={[key]} {expandedFolders} {activeItemId} />
+			{/each}
 		{:else}
 			<p class="text-sm opacity-60">Quick start</p>
 		{/if}

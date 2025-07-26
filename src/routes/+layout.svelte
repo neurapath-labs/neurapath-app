@@ -1,6 +1,6 @@
 <script lang="ts">
+	import "../app.css";
+	// import ContextMenu from '$lib/components/ContextMenu.svelte';
 	let { children } = $props();
-	 import "../app.css";
 </script>
-
 {@render children()}
