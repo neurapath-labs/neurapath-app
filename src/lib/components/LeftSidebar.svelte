@@ -1,5 +1,4 @@
 <script lang="ts">
-  /* --------------  your original logic (unchanged) -------------- */
   import { auth } from '$lib/stores/auth.store';
   import { database } from '$lib/stores/database.store';
   import { learning } from '$lib/stores/learning.store';
@@ -65,6 +64,8 @@
         const item      = node._item;
         const expanded  = expandedFolders.has(fullPath);
 
+        console.log(JSON.stringify(item));
+
         return `
           <div class="menuSubItem">
             <p data-id="${fullPath}"
@@ -74,11 +75,11 @@
         }">
               ${
                 item && item.contentType === 'Folder'
-                  ? `<img class="threeIcon" src="/img/${expanded ? 'folderopen' : 'folderclose'}.svg">`
+                  ? `<img class="threeIcon" style="width: 18px; flex-shrink: 0;" src="/img/${expanded ? 'folderopen' : 'folderclose'}.svg">`
                   : item && item.contentType === 'Cloze'
-                  ? '<img class="threeIcon" src="/img/cloze.svg">'
+                  ? '<img class="threeIcon" style="width: 18px;" src="/img/cloze.svg">'
                   : item && item.contentType === 'Extract'
-                  ? '<img class="threeIcon" src="/img/extract.svg">'
+                  ? '<img class="threeIcon" style="width: 18px;" src="/img/extract.svg">'
                   : item && item.contentType === 'Occlusion'
                   ? '<img class="threeIcon" src="/img/occlusion2.svg">'
                   : '<img class="threeIcon" src="/img/folderclose.svg">'
@@ -234,7 +235,7 @@
   }
   .menuSubItem > p:hover   { background: rgba(0, 0, 0, 0.06); }
   .menuSubItem > p.active  { background: rgba(var(--background-color_button), 0.45); }
-  .threeIcon { width: 16px; height: 16px; flex-shrink: 0; }
+  .threeIcon { width: 18px; height: 18px; flex-shrink: 0; }
   .empty { opacity: 0.6; font-size: 0.85rem; }
 
   /* ---------- scrollbar polish ---------- */

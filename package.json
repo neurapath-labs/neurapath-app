@@ -23,10 +23,10 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.11",
     "@types/pdfjs-dist": "^2.10.378",
-    "svelte": "^5.36.16",
+    "svelte": "^5.36.17",
     "svelte-check": "^4.3.0",
     "tailwindcss": "^4.1.11",
-    "typescript": "^5.9.1-rc",
+    "typescript": "^5.8.3",
     "vite": "^7.0.6"
   },
   "dependencies": {
