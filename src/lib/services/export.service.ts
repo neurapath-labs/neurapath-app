@@ -2,6 +2,7 @@ import type { Record } from '$lib/models';
 import type { Database } from '$lib/stores/database.store';
 import { database } from '$lib/stores/database.store';
 import { modal } from '$lib/stores/modal.store';
+import { toast } from "svelte-sonner";
 
 // Function to export database to JSON
 export const exportDatabaseToJSON = async (): Promise<boolean> => {
@@ -35,11 +36,11 @@ export const exportDatabaseToJSON = async (): Promise<boolean> => {
     // Clean up URL object
     URL.revokeObjectURL(url);
     
-    modal.showAlert('Database exported successfully!', 'success');
+    toast('Database exported successfully!');
     return true;
   } catch (error) {
     console.error('Error exporting database:', error);
-    modal.showAlert('Failed to export database. Please try again.', 'danger');
+    toast('Failed to export database. Please try again.');
     return false;
   }
 };
@@ -98,11 +99,11 @@ export const exportDatabaseToCSV = async (): Promise<boolean> => {
     // Clean up URL object
     URL.revokeObjectURL(url);
     
-    modal.showAlert('Database exported successfully!', 'success');
+    toast('Database exported successfully!');
     return true;
   } catch (error) {
     console.error('Error exporting database:', error);
-    modal.showAlert('Failed to export database. Please try again.', 'danger');
+    toast('Failed to export database. Please try again.');
     return false;
   }
 };
@@ -122,12 +123,12 @@ export const importDatabaseFromJSON = async (file: File): Promise<boolean> => {
     // Update database store
     database.set(importedData);
     
-    modal.showAlert('Database imported successfully!', 'success');
+    toast('Database imported successfully!');
     return true;
   } catch (error: unknown) {
     console.error('Error importing database:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    modal.showAlert(`Failed to import database: ${errorMessage}`, 'danger');
+    toast(`Failed to import database: ${errorMessage}`);
     return false;
   }
 };
@@ -210,12 +211,12 @@ export const importDatabaseFromCSV = async (file: File): Promise<boolean> => {
     // Update database store
     database.set({ items });
     
-    modal.showAlert('Database imported successfully!', 'success');
+    toast('Database imported successfully!');
     return true;
   } catch (error: unknown) {
     console.error('Error importing database:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    modal.showAlert(`Failed to import database: ${errorMessage}`, 'danger');
+    toast(`Failed to import database: ${errorMessage}`);
     return false;
   }
 };

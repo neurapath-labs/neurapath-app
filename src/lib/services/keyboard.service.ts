@@ -5,6 +5,7 @@ import { selection } from '$lib/stores/selection.store';
 import { database } from '$lib/stores/database.store';
 import { learning } from '$lib/stores/learning.store';
 import { createID } from '$lib/utils/helpers';
+import { toast } from "svelte-sonner";
 import type { Shortcut, Record } from '$lib/models';
 
 class KeyboardService {
@@ -83,7 +84,7 @@ class KeyboardService {
       case 'input-create-occlusion-separate':
         if (!isInLearningMode) {
           // Implementation would depend on context
-          modal.showAlert('Create separate occlusions functionality not yet implemented', 'warning');
+          toast('Create separate occlusions functionality not yet implemented');
         }
         break;
 
@@ -123,7 +124,7 @@ class KeyboardService {
       case 'input-rename-item':
         if (!isInLearningMode) {
           // Implementation would depend on context
-          modal.showAlert('Rename item functionality not yet implemented', 'warning');
+          toast('Rename item functionality not yet implemented');
         }
         break;
 
@@ -182,7 +183,7 @@ class KeyboardService {
     const selectionData = get(selection);
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
-      modal.showAlert('Please select text to create a cloze', 'warning');
+      toast('Please select text to create a cloze');
       return;
     }
 
@@ -193,14 +194,14 @@ class KeyboardService {
     ) || null;
 
     if (!activeRecord) {
-      modal.showAlert('No active record to create cloze', 'warning');
+      toast('No active record to create cloze');
       return;
     }
 
     try {
       const range = selectionData.range;
       if (!range) {
-        modal.showAlert('Invalid selection range', 'warning');
+        toast('Invalid selection range');
         return;
       }
 
@@ -222,10 +223,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      modal.showAlert('Cloze created successfully', 'success');
+      toast('Cloze created successfully');
     } catch (error) {
       console.error('Error creating cloze:', error);
-      modal.showAlert('Error creating cloze', 'danger');
+      toast('Error creating cloze');
     }
   }
 
@@ -234,7 +235,7 @@ class KeyboardService {
     const selectionData = get(selection);
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
-      modal.showAlert('Please select text to create an extract', 'warning');
+      toast('Please select text to create an extract');
       return;
     }
 
@@ -245,7 +246,7 @@ class KeyboardService {
     ) || null;
 
     if (!activeRecord) {
-      modal.showAlert('No active record to create extract', 'warning');
+      toast('No active record to create extract');
       return;
     }
 
@@ -268,10 +269,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      modal.showAlert('Extract created successfully', 'success');
+      toast('Extract created successfully');
     } catch (error) {
       console.error('Error creating extract:', error);
-      modal.showAlert('Error creating extract', 'danger');
+      toast('Error creating extract');
     }
   }
 
@@ -283,7 +284,7 @@ class KeyboardService {
     ) || null;
 
     if (!activeRecord || !activeRecord.id) {
-      modal.showAlert('No active record to flag', 'warning');
+      toast('No active record to flag');
       return;
     }
 
@@ -292,10 +293,10 @@ class KeyboardService {
       const isFlagged = !(activeRecord.isFlagged || false);
       await database.updateRecordRemotely(activeRecord.id, { isFlagged });
       
-      modal.showAlert(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`, 'success');
+      toast(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`);
     } catch (error) {
       console.error('Error flagging item:', error);
-      modal.showAlert('Error flagging item', 'danger');
+      toast('Error flagging item');
     }
   }
 
@@ -307,7 +308,7 @@ class KeyboardService {
     ) || null;
 
     if (!activeRecord || !activeRecord.id) {
-      modal.showAlert('No active record to remove', 'warning');
+      toast('No active record to remove');
       return;
     }
 
@@ -315,10 +316,10 @@ class KeyboardService {
       // Remove from database
       await database.removeRecordById(activeRecord.id);
       
-      modal.showAlert('Item removed successfully', 'success');
+      toast('Item removed successfully');
     } catch (error) {
       console.error('Error removing item:', error);
-      modal.showAlert('Error removing item', 'danger');
+      toast('Error removing item');
     }
   }
 
@@ -330,7 +331,7 @@ class KeyboardService {
     ) || null;
 
     if (!activeRecord) {
-      modal.showAlert('No active record to duplicate', 'warning');
+      toast('No active record to duplicate');
       return;
     }
 
@@ -346,10 +347,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      modal.showAlert('Item duplicated successfully', 'success');
+      toast('Item duplicated successfully');
     } catch (error) {
       console.error('Error duplicating item:', error);
-      modal.showAlert('Error duplicating item', 'danger');
+      toast('Error duplicating item');
     }
   }
 
@@ -366,10 +367,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      modal.showAlert('Folder created successfully', 'success');
+      toast('Folder created successfully');
     } catch (error) {
       console.error('Error creating folder:', error);
-      modal.showAlert('Error creating folder', 'danger');
+      toast('Error creating folder');
     }
   }
 
@@ -393,10 +394,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      modal.showAlert('Text document created successfully', 'success');
+      toast('Text document created successfully');
     } catch (error) {
       console.error('Error creating text document:', error);
-      modal.showAlert('Error creating text document', 'danger');
+      toast('Error creating text document');
     }
   }
 

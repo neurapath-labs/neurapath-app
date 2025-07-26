@@ -9,6 +9,7 @@
 		ContextMenuItem,
 		ContextMenuSeparator
 	} from '$lib/components/ui/context-menu';
+	import { toast } from "svelte-sonner";
 
 	import { contextmenu }  from '$lib/stores/contextmenu.store';
 	import { selection }    from '$lib/stores/selection.store';
@@ -51,7 +52,7 @@
 
 	async function createRootFolder() {
 		await addRecord({ id: createID(6), contentType: 'Folder' });
-		modal.showAlert('Folder created', 'success');
+		toast('Folder created');
 		contextmenu.hideContextMenu();
 	}
 
@@ -61,14 +62,14 @@
 			contentType: 'Extract',
 			content: { ops: [{ insert: 'New text item' }] }
 		});
-		modal.showAlert('Text created', 'success');
+		toast('Text created');
 		contextmenu.hideContextMenu();
 	}
 
 	async function removeItem() {
 		if (!ctx.targetId) return;
 		await database.removeRecordById(ctx.targetId);
-		modal.showAlert('Item removed', 'success');
+		toast('Item removed');
 		contextmenu.hideContextMenu();
 	}
 
@@ -81,7 +82,7 @@
 			contentType: 'Extract',
 			content: { ops: [{ insert: sel.text }] }
 		});
-		modal.showAlert('Extract created', 'success');
+		toast('Extract created');
 		contextmenu.hideContextMenu();
 	}
 </script>

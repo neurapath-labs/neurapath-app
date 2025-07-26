@@ -150,7 +150,7 @@
       console.log('Content saved to database:', recordId);
     } catch (error) {
       console.error('Error saving content to database:', error);
-      modal.showAlert('Error saving content', 'danger');
+      toast('Error saving content');
     }
   };
 
@@ -250,13 +250,13 @@
           
           quill.setSelection(null);
         }
-        modal.showAlert('Cloze created successfully', 'success');
+        toast('Cloze created successfully');
       } catch (error) {
         console.error('Error creating cloze:', error);
-        modal.showAlert('Error creating cloze', 'danger');
+        toast('Error creating cloze');
       }
     } else {
-      modal.showAlert('Please select text to create a cloze', 'warning');
+      toast('Please select text to create a cloze');
     }
   };
 
@@ -286,13 +286,13 @@
           
           quill.setSelection(null);
         }
-        modal.showAlert('Extract created successfully', 'success');
+        toast('Extract created successfully');
       } catch (error) {
         console.error('Error creating extract:', error);
-        modal.showAlert('Error creating extract', 'danger');
+        toast('Error creating extract');
       }
     } else {
-      modal.showAlert('Please select text to create an extract', 'warning');
+      toast('Please select text to create an extract');
     }
   };
 
@@ -323,13 +323,13 @@
         if (quill) {
           quill.setSelection(null);
         }
-        modal.showAlert('Text summarized successfully', 'success');
+        toast('Text summarized successfully');
       } catch (error) {
         console.error('Error summarizing text:', error);
-        modal.showAlert('Error summarizing text', 'danger');
+        toast('Error summarizing text');
       }
     } else {
-      modal.showAlert('Please select text to summarize', 'warning');
+      toast('Please select text to summarize');
     }
   };
 
@@ -340,13 +340,13 @@
         // This would typically involve creating occlusions from the active image
         // For now, we'll just show a success message
         console.log('Create occlusion, separate:', separateOcclusions);
-        modal.showAlert('Occlusion created successfully', 'success');
+        toast('Occlusion created successfully');
       } catch (error) {
         console.error('Error creating occlusion:', error);
-        modal.showAlert('Error creating occlusion', 'danger');
+        toast('Error creating occlusion');
       }
     } else {
-      modal.showAlert('No active record to create occlusion', 'warning');
+      toast('No active record to create occlusion');
     }
   };
 
@@ -360,13 +360,13 @@
           database.updateRecordRemotely(activeRecord.id, { isFlagged });
         }
         
-        modal.showAlert(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`, 'success');
+        toast(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`);
       } catch (error) {
         console.error('Error flagging item:', error);
-        modal.showAlert('Error flagging item', 'danger');
+        toast('Error flagging item');
       }
     } else {
-      modal.showAlert('No active record to flag', 'warning');
+      toast('No active record to flag');
     }
   };
 
@@ -400,10 +400,10 @@
             }
           };
           reader.readAsDataURL(file);
-          modal.showAlert('Image imported successfully', 'success');
+          toast('Image imported successfully');
         } catch (error) {
           console.error('Error importing image:', error);
-          modal.showAlert('Error importing image', 'danger');
+          toast('Error importing image');
         }
       }
       // Handle PDF files
@@ -411,10 +411,10 @@
         try {
           // In a real implementation, this would parse the PDF and create records
           console.log('PDF file detected:', file.name);
-          modal.showAlert('PDF imported successfully', 'success');
+          toast('PDF imported successfully');
         } catch (error) {
           console.error('Error importing PDF:', error);
-          modal.showAlert('Error importing PDF', 'danger');
+          toast('Error importing PDF');
         }
       }
       // Handle text files
@@ -429,10 +429,10 @@
             }
           };
           reader.readAsText(file);
-          modal.showAlert('Text imported successfully', 'success');
+          toast('Text imported successfully');
         } catch (error) {
           console.error('Error importing text:', error);
-          modal.showAlert('Error importing text', 'danger');
+          toast('Error importing text');
         }
       }
     }

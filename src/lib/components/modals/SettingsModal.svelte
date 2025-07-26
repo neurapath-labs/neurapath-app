@@ -128,7 +128,7 @@
       profile.updateShortcut(shortcut.event, shortcut);
     });
 
-    modal.showAlert('Keyboard shortcuts saved successfully', 'success');
+    toast('Keyboard shortcuts saved successfully');
   }
 
   // Function to save API keys
@@ -137,13 +137,13 @@
       openaiApiKey,
       anthropicApiKey
     });
-    modal.showAlert('API keys saved successfully', 'success');
+    toast('API keys saved successfully');
   }
 
   // Function to reset to default shortcuts
   function resetToDefaults() {
     profile.resetShortcutsToDefault();
-    modal.showAlert('Keyboard shortcuts reset to defaults', 'success');
+    toast('Keyboard shortcuts reset to defaults');
   }
 
   // Function to filter shortcuts

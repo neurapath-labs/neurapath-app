@@ -1,6 +1,6 @@
 import type { Record } from '$lib/models';
 import { database } from '$lib/stores/database.store';
-import { modal } from '$lib/stores/modal.store';
+import { toast } from "svelte-sonner";
 
 // Function to extract text from PDF file using pdfjs-dist
 export const extractTextFromPDF = async (file: File): Promise<string> => {
@@ -59,7 +59,7 @@ export const createLearningItemsFromPDF = async (fileName: string, content: stri
     await database.addRecord(newExtract);
     
     // Show success message
-    modal.showAlert(`Successfully imported ${fileName}`, 'success');
+    toast(`Successfully imported ${fileName}`);
   } catch (error) {
     console.error('Error creating learning items from PDF:', error);
     throw new Error('Failed to create learning items from PDF');
@@ -70,7 +70,7 @@ export const createLearningItemsFromPDF = async (fileName: string, content: stri
 export const processPDFFile = async (file: File, folderPath: string = ''): Promise<void> => {
   try {
     // Show processing message
-    modal.showAlert(`Processing ${file.name}...`, 'default');
+    toast(`Processing ${file.name}...`);
     
     // Extract text from PDF
     const extractedText = await extractTextFromPDF(file);
@@ -79,7 +79,7 @@ export const processPDFFile = async (file: File, folderPath: string = ''): Promi
     await createLearningItemsFromPDF(file.name, extractedText, folderPath);
   } catch (error: any) {
     console.error('Error processing PDF file:', error);
-    modal.showAlert(`Error processing ${file.name}: ${error.message}`, 'danger');
+    toast(`Error processing ${file.name}: ${error.message}`);
     throw error;
   }
 };

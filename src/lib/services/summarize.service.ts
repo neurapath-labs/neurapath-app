@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { selection } from '$lib/stores/selection.store';
 import { database } from '$lib/stores/database.store';
-import { modal } from '$lib/stores/modal.store';
+import { toast } from "svelte-sonner";
 import { profile } from '$lib/stores/profile.store';
 import { createID } from '$lib/utils/helpers';
 import type { Record } from '$lib/models';
@@ -142,12 +142,12 @@ export const summarizeSelectedText = async (apiKey: string, provider: 'openai' |
     console.log('Selection data:', selectionData);
     
     if (!selectionData.isSelected || !selectionData.text) {
-      modal.showAlert('Please select text to summarize', 'warning');
+      toast('Please select text to summarize');
       return false;
     }
 
     // Show processing message
-    modal.showAlert('Summarizing text...', 'default');
+    toast('Summarizing text...');
 
     // Summarize the text
     let summary: string;
@@ -171,11 +171,11 @@ export const summarizeSelectedText = async (apiKey: string, provider: 'openai' |
     await createSummaryRecord(selectionData.text, summary, activeRecord?.id);
 
     // Show success message
-    modal.showAlert('Text summarized successfully!', 'success');
+    toast('Text summarized successfully!');
     return true;
   } catch (error: any) {
     console.error('Error summarizing text:', error);
-    modal.showAlert(`Error summarizing text: ${error.message || 'Unknown error'}`, 'danger');
+    toast(`Error summarizing text: ${error.message || 'Unknown error'}`);
     return false;
   }
 };

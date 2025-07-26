@@ -109,23 +109,23 @@
       });
       sessionStats.reviewed += 1;
       moveToNextItem();
-      modal.showAlert(`Item graded with ${g}/5`, 'success');
+      toast(`Item graded with ${g}/5`);
     } catch {
-      modal.showAlert('Error grading item', 'danger');
+      toast('Error grading item');
     }
   }
   function moveToNextItem() {
     if (!dueItems.length) return (learning.setCurrentRecord(null));
     currentIndex = (currentIndex + 1) % dueItems.length;
     if (currentIndex < dueItems.length) learning.setCurrentRecord(dueItems[currentIndex]);
-    else { learning.setCurrentRecord(null); modal.showAlert('All items reviewed!', 'success'); }
+    else { learning.setCurrentRecord(null); toast('All items reviewed!'); }
     showAnswer = false;
   }
   async function toggleFlag() {
     if (!currentRecord) return;
     const isFlagged = !(currentRecord.isFlagged || false);
     await database.updateRecordRemotely(currentRecord.id, { isFlagged });
-    modal.showAlert(`Item ${isFlagged ? 'flagged' : 'unflagged'}`, 'success');
+    toast(`Item ${isFlagged ? 'flagged' : 'unflagged'}`);
   }
   function drawOcclusionQuestion() {
     if (!questionOcclusionCanvas || !currentRecord?.url) return;
