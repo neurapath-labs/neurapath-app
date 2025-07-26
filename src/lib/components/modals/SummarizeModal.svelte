@@ -5,6 +5,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { summarizeSelectedText } from '$lib/services/summarize.service';
   import type { SelectionState } from '$lib/stores/selection.store';
+  import BrainIcon from '@lucide/svelte/icons/brain';
 
   let isOpen = false;
   let selectionData: SelectionState = { isSelected: false, text: '', range: null };
@@ -73,7 +74,7 @@
     <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[500px] p-8 border border-[rgb(var(--background-color))] rounded grid grid-rows-[auto_1fr_auto] gap-6 overflow-hidden">
       <!-- Header -->
       <div class="flex flex-col items-center gap-2">
-        <img src="/img/thinking.svg" alt="Summarize icon" class="w-[72px]" />
+        <BrainIcon class="w-[72px] h-[72px]" />
         <span class="text-2xl font-semibold whitespace-nowrap">Summarize Text</span>
       </div>
 
