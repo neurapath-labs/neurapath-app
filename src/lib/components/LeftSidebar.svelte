@@ -6,6 +6,7 @@
   import { contextmenu } from '$lib/stores/contextmenu.store';
   import { ui } from '$lib/stores/ui.store';
   import { modal } from '$lib/stores/modal.store';
+  import { theme } from '$lib/stores/theme.store';
   import type { Record } from '$lib/models';
   import { onMount, onDestroy } from 'svelte';
   import { createID } from '$lib/utils/helpers';
@@ -17,6 +18,7 @@
   let expandedFolders: Set<string> = new Set();
   let activeItemId: string | null = null;
   let dueCount = 0;
+  let currentTheme = 'day';
 
   /* --- all your subscriptions / helpers exactly as supplied --- */
   const unsubDB = database.subscribe(($db) => {
@@ -34,9 +36,10 @@
     expandedFolders = $u.expandedFolders;
     activeItemId    = $u.activeItemId;
   });
+  const unsubTheme    = theme.subscribe(($t) => (currentTheme = $t.currentTheme));
 
   onDestroy(() => {
-    unsubDB(); unsubProfile(); unsubLearning(); unsubUI();
+    unsubDB(); unsubProfile(); unsubLearning(); unsubUI(); unsubTheme();
   });
 
   interface TreeNode { [k: string]: TreeNode | Record | undefined; _item?: Record }
@@ -103,6 +106,7 @@
   const renderFlagged      = () => ui.openFlagged();
   const renderStatistics   = () => ui.openStatistics();
   const renderDatabases    = () => ui.openDatabases();
+  const toggleTheme        = () => theme.setTheme(currentTheme === 'day' ? 'night' : 'day');
 </script>
 
 <!-- --------------  MARK‑UP -------------- -->
@@ -128,8 +132,8 @@
     <div class="action" on:click={() => modal.openSettingsModal()}>
       <img src="/img/user.svg" alt="" /><span>Settings</span>
     </div>
-    <div class="action" id="header-darkmode-button">
-      <img src="/img/night-mode.svg" alt="" /><span id="darkmode-text">Dark mode</span>
+    <div class="action" id="header-darkmode-button" on:click={toggleTheme}>
+      <img src="/img/night-mode.svg" alt="" /><span id="darkmode-text">{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span>
     </div>
     <div class="action" on:click={renderDatabases}>
       <img src="/img/database.svg" alt="" /><span>Shared databases</span>
