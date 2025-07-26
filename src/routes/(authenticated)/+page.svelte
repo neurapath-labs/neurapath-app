@@ -1,49 +1,37 @@
+<!-- @compileOptions { "runes": true } -->
+
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	import { database } from '$lib/stores/database.store';
+	/* ---------- framework / stores ---------- */
+	import { onMount }   from 'svelte';
+	import { database }  from '$lib/stores/database.store';
+
+	/* ---------- types & components ---------- */
 	import type { Record } from '$lib/models';
-	import SeoHead from '$lib/components/SeoHead.svelte';
+	import SeoHead        from '$lib/components/SeoHead.svelte';
 
-	/* -------------------------------------
-	   Grab authenticated user from parent
-	------------------------------------- */
-	export let data: { user: { username: string } };
+	/* ---------- route data (provided by +page.ts load) ---------- */
+	const { data } = $props<{ data: { user: { username: string } } }>();
 
-	/* -------------------------------------
-	   Demo CRUD flow on mount
-	------------------------------------- */
+	/* ---------- local state (runes) ---------- */
+	let loaded: boolean        = $state(false);
+	let initError: string|null = $state(null);
+
+	/* ---------- initialise DB once on mount ---------- */
 	onMount(async () => {
 		try {
 			const username = data.user.username;
 
-			// Tell the store which user we’re dealing with
+			// Tell the DB store which user we’re dealing with
 			database.setCurrentUserId(username);
 
-			// Pull the entire DB blob from the Worker
+			// Pull the entire DB blob from the Worker/edge
 			await database.loadDatabase(username);
 
-			/* -------------------------------------------------
-			   OPTIONAL: quick smoke‑test of CRUD operations
-			 ------------------------------------------------- */
-			/*
-			const testRecord: Record = {
-				id: crypto.randomUUID(),
-				contentType: 'Extract',
-				content: { ops: [{ insert: 'This is a test record' }] }
-			};
-
-			await database.addRecord(testRecord);
-			await database.updateRecordRemotely(testRecord.id, {
-				content: { ops: [{ insert: 'Updated record' }] }
-			});
-			console.log('Retrieved', database.getRecordById(testRecord.id));
-			await database.removeRecordById(testRecord.id);
-			*/
+			loaded = true;
 		} catch (err) {
 			console.error('Failed to initialise DB', err);
-			// fall back to anon mode
 			database.setCurrentUserId(null);
+			initError = 'Failed to load your database. Working in anonymous mode.';
 		}
 	});
 </script>
@@ -57,27 +45,31 @@
 	twitterTitle="Neuraa Dashboard - Evidence-Based Learning"
 	twitterDescription="Access your personalized learning dashboard with spaced repetition cards, incremental reading materials, and progress tracking."
 	canonicalUrl="https://neurapath.io/dashboard"
-	schema={[{
-		"@context": "https://schema.org",
-		"@type": "EducationalOccupationalProgram",
-		"name": "Evidence-Based Learning Techniques",
-		"description": "Master learning techniques based on cognitive science research including spaced repetition, incremental reading, and active recall",
-		"provider": {
-			"@type": "Organization",
-			"name": "Neuraa"
-		},
-		"occupationalCategory": "Education",
-		"offers": {
-			"@type": "Offer",
-			"price": "0",
-			"priceCurrency": "USD"
+	schema={[
+		{
+			"@context": "https://schema.org",
+			"@type": "EducationalOccupationalProgram",
+			"name": "Evidence-Based Learning Techniques",
+			"description": "Master learning techniques based on cognitive science research including spaced repetition, incremental reading, and active recall",
+			"provider": { "@type": "Organization", "name": "Neuraa" },
+			"occupationalCategory": "Education",
+			"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 		}
-	}]}
+	]}
 />
 
 <div id="app">
 	<h1>Neurapath</h1>
-	<p>Welcome {data.user.username}! Your private database is now loaded.</p>
+
+	{#if initError}
+		<p class="error">{initError}</p>
+	{:else if loaded}
+		<p>
+			Welcome <strong>{data.user.username}</strong>! Your private database is now loaded.
+		</p>
+	{:else}
+		<p>Initialising your database…</p>
+	{/if}
 </div>
 
 <style>
@@ -91,5 +83,8 @@
 	p {
 		color: rgb(var(--font-color));
 		font-size: var(--font-size);
+	}
+	.error {
+		color: red;
 	}
 </style>

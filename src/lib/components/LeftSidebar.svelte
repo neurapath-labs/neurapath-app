@@ -1,5 +1,5 @@
 <script lang="ts">
-	/* ---------- stores ---------- */
+	/* ────────── stores ────────── */
 	import { auth }        from '$lib/stores/auth.store';
 	import { database }    from '$lib/stores/database.store';
 	import { learning }    from '$lib/stores/learning.store';
@@ -7,52 +7,51 @@
 	import { modal }       from '$lib/stores/modal.store';
 	import { theme }       from '$lib/stores/theme.store';
 	import { contextmenu } from '$lib/stores/contextmenu.store';
+
+	import { onDestroy }   from 'svelte';
 	import type { Record } from '$lib/models';
 
-	import { onDestroy } from 'svelte';
-	import { Button }    from '$lib/components/ui/button';
-	import TreeItem      from '$lib/components/TreeItem.svelte';
+	/* ────────── components / ui ────────── */
+	import { Button }  from '$lib/components/ui/button';
+	import TreeItem    from '$lib/components/TreeItem.svelte';
 
-	/* ---------- icons ---------- */
+	/* ────────── icons ────────── */
 	import UserIcon     from '@lucide/svelte/icons/user';
 	import MoonIcon     from '@lucide/svelte/icons/moon';
 	import SunIcon      from '@lucide/svelte/icons/sun';
 	import DatabaseIcon from '@lucide/svelte/icons/database';
-	// import FileTextIcon from '@lucide/svelte/icons/file-text';
 	import SearchIcon   from '@lucide/svelte/icons/search';
 	import FlagIcon     from '@lucide/svelte/icons/flag';
 	import BarChartIcon from '@lucide/svelte/icons/bar-chart';
 	import LogOutIcon   from '@lucide/svelte/icons/log-out';
 
-	/* ---------- local state ---------- */
-	let learningMode = false;
-	let expandedFolders: Set<string> = new Set();
-	let activeItemId: string | null = null;
-	let currentTheme = 'day';
+	/* ────────── local state (runes) ────────── */
+	let learningMode        = $state(false);
+	let expandedFolders     = $state<Set<string>>(new Set());
+	let activeItemId        = $state<string | null>(null);
+	let currentTheme        = $state('day');
 
-	/* ---------- subscriptions ---------- */
-	const unsubLearning = learning.subscribe(($l) => {
-		learningMode = $l.isInLearningMode;
-		console.log('[LeftSidebar] learning.isInLearningMode →', learningMode);
-	});
-	const unsubUI = ui.subscribe(($u) => {
+	/* ────────── store subscriptions ────────── */
+	const unsubLearning = learning.subscribe($l => (learningMode   = $l.isInLearningMode));
+	const unsubUI       = ui.subscribe($u => {
 		expandedFolders = $u.expandedFolders;
-		activeItemId   = $u.activeItemId;
+		activeItemId    = $u.activeItemId;
 	});
-	const unsubTheme = theme.subscribe(($t) => (currentTheme = $t.currentTheme));
+	const unsubTheme    = theme.subscribe($t => (currentTheme = $t.currentTheme));
 
 	onDestroy(() => { unsubLearning(); unsubUI(); unsubTheme(); });
 
-	/* ---------- derived ---------- */
-	$: dueCount =
+	/* ────────── derived values ────────── */
+	let dueCount = $derived(() =>
 		$database.items.filter(
-			(i) =>
+			i =>
 				['Cloze', 'Extract', 'Occlusion'].includes(i.contentType) &&
 				i.dueDate &&
 				new Date(i.dueDate) <= new Date()
-		).length;
+		).length
+	);
 
-	/* ---------- folder util ---------- */
+	/* ────────── helpers ────────── */
 	interface TreeNode { [k: string]: TreeNode | Record | undefined; _item?: Record }
 	const renderFolders = (items: Record[]): TreeNode => {
 		const tree: TreeNode = {};
@@ -68,31 +67,19 @@
 		return tree;
 	};
 
-	/* ---------- header / quick‑action handlers ---------- */
+	/* ────────── action handlers ────────── */
 	const toggleLearningMode = () => learning.toggleLearningMode();
 	const handleLogout       = async () => { await auth.logout(); window.location.href = '/login'; };
-	const openPdfImport      = () => ui.openPdfImport();
 	const renderExplorer     = () => ui.openExplorer();
 	const renderFlagged      = () => ui.openFlagged();
 	const renderStatistics   = () => ui.openStatistics();
 	const renderDatabases    = () => ui.openDatabases();
 	const toggleTheme        = () => theme.setTheme(currentTheme === 'day' ? 'night' : 'day');
 
-	/* ---------- universal sidebar context menu ---------- */
 	function handleSidebarContextMenu(e: MouseEvent) {
 		e.preventDefault();
-
-		/* is the click on a record element? */
 		const el       = (e.target as HTMLElement).closest('[data-fullpath]');
 		const fullPath = el?.getAttribute('data-fullpath');
-
-		console.log('[LeftSidebar] right‑click', {
-			fullPath,
-			x: e.clientX,
-			y: e.clientY,
-			type: fullPath ? 'sidebar-item' : 'sidebar-background'
-		});
-
 		contextmenu.showContextMenu(
 			e.clientX,
 			e.clientY,
@@ -111,8 +98,12 @@
 		<img src="/img/logo/logo.svg" alt="Neuraa logo" class="h-12 w-12" />
 		<div class="space-y-1">
 			<h1 class="m-0 text-xl leading-tight">Neuraa</h1>
-			<p class="text-xs"><span>Last saved:</span> <span id="sidebar-last-saved">‑</span></p>
-			<p class="text-xs"><span>Due today:</span> <span id="sidebar-due-items">{dueCount}</span></p>
+			<p class="text-xs">
+				<span>Last saved:</span> <span id="sidebar-last-saved">‑</span>
+			</p>
+			<p class="text-xs">
+				<span>Due today:</span> <span id="sidebar-due-items">{dueCount}</span>
+			</p>
 		</div>
 	</header>
 
@@ -128,28 +119,22 @@
 		{learningMode ? 'Stop learning!' : 'Engage!'}
 	</Button>
 
-	<!-- quick‑actions -->
+	<!-- quick actions -->
 	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={() => modal.openSettingsModal()}>
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
 		</div>
 
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={toggleTheme}>
-			{#if currentTheme === 'day'}
-				<MoonIcon class="h-4 w-4" />
-			{:else}
-				<SunIcon class="h-4 w-4" />
-			{/if}
-			<span id="darkmode-text">{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}</span>
+			{#if currentTheme === 'day'} <MoonIcon  class="h-4 w-4" /> {:else} <SunIcon class="h-4 w-4" /> {/if}
+			<span id="darkmode-text">
+				{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}
+			</span>
 		</div>
 
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderDatabases}>
 			<DatabaseIcon class="h-4 w-4" /><span>Shared databases</span>
 		</div>
-
-		<!-- <div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={openPdfImport}>
-			<FileTextIcon class="h-4 w-4" /><span>Import PDF</span>
-		</div> -->
 
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderExplorer}>
 			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>

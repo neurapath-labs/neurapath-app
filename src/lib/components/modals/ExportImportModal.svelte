@@ -16,17 +16,17 @@
 	} from '$lib/services/export.service';
 
 	import { onMount, onDestroy } from 'svelte';
-	import type { Record }    from '$lib/models';
+	import type { Record } from '$lib/models';
 
 	/* ---------- icons ---------- */
 	import DatabaseIcon from '@lucide/svelte/icons/database';
 
-	/* ---------- Svelte‑5 runes ---------- */
-	let isOpen: boolean     = $state(false);
-	let isExporting: boolean = $state(false);
-	let isImporting: boolean = $state(false);
+	/* ---------- Svelte 5 runes ---------- */
+	let isOpen: boolean       = $state(false);
+	let isExporting: boolean  = $state(false);
+	let isImporting: boolean  = $state(false);
 	let selectedFile: File | null = $state(null);
-	let importFormat: string = $state('json');
+	let importFormat: string  = $state('json');
 	let databaseItems: Record[] = $state([]);
 
 	/* ---------- reactive counts ---------- */
@@ -38,21 +38,17 @@
 		occlusions: databaseItems.filter(i => i.contentType === 'Occlusion').length
 	});
 
-	let unsubscribeDatabase: () => void;
-	let unsubscribeUI: () => void;
+	let unsubDB: () => void;
+	let unsubUI: () => void;
 
 	onMount(() => {
-		unsubscribeDatabase = database.subscribe(($db) => {
-			databaseItems = $db.items;
-		});
-		unsubscribeUI = ui.subscribe(($ui) => {
-			isOpen = $ui.isExportImportOpen;
-		});
+		unsubDB = database.subscribe($db => (databaseItems = $db.items));
+		unsubUI = ui.subscribe($ui => (isOpen = $ui.isExportImportOpen));
 	});
 
 	onDestroy(() => {
-		unsubscribeDatabase?.();
-		unsubscribeUI?.();
+		unsubDB?.();
+		unsubUI?.();
 	});
 
 	/* ---------- helpers ---------- */
@@ -61,20 +57,19 @@
 		selectedFile = null;
 	}
 
-	/* keeping store + dialog in sync */
-	$: if (!isOpen) closeExportImport();
+	/* keep store & dialog in sync */
+	$effect(() => {
+		if (!isOpen) closeExportImport();
+	});
 
-	function handleFileSelect(event: Event) {
-		const input = event.target as HTMLInputElement;
-		if (!input.files?.length) return;
-
-		const file = input.files[0];
-		const ext  = file.name.split('.').pop()?.toLowerCase();
-		const wanted = importFormat.toLowerCase();
-		if (ext === wanted) selectedFile = file;
+	function handleFileSelect(e: Event) {
+		const file = (e.target as HTMLInputElement).files?.[0];
+		if (!file) return;
+		const ext = file.name.split('.').pop()?.toLowerCase();
+		if (ext === importFormat) selectedFile = file;
 		else {
-			alert(`Please select a ${wanted.toUpperCase()} file.`);
-			input.value = '';
+			alert(`Please select a ${importFormat.toUpperCase()} file.`);
+			(e.target as HTMLInputElement).value = '';
 		}
 	}
 
@@ -82,69 +77,71 @@
 
 	function handleDrop(e: DragEvent) {
 		e.preventDefault();
-		if (!e.dataTransfer?.files.length) return;
-		const file = e.dataTransfer.files[0];
-		const ext  = file.name.split('.').pop()?.toLowerCase();
+		const file = e.dataTransfer?.files?.[0];
+		if (!file) return;
+		const ext = file.name.split('.').pop()?.toLowerCase();
 		if (ext === importFormat) selectedFile = file;
 		else alert(`Please drop a ${importFormat.toUpperCase()} file.`);
 	}
 
-	async function exportToJson() {
+	const exportToJson = async () => {
 		try { isExporting = true; await exportDatabaseToJSON(); }
-		catch (err) { console.error(err); alert('Error exporting database to JSON.'); }
+		catch { alert('Error exporting database to JSON.'); }
 		finally { isExporting = false; }
-	}
+	};
 
-	async function exportToCsv() {
+	const exportToCsv = async () => {
 		try { isExporting = true; await exportDatabaseToCSV(); }
-		catch (err) { console.error(err); alert('Error exporting database to CSV.'); }
+		catch { alert('Error exporting database to CSV.'); }
 		finally { isExporting = false; }
-	}
+	};
 
-	async function importDatabase() {
-		if (!selectedFile) { alert('Please select a file first.'); return; }
+	const importDatabase = async () => {
+		if (!selectedFile) return alert('Please select a file first.');
 		try {
 			isImporting = true;
 			const ok = importFormat === 'json'
 				? await importDatabaseFromJSON(selectedFile)
 				: await importDatabaseFromCSV(selectedFile);
 			if (ok) closeExportImport();
-		} catch (err) {
-			console.error(err);
+		} catch {
 			alert('Error importing database.');
 		} finally {
 			isImporting = false;
 		}
-	}
+	};
 </script>
 
-<!-- ────────────────────────── Dialog ────────────────────────── -->
+<!-- ─────────────────────────── Dialog ─────────────────────────── -->
 <Dialog.Root bind:open={isOpen}>
-	<!-- Optional trigger; if you open the dialog elsewhere (e.g. a menu item) remove this -->
-	<!--
-	<Dialog.Trigger asChild>
-		<Button variant="outline">Export / Import</Button>
-	</Dialog.Trigger>
-	-->
-
 	<Dialog.Content
-		class="fixed left-1/2 top-1/2 z-50 w-[500px] max-h-[600px] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))] p-8 text-[rgb(var(--font-color))] shadow-lg"
+		class="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2
+		       rounded border border-[rgb(var(--background-color))]
+		       bg-[rgb(var(--background-color_modalbox))] p-8
+		       text-[rgb(var(--font-color))] shadow-lg
+		       w-[min(100vw,560px)] max-h-[90vh] overflow-y-auto"
 	>
-		<Dialog.Header class="flex flex-col items-center gap-2 mb-6">
-			<DatabaseIcon class="w-[72px] h-[72px]" />
-			<Dialog.Title class="text-2xl font-semibold whitespace-nowrap">Export / Import Database</Dialog.Title>
+		<!-- Header -->
+		<Dialog.Header class="mb-6 flex flex-col items-center gap-2">
+			<DatabaseIcon class="h-[72px] w-[72px]" />
+			<Dialog.Title class="whitespace-nowrap text-2xl font-semibold">
+				Export / Import Database
+			</Dialog.Title>
 		</Dialog.Header>
 
-		<!-- ──────────────── Export section ──────────────── -->
+		<!-- Content -->
 		<section class="space-y-10">
+			<!-- Export -->
 			<div>
-				<h3 class="text-lg font-semibold mb-1">Export Database</h3>
-				<p class="text-sm mb-4">Export your entire database to a file for backup or transfer.</p>
+				<h3 class="mb-1 text-lg font-semibold">Export Database</h3>
+				<p class="mb-4 text-sm">
+					Export your entire database to a file for backup or transfer.
+				</p>
 
 				{#if databaseItems.length}
 					<div class="mb-4 rounded bg-[rgba(var(--background-color),0.5)] p-4 text-sm">
 						<p class="m-0 mb-2">Current database contains:</p>
-						<ul class="list-disc list-inside space-y-1">
+						<ul class="list-inside list-disc space-y-1">
 							<li>Folders: {counts.folders}</li>
 							<li>Extracts: {counts.extracts}</li>
 							<li>Clozes: {counts.clozes}</li>
@@ -158,7 +155,6 @@
 
 				<div class="flex gap-3">
 					<Button
-						type="button"
 						onclick={exportToJson}
 						disabled={isExporting || !databaseItems.length}
 						variant="outline"
@@ -167,9 +163,7 @@
 					>
 						{isExporting ? 'Exporting…' : 'Export to JSON'}
 					</Button>
-
 					<Button
-						type="button"
 						onclick={exportToCsv}
 						disabled={isExporting || !databaseItems.length}
 						variant="outline"
@@ -181,14 +175,16 @@
 				</div>
 			</div>
 
-			<!-- ──────────────── Import section ──────────────── -->
+			<!-- Import -->
 			<div>
-				<h3 class="text-lg font-semibold mb-1">Import Database</h3>
-				<p class="text-sm mb-4">Import data from a previously exported file.</p>
+				<h3 class="mb-1 text-lg font-semibold">Import Database</h3>
+				<p class="mb-4 text-sm">
+					Import data from a previously exported file.
+				</p>
 
-				<!-- Format selection -->
+				<!-- Format toggle -->
 				<div class="mb-4 text-sm">
-					<label class="block font-medium mb-1">Import format:</label>
+					<label class="mb-1 block font-medium">Import format:</label>
 					<div class="flex items-center gap-4">
 						<label>
 							<input
@@ -213,7 +209,7 @@
 					</div>
 				</div>
 
-				<!-- File drop‑zone -->
+				<!-- File picker / drop zone -->
 				<div
 					ondragover={handleDragOver}
 					ondrop={handleDrop}
@@ -224,9 +220,8 @@
 					{#if selectedFile}
 						<p class="text-sm">Selected file: {selectedFile.name}</p>
 						<Button
-							type="button"
-							onclick={() => (selectedFile = null)}
 							size="sm"
+							onclick={() => (selectedFile = null)}
 							class="mt-2 rounded bg-[rgb(var(--background-color_button))] px-3 py-1 text-xs text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
 						>
 							Remove
@@ -245,7 +240,6 @@
 				</div>
 
 				<Button
-					type="button"
 					onclick={importDatabase}
 					disabled={isImporting || !selectedFile}
 					variant="outline"
@@ -256,5 +250,14 @@
 			</div>
 		</section>
 
+		<!-- Close X -->
+		<Dialog.Close asChild>
+			<button
+				class="absolute right-4 top-4 rounded p-1 text-lg leading-none hover:bg-black/10"
+				aria-label="Close"
+			>
+				×
+			</button>
+		</Dialog.Close>
 	</Dialog.Content>
 </Dialog.Root>

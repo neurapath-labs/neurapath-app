@@ -2,6 +2,9 @@ import adapter from '@sveltejs/adapter-cloudflare';
 // import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 export default {
+	compilerOptions: {
+		runes: true
+	},
 	kit: {
 		adapter: adapter({
 			// See below for an explanation of these options

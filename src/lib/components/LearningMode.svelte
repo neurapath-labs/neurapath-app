@@ -229,8 +229,3 @@
     </div>
   {/if}
 </div>
-
-<style>
-  /* Re‑use existing grade button utility class */
-  .grade-btn{padding:10px 15px;border-radius:4px;font-size:14px;min-width:100px;}
-</style>
