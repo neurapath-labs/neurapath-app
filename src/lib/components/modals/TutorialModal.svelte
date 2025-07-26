@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { ui } from '$lib/stores/ui.store';
   import { onMount, onDestroy } from 'svelte';
   import BookOpenIcon from '@lucide/svelte/icons/book-open';
@@ -121,15 +122,15 @@
       <!-- Buttons -->
       <div class="flex justify-between gap-2">
         {#if currentStep === totalSteps}
-          <button type="button" on:click={completeTutorial} class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm">Complete tutorial!</button>
+          <Button type="button" on:click={completeTutorial} class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm" variant="outline" size="sm">Complete tutorial!</Button>
         {:else}
-          <button type="button" on:click={nextStep} class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm">Next</button>
+          <Button type="button" on:click={nextStep} class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm" variant="outline" size="sm">Next</Button>
         {/if}
         {#if currentStep > 1}
-          <button type="button" on:click={previousStep} class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm">Previous</button>
+          <Button type="button" on:click={previousStep} class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm" variant="outline" size="sm">Previous</Button>
         {/if}
         {#if currentStep < totalSteps}
-          <button type="button" on:click={closeTutorial} class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-gray-100 text-gray-800 hover:bg-gray-200 text-sm">Skip tutorial</button>
+          <Button type="button" on:click={closeTutorial} class="flex-1 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-gray-100 text-gray-800 hover:bg-gray-200 text-sm" variant="outline" size="sm">Skip tutorial</Button>
         {/if}
       </div>
     </div>

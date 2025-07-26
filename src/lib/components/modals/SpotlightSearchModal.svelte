@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { database } from '$lib/stores/database.store';
   import { modal } from '$lib/stores/modal.store';
   import type { Record } from '$lib/models';
@@ -150,13 +151,14 @@
 
       <!-- Close button -->
       <div class="flex justify-end">
-        <button
+        <Button
           type="button"
           on:click={closeSpotlightSearch}
-          class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm"
+          variant="outline"
+          size="sm"
         >
           Close
-        </button>
+        </Button>
       </div>
     </div>
   </div>

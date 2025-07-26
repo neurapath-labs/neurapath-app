@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from '$lib/components/ui/button';
   import { modal } from '$lib/stores/modal.store';
   import { selection } from '$lib/stores/selection.store';
   import { profile } from '$lib/stores/profile.store';
@@ -116,10 +117,10 @@
 
       <!-- Actions -->
       <div class="flex justify-end gap-3">
-        <button type="button" on:click={closeSummarizeModal} disabled={isProcessing} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-gray-100 text-gray-800 hover:bg-gray-200 text-sm">Cancel</button>
-        <button type="button" on:click={handleSummarize} disabled={isProcessing || !selectionData.isSelected || !apiKey} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+        <Button type="button" on:click={closeSummarizeModal} disabled={isProcessing} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-gray-100 text-gray-800 hover:bg-gray-200 text-sm" variant="outline" size="sm">Cancel</Button>
+        <Button type="button" on:click={handleSummarize} disabled={isProcessing || !selectionData.isSelected || !apiKey} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm" variant="outline" size="sm">
           {isProcessing ? 'Summarizing...' : 'Summarize'}
-        </button>
+        </Button>
       </div>
     </div>
   </div>
