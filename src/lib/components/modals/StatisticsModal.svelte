@@ -4,6 +4,7 @@
   import { profile } from '$lib/stores/profile.store';
   import type { Record } from '$lib/models';
   import { onMount, onDestroy } from 'svelte';
+  import BarChartIcon from '@lucide/svelte/icons/bar-chart';
 
   let items: Record[] = $state([]);
   let isOpen: boolean = $state(false);
@@ -94,7 +95,7 @@
     <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[400px] h-[600px] max-h-[800px] p-8 border border-[rgb(var(--background-color))] rounded overflow-scroll grid grid-rows-[auto_1fr_auto] gap-6">
       <!-- Header -->
       <div class="flex flex-col items-center gap-2">
-        <img src="/img/statistics.svg" alt="Statistics icon" class="w-[72px]" />
+        <BarChartIcon class="w-[72px] h-[72px]" />
         <span class="text-2xl font-semibold whitespace-nowrap">Statistics</span>
       </div>
 

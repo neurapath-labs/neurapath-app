@@ -124,7 +124,7 @@
 		class={`rounded-md px-4 py-2 font-medium transition-colors ${
 			learningMode
 				? 'bg-red-500/90 text-white hover:bg-red-600'
-				: 'bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color_button-hover))]'
+				: ''
 		}`}
 		on:click={toggleLearningMode}
 	>

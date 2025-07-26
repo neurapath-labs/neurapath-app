@@ -2,6 +2,7 @@
   import { profile } from '$lib/stores/profile.store';
   import type { Shortcut } from '$lib/models';
   import { modal } from '$lib/stores/modal.store';
+  import SettingsIcon from '@lucide/svelte/icons/settings';
 
   // Using Svelte 5 runes for reactivity
   let shortcuts: Shortcut[] = $state([]);
@@ -167,7 +168,7 @@
   <div id="modalbox-settings" class="fixed inset-0 flex items-center justify-center z-10">
     <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[600px] h-[500px] grid grid-rows-[auto_1fr_auto] p-8 border border-[rgb(var(--background-color))] rounded overflow-hidden">
       <div class="flex flex-col items-center gap-2 mb-5">
-        <img class="w-[72px]" src="/img/settings.svg" alt="Settings icon" />
+        <SettingsIcon class="w-[72px] h-[72px]" />
         <span class="text-2xl font-semibold whitespace-nowrap">Settings</span>
       </div>
 

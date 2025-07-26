@@ -1,8 +1,10 @@
 <script lang="ts">
   import { ui } from '$lib/stores/ui.store';
   import { onMount, onDestroy } from 'svelte';
+  import { Button } from "$lib/components/ui/button";
   import { getPublicDatabases } from '$lib/services/database.service';
   import type { Database } from '$lib/models';
+  import DatabaseIcon from '@lucide/svelte/icons/database';
 
   // Using Svelte 5 runes for reactivity
   let databases: Database[] = $state([]);
@@ -55,19 +57,19 @@
     <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[400px] h-[400px] max-h-[600px] grid grid-rows-[auto_1fr_auto] p-8 border border-[rgb(var(--background-color))] rounded overflow-scroll">
       <!-- Header -->
       <div class="flex flex-col items-center gap-2 mb-5">
-        <img class="w-[72px]" src="/img/database.svg" alt="Database icon" />
+        <DatabaseIcon class="w-[72px] h-[72px]" />
         <span class="text-2xl font-semibold whitespace-nowrap">Shared Databases</span>
       </div>
 
       <!-- Actions -->
       <div class="mb-5">
-        <button
+        <Button
           class="px-4 py-2 rounded bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
           on:click={openExportImport}
           type="button"
         >
           Export/Import Database
-        </button>
+        </Button>
       </div>
 
       <!-- Database list -->
@@ -93,13 +95,13 @@
       </table>
 
       <!-- Close button -->
-      <button
+      <Button
         class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
         on:click={closeDatabases}
         type="button"
       >
         Close
-      </button>
+      </Button>
     </div>
   </div>
 {/if}

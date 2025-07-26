@@ -9,6 +9,7 @@
     importDatabaseFromCSV
   } from '$lib/services/export.service';
   import type { Record } from '$lib/models';
+  import DatabaseIcon from '@lucide/svelte/icons/database';
 
   // Using Svelte 5 runes for reactivity
   let isOpen: boolean = $state(false);
@@ -130,7 +131,7 @@
     <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[500px] min-h-[400px] max-h-[600px] p-8 border border-[rgb(var(--background-color))] rounded overflow-y-auto">
       <!-- Header -->
       <div class="flex flex-col items-center gap-2 mb-6">
-        <img src="/img/database.svg" alt="Database icon" class="w-[72px]" />
+        <DatabaseIcon class="w-[72px] h-[72px]" />
         <span class="text-2xl font-semibold whitespace-nowrap">Export/Import Database</span>
       </div>
 
