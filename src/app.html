@@ -4,9 +4,42 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<!-- Base SEO Meta Tags -->
+		<meta name="description" content="Neuraa - Evidence-based learning platform implementing spaced repetition, incremental reading, and active recall techniques for optimal knowledge retention." />
+		<meta name="keywords" content="evidence-based learning, spaced repetition, incremental reading, active recall, learning platform, educational technology, flashcards, study tools" />
+		
+		<!-- Open Graph Meta Tags -->
+		<meta property="og:title" content="Neuraa - Evidence-Based Learning Platform" />
+		<meta property="og:description" content="Boost your learning with Neuraa's evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques." />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://neurapath.io" />
+		<meta property="og:site_name" content="Neuraa" />
+		
+		<!-- Twitter Card Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Neuraa - Evidence-Based Learning Platform" />
+		<meta name="twitter:description" content="Boost your learning with Neuraa's evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques." />
+		
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
+		<!-- Skip navigation link for accessibility -->
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		
+		<!-- Header with semantic navigation -->
+		<header role="banner">
+			<!-- Logo and main navigation will be injected here by SvelteKit -->
+		</header>
+		
+		<!-- Main content area -->
+		<main id="main-content" role="main">
+			<div style="display: contents">%sveltekit.body%</div>
+		</main>
+		
+		<!-- Footer -->
+		<footer role="contentinfo">
+			<!-- Footer content will be injected here by SvelteKit -->
+		</footer>
 	</body>
 </html>

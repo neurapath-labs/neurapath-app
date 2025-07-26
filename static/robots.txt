@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+Sitemap: https://neurapath.io/sitemap.xml
+
+# Prevent crawling of API endpoints
+Disallow: /api/
+
+# Prevent crawling of user-specific content
+Disallow: /user/
+Disallow: /profile/
+Disallow: /dashboard/
+Disallow: /settings/
+
+# Prevent crawling of sensitive files
+Disallow: /env/
+Disallow: /.env
+Disallow: /config/
+Disallow: /private/
+
+# Prevent crawling of search results
+Disallow: /search/
+
+# Prevent crawling of print versions
+Disallow: /print/
+
+# Prevent crawling of file types
+Disallow: /*.pdf$
+Disallow: /*.tmp$
+Disallow: /*.temp$
+Disallow: /*.bak$
+Disallow: /*.backup$
