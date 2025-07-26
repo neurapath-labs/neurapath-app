@@ -48,7 +48,6 @@
       if (file.type === 'application/pdf') {
         selectedFile = file;
       } else {
-        // Show error message for invalid file type
         alert('Please select a PDF file.');
         input.value = '';
       }
@@ -67,7 +66,6 @@
       if (file.type === 'application/pdf') {
         selectedFile = file;
       } else {
-        // Show error message for invalid file type
         alert('Please drop a PDF file.');
       }
     }
@@ -99,191 +97,79 @@
 </script>
 
 {#if isOpen}
-  <div class="visible modalbox" id="modalbox-pdf-import">
-    <div class="modalbox-header">
-      <img class="modalbox-icon" src="/img/extract.svg" alt="PDF icon" />
-      <span class="modalbox-title">Import PDF</span>
-    </div>
-    <div class="modalbox-content">
-      <div class="file-upload-area" 
-           on:dragover={handleDragOver} 
-           on:drop={handleDrop}
-           class:file-selected={selectedFile !== null}>
-        {#if selectedFile}
-          <p>Selected file: {selectedFile.name}</p>
-          <button class="remove-file-button" on:click={() => selectedFile = null} type="button">Remove</button>
-        {:else}
-          <p>Drag and drop a PDF file here or click to select</p>
-          <input type="file" accept=".pdf" on:change={handleFileSelect} />
-        {/if}
+  <div id="modalbox-pdf-import" class="fixed inset-0 flex items-center justify-center z-10">
+    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[400px] min-h-[300px] max-h-[600px] p-8 border border-[rgb(var(--background-color))] rounded overflow-hidden">
+      <!-- Header -->
+      <div class="flex flex-col items-center gap-2 mb-5">
+        <img src="/img/extract.svg" alt="PDF icon" class="w-[72px]" />
+        <span class="text-2xl font-semibold whitespace-nowrap">Import PDF</span>
       </div>
-      
-      <div class="folder-selection">
-        <label for="folder-select">Select folder (optional):</label>
-        <select id="folder-select" bind:value={folderPath}>
-          <option value="">Root folder</option>
-          {#each getFolderOptions() as folder}
-            <option value={folder.id}>{folder.id}</option>
-          {/each}
-        </select>
+
+      <!-- Content -->
+      <div class="mb-5">
+        <!-- File upload area -->
+        <div
+          on:dragover={handleDragOver}
+          on:drop={handleDrop}
+          class="relative border-2 border-dashed rounded p-5 text-center mb-5 transition-colors duration-200"
+          class:border-[rgb(var(--background-color_button))]={selectedFile !== null}
+          style="border-color: rgb(var(--background-color));"
+        >
+          {#if selectedFile}
+            <p class="text-sm">Selected file: {selectedFile.name}</p>
+            <button
+              type="button"
+              class="mt-2 px-3 py-1 rounded bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] text-sm"
+              on:click={() => (selectedFile = null)}
+            >
+              Remove
+            </button>
+          {:else}
+            <p class="text-sm">Drag and drop a PDF file here or click to select</p>
+            <input
+              type="file"
+              accept=".pdf"
+              on:change={handleFileSelect}
+              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+          {/if}
+        </div>
+
+        <!-- Folder selection -->
+        <div class="mt-5">
+          <label for="folder-select" class="block mb-2 text-sm font-medium">Select folder (optional):</label>
+          <select
+            id="folder-select"
+            bind:value={folderPath}
+            class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] text-sm"
+          >
+            <option value="">Root folder</option>
+            {#each getFolderOptions() as folder}
+              <option value={folder.id}>{folder.id}</option>
+            {/each}
+          </select>
+        </div>
       </div>
-    </div>
-    <div class="modalbox-buttons">
-      <button class="modalbox-button secondary" on:click={closePdfImport} type="button" disabled={isProcessing}>Cancel</button>
-      <button class="modalbox-button primary" on:click={processPdf} type="button" disabled={isProcessing || !selectedFile}>
-        {isProcessing ? 'Processing...' : 'Import PDF'}
-      </button>
+
+      <!-- Buttons -->
+      <div class="flex justify-between">
+        <button
+          type="button"
+          on:click={closePdfImport}
+          disabled={isProcessing}
+          class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          on:click={processPdf}
+          disabled={isProcessing || !selectedFile}
+          class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+        >
+          {isProcessing ? 'Processing...' : 'Import PDF'}
+        </button>
+      </div>
     </div>
   </div>
 {/if}
-
-<style>
-  .modalbox {
-    position: absolute;
-    overflow: hidden;
-    background-color: rgb(var(--background-color_modalbox));
-    color: rgb(var(--font-color));
-    width: 400px;
-    height: auto;
-    min-height: 300px;
-    left: 50%;
-    top: 50%;
-    margin-left: -200px;
-    margin-top: -200px;
-    grid-template-columns: auto;
-    grid-template-rows: auto;
-    align-content: center;
-    display: grid;
-    padding: 32px;
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    z-index: 10;
-  }
-  
-  .modalbox-header {
-    font-size: 26px;
-    margin-bottom: 20px;
-    display: grid;
-    grid-template-columns: min-content;
-    grid-template-rows: min-content min-content;
-    text-align: center;
-    align-self: center;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    justify-self: center;
-    justify-items: center;
-    grid-gap: 10px;
-  }
-  
-  .modalbox-icon {
-    text-align: center;
-    width: 72px;
-  }
-  
-  .modalbox-title {
-    font-size: inherit;
-    text-align: center;
-    margin-bottom: 10px;
-    white-space: nowrap;
-  }
-  
-  .modalbox-content {
-    margin-bottom: 20px;
-  }
-  
-  .file-upload-area {
-    border: 2px dashed rgb(var(--background-color));
-    border-radius: 4px;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-  }
-  
-  .file-upload-area.file-selected {
-    border-color: rgb(var(--background-color_button));
-  }
-  
-  .file-upload-area input[type="file"] {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-  
-  .remove-file-button {
-    margin-top: 10px;
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .folder-selection {
-    margin-top: 20px;
-  }
-  
-  .folder-selection label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .folder-selection select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid rgb(var(--background-color));
-    background-color: rgb(var(--background-color_modalbox));
-    color: rgb(var(--font-color));
-  }
-  
-  .modalbox-buttons {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .modalbox-button {
-    border-color: rgb(var(--background-color));
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    padding: 10px 15px;
-    text-align: center;
-    border-radius: 4px;
-    align-self: center;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .modalbox-button.secondary {
-    background-color: rgb(var(--background-color));
-    color: rgb(var(--font-color));
-  }
-  
-  .modalbox-button.primary {
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-  }
-  
-  .modalbox-button:hover {
-    background-color: rgba(var(--background-color_button-hover));
-  }
-  
-  .modalbox-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  .visible {
-    display: block !important;
-  }
-  
-  .hidden {
-    display: none !important;
-  }
-</style>

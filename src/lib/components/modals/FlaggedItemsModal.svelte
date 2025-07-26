@@ -36,138 +36,42 @@
 </script>
 
 {#if isOpen}
-  <div class="visible modalbox" id="modalbox-flagged">
-    <div class="modalbox-header">
-      <img class="modalbox-icon" src="/img/flagged.svg" alt="Flagged items icon">
-      <span class="modalbox-title">Flagged Items</span>
-    </div>
-    <table id="flagged-list">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Repetitions</th>
-          <th>E-factor</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each items as item}
-          <tr>
-            <td>{item.id}</td>
-            <td>{item.totalRepetitionCount ?? 0}</td>
-            <td>{item.efactor?.toFixed(2) ?? '2.50'}</td>
+  <div id="modalbox-flagged" class="fixed inset-0 flex items-center justify-center z-10">
+    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[400px] h-[400px] max-h-[600px] grid grid-rows-[auto_1fr_auto] p-8 border border-[rgb(var(--background-color))] rounded overflow-scroll">
+      <!-- Header -->
+      <div class="flex flex-col items-center gap-2 mb-5">
+        <img class="w-[72px]" src="/img/flagged.svg" alt="Flagged items icon" />
+        <span class="text-2xl font-semibold whitespace-nowrap">Flagged Items</span>
+      </div>
+
+      <!-- Flagged list -->
+      <table id="flagged-list" class="w-full table-auto text-sm mb-5">
+        <thead>
+          <tr class="border-b border-[rgb(var(--background-color))]">
+            <th class="text-left p-2">Name</th>
+            <th class="text-left p-2">Repetitions</th>
+            <th class="text-left p-2">E-factor</th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
-    <button class="modalbox-button" on:click={closeFlagged} type="button">Close</button>
+        </thead>
+        <tbody>
+          {#each items as item}
+            <tr class="even:bg-[rgb(var(--background-color))] hover:bg-[rgb(var(--background-color))] hover:font-bold cursor-pointer border-b border-[rgb(var(--background-color))]">
+              <td class="p-2">{item.id}</td>
+              <td class="p-2">{item.totalRepetitionCount ?? 0}</td>
+              <td class="p-2">{item.efactor?.toFixed(2) ?? '2.50'}</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+
+      <!-- Close button -->
+      <button
+        class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
+        on:click={closeFlagged}
+        type="button"
+      >
+        Close
+      </button>
+    </div>
   </div>
 {/if}
-
-<style>
-  .modalbox {
-    position: absolute;
-    overflow: scroll;
-    background-color: rgb(var(--background-color_modalbox));
-    color: rgb(var(--font-color));
-    width: 400px;
-    height: 400px;
-    max-height: 600px;
-    left: 50%;
-    top: 50%;
-    margin-left: -200px;
-    margin-top: -400px;
-    grid-template-columns: auto;
-    grid-template-rows: auto;
-    align-content: center;
-    display: grid;
-    padding: 32px;
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    z-index: 10;
-  }
-
-  .modalbox-header {
-    font-size: 26px;
-    margin-bottom: 20px;
-    display: grid;
-    grid-template-columns: min-content;
-    grid-template-rows: min-content min-content;
-    text-align: center;
-    align-self: center;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    justify-self: center;
-    justify-items: center;
-    grid-gap: 10px;
-  }
-
-  .modalbox-icon {
-    text-align: center;
-    width: 72px;
-  }
-
-  .modalbox-title {
-    font-size: inherit;
-    text-align: center;
-    margin-bottom: 10px;
-    white-space: nowrap;
-  }
-
-  .modalbox>table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .modalbox td,
-  .modalbox th {
-    border: 0px solid rgb(var(--background-color));
-    padding: 8px;
-  }
-
-  .modalbox td:hover {
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  .modalbox>tr:nth-child(even) {
-    background-color: rgb(var(--background-color));
-  }
-
-  .modalbox>tr:hover {
-    background-color: rgb(var(--background-color));
-    cursor: pointer;
-  }
-
-  .modalbox>th {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    text-align: left;
-    background-color: rgb(var(--background-color));
-    color: rgb(var(--font-color));
-  }
-
-  .modalbox-button {
-    border-color: rgb(var(--background-color));
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    padding: 10px 15px;
-    text-align: center;
-    border-radius: 4px;
-    align-self: center;
-  }
-
-  .modalbox-button:hover {
-    background-color: rgba(var(--background-color_button-hover));
-    cursor: pointer;
-  }
-
-  .visible {
-    display: block !important;
-  }
-
-  .hidden {
-    display: none !important;
-  }
-</style>

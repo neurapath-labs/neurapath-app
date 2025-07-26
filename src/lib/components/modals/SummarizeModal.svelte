@@ -20,32 +20,22 @@
   onMount(() => {
     unsubscribeModal = modal.subscribe(($modal) => {
       isOpen = $modal.isSummaryModalOpen;
-      console.log('Summary modal state changed:', isOpen);
     });
 
     unsubscribeSelection = selection.subscribe(($selection) => {
       selectionData = $selection;
-      console.log('Selection data updated:', $selection);
     });
 
     unsubscribeProfile = profile.subscribe(($profile) => {
-      // Initialize API keys from profile
-      console.log('Profile updated:', $profile);
       apiKey = $profile.openaiApiKey || $profile.anthropicApiKey || '';
-      console.log('API key set:', apiKey);
-      if ($profile.openaiApiKey) {
-        provider = 'openai';
-      } else if ($profile.anthropicApiKey) {
-        provider = 'anthropic';
-      }
-      console.log('Provider set:', provider);
+      provider = $profile.openaiApiKey ? 'openai' : ($profile.anthropicApiKey ? 'anthropic' : provider);
     });
   });
 
   onDestroy(() => {
-    if (unsubscribeModal) unsubscribeModal();
-    if (unsubscribeSelection) unsubscribeSelection();
-    if (unsubscribeProfile) unsubscribeProfile();
+    unsubscribeModal?.();
+    unsubscribeSelection?.();
+    unsubscribeProfile?.();
   });
 
   async function handleSummarize() {
@@ -53,23 +43,17 @@
       errorMessage = 'Please select text to summarize';
       return;
     }
-
     if (!apiKey) {
       errorMessage = 'Please enter an API key';
       return;
     }
-
     isProcessing = true;
     errorMessage = '';
-
     try {
       const success = await summarizeSelectedText(apiKey, provider);
-      if (success) {
-        closeSummarizeModal();
-      }
-    } catch (error: any) {
-      console.error('Error summarizing text:', error);
-      errorMessage = error.message || 'Error summarizing text';
+      if (success) closeSummarizeModal();
+    } catch (e: any) {
+      errorMessage = e?.message || 'Error summarizing text';
     } finally {
       isProcessing = false;
     }
@@ -79,247 +63,63 @@
     modal.closeSummaryModal();
   }
 
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      closeSummarizeModal();
-    }
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') closeSummarizeModal();
   }
 </script>
 
 {#if isOpen}
-  <div class="visible modalbox" id="modalbox-summarize" on:keydown={handleKeydown}>
-    <div class="modalbox-header">
-      <img class="modalbox-icon" src="/img/thinking.svg" alt="Summarize icon" />
-      <span class="modalbox-title">Summarize Text</span>
-    </div>
-    
-    <div class="summarize-content">
-      {#if selectionData.isSelected}
-        <div class="selected-text-preview">
-          <h3>Selected Text:</h3>
-          <div class="text-preview">
-            {selectionData.text.length > 200 ? selectionData.text.substring(0, 200) + '...' : selectionData.text}
+  <div id="modalbox-summarize" class="fixed inset-0 flex items-center justify-center z-10" on:keydown={handleKeydown}>
+    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[500px] p-8 border border-[rgb(var(--background-color))] rounded grid grid-rows-[auto_1fr_auto] gap-6 overflow-hidden">
+      <!-- Header -->
+      <div class="flex flex-col items-center gap-2">
+        <img src="/img/thinking.svg" alt="Summarize icon" class="w-[72px]" />
+        <span class="text-2xl font-semibold whitespace-nowrap">Summarize Text</span>
+      </div>
+
+      <!-- Content -->
+      <div class="flex flex-col gap-6">
+        {#if selectionData.isSelected}
+          <div>
+            <h3 class="text-base font-semibold mb-2">Selected Text:</h3>
+            <div class="px-3 py-2 bg-[rgba(var(--background-color),0.5)] rounded max-h-24 overflow-y-auto text-sm">
+              {selectionData.text.length > 200 ? selectionData.text.slice(0, 200) + '...' : selectionData.text}
+            </div>
+          </div>
+        {:else}
+          <div class="px-5 py-4 text-center bg-[rgba(var(--background-color),0.5)] rounded text-sm">
+            No text selected. Please select text in the editor and try again.
+          </div>
+        {/if}
+
+        <div class="flex flex-col gap-4">
+          <div>
+            <label for="api-key" class="block text-sm font-medium mb-1">API Key:</label>
+            <input id="api-key" type="password" bind:value={apiKey} placeholder="Enter your OpenAI or Anthropic API key" class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm" disabled={isProcessing} />
+          </div>
+          <div>
+            <label for="provider" class="block text-sm font-medium mb-1">AI Provider:</label>
+            <select id="provider" bind:value={provider} class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm" disabled={isProcessing}>
+              <option value="openai">OpenAI (GPT‑3.5)</option>
+              <option value="anthropic">Anthropic (Claude)</option>
+            </select>
           </div>
         </div>
-      {:else}
-        <div class="no-selection">
-          <p>No text selected. Please select text in the editor and try again.</p>
-        </div>
-      {/if}
-      
-      <div class="api-settings">
-        <div class="form-group">
-          <label for="api-key">API Key:</label>
-          <input
-            type="password"
-            id="api-key"
-            bind:value={apiKey}
-            placeholder="Enter your OpenAI or Anthropic API key"
-            class="api-key-input"
-            disabled={isProcessing}
-          />
-        </div>
-        
-        <div class="form-group">
-          <label for="provider">AI Provider:</label>
-          <select
-            id="provider"
-            bind:value={provider}
-            class="provider-select"
-            disabled={isProcessing}
-          >
-            <option value="openai">OpenAI (GPT-3.5)</option>
-            <option value="anthropic">Anthropic (Claude)</option>
-          </select>
-        </div>
+
+        {#if errorMessage}
+          <div class="px-4 py-2 bg-[rgba(244,67,54,0.1)] text-red-600 text-sm rounded">
+            {errorMessage}
+          </div>
+        {/if}
       </div>
-      
-      {#if errorMessage}
-        <div class="error-message">
-          {errorMessage}
-        </div>
-      {/if}
-    </div>
-    
-    <div class="modal-actions">
-      <button
-        class="modalbox-button cancel-button"
-        on:click={closeSummarizeModal}
-        type="button"
-        disabled={isProcessing}
-      >
-        Cancel
-      </button>
-      <button
-        class="modalbox-button summarize-button"
-        on:click={handleSummarize}
-        type="button"
-        disabled={isProcessing || !selectionData.isSelected || !apiKey}
-      >
-        {isProcessing ? 'Summarizing...' : 'Summarize'}
-      </button>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3">
+        <button type="button" on:click={closeSummarizeModal} disabled={isProcessing} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-gray-100 text-gray-800 hover:bg-gray-200 text-sm">Cancel</button>
+        <button type="button" on:click={handleSummarize} disabled={isProcessing || !selectionData.isSelected || !apiKey} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+          {isProcessing ? 'Summarizing...' : 'Summarize'}
+        </button>
+      </div>
     </div>
   </div>
 {/if}
-
-<style>
-  .modalbox {
-    position: absolute;
-    overflow: hidden;
-    background-color: rgb(var(--background-color_modalbox));
-    color: rgb(var(--font-color));
-    width: 500px;
-    height: auto;
-    left: 50%;
-    top: 50%;
-    margin-left: -250px;
-    margin-top: -200px;
-    grid-template-columns: auto;
-    grid-template-rows: auto;
-    align-content: center;
-    display: grid;
-    padding: 32px;
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    z-index: 10;
-  }
-  
-  .modalbox-header {
-    font-size: 26px;
-    margin-bottom: 20px;
-    display: grid;
-    grid-template-columns: min-content;
-    grid-template-rows: min-content min-content;
-    text-align: center;
-    align-self: center;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    justify-self: center;
-    justify-items: center;
-    grid-gap: 10px;
-  }
-  
-  .modalbox-icon {
-    text-align: center;
-    width: 72px;
-  }
-  
-  .modalbox-title {
-    font-size: inherit;
-    text-align: center;
-    margin-bottom: 10px;
-    white-space: nowrap;
-  }
-  
-  .summarize-content {
-    margin-bottom: 20px;
-  }
-  
-  .selected-text-preview {
-    margin-bottom: 20px;
-  }
-  
-  .selected-text-preview h3 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
-  }
-  
-  .text-preview {
-    padding: 10px;
-    background-color: rgba(var(--background-color), 0.5);
-    border-radius: 4px;
-    max-height: 100px;
-    overflow-y: auto;
-    font-size: 14px;
-  }
-  
-  .no-selection {
-    padding: 20px;
-    text-align: center;
-    background-color: rgba(var(--background-color), 0.5);
-    border-radius: 4px;
-    margin-bottom: 20px;
-  }
-  
-  .api-settings {
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .api-key-input, .provider-select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    background-color: rgb(var(--background-color_input));
-    color: rgb(var(--font-color));
-    font-size: 14px;
-  }
-  
-  .error-message {
-    color: #f44336;
-    font-size: 14px;
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: rgba(244, 67, 54, 0.1);
-    border-radius: 4px;
-  }
-  
-  .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-  
-  .modalbox-button {
-    border-color: rgb(var(--background-color));
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    padding: 10px 15px;
-    text-align: center;
-    border-radius: 4px;
-    align-self: center;
-    cursor: pointer;
-  }
-  
-  .modalbox-button:hover:not(:disabled) {
-    background-color: rgba(var(--background-color_button-hover));
-  }
-  
-  .modalbox-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  .cancel-button {
-    background-color: #f5f5f5;
-    color: #333;
-  }
-  
-  .summarize-button {
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-  }
-  
-  .summarize-button:hover:not(:disabled) {
-    background-color: rgba(var(--background-color_button-hover));
-  }
-  
-  .visible {
-    display: block !important;
-  }
-  
-  .hidden {
-    display: none !important;
-  }
-</style>

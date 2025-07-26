@@ -51,148 +51,55 @@
 </script>
 
 {#if isOpen}
-  <div class="visible modalbox" id="modalbox-databases">
-    <div class="modalbox-header">
-      <img class="modalbox-icon" src="/img/database.svg" alt="Database icon" />
-      <span class="modalbox-title">Shared Databases</span>
-    </div>
-    <div class="database-actions">
-      <button class="modalbox-button" on:click={openExportImport} type="button">Export/Import Database</button>
-    </div>
-    <table id="database-list">
-      <thead>
-        <tr>
-          <th>Database</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#if isLoading}
-          <tr>
-            <td>Loading...</td>
+  <div id="modalbox-databases" class="fixed inset-0 flex items-center justify-center z-10">
+    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[400px] h-[400px] max-h-[600px] grid grid-rows-[auto_1fr_auto] p-8 border border-[rgb(var(--background-color))] rounded overflow-scroll">
+      <!-- Header -->
+      <div class="flex flex-col items-center gap-2 mb-5">
+        <img class="w-[72px]" src="/img/database.svg" alt="Database icon" />
+        <span class="text-2xl font-semibold whitespace-nowrap">Shared Databases</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="mb-5">
+        <button
+          class="px-4 py-2 rounded bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
+          on:click={openExportImport}
+          type="button"
+        >
+          Export/Import Database
+        </button>
+      </div>
+
+      <!-- Database list -->
+      <table id="database-list" class="w-full table-auto text-sm mb-5">
+        <thead>
+          <tr class="border-b border-[rgb(var(--background-color))]">
+            <th class="text-left p-2">Database</th>
           </tr>
-        {:else}
-          {#each databases as database}
+        </thead>
+        <tbody>
+          {#if isLoading}
             <tr>
-              <td>{database.name || database.id}</td>
+              <td class="p-2">Loading...</td>
             </tr>
-          {/each}
-        {/if}
-      </tbody>
-    </table>
-    <button class="modalbox-button" on:click={closeDatabases} type="button">Close</button>
+          {:else}
+            {#each databases as database}
+              <tr class="border-b border-[rgb(var(--background-color))] hover:bg-[rgb(var(--background-color))] cursor-pointer">
+                <td class="p-2">{database.name || database.id}</td>
+              </tr>
+            {/each}
+          {/if}
+        </tbody>
+      </table>
+
+      <!-- Close button -->
+      <button
+        class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))]"
+        on:click={closeDatabases}
+        type="button"
+      >
+        Close
+      </button>
+    </div>
   </div>
 {/if}
-
-<style>
-  .modalbox {
-    position: absolute;
-    overflow: scroll;
-    background-color: rgb(var(--background-color_modalbox));
-    color: rgb(var(--font-color));
-    width: 400px;
-    height: 400px;
-    max-height: 600px;
-    left: 50%;
-    top: 50%;
-    margin-left: -200px;
-    margin-top: -400px;
-    grid-template-columns: auto;
-    grid-template-rows: auto;
-    align-content: center;
-    display: grid;
-    padding: 32px;
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    z-index: 10;
-  }
-
-  .modalbox-header {
-    font-size: 26px;
-    margin-bottom: 20px;
-    display: grid;
-    grid-template-columns: min-content;
-    grid-template-rows: min-content min-content;
-    text-align: center;
-    align-self: center;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    justify-self: center;
-    justify-items: center;
-    grid-gap: 10px;
-  }
-
-  .modalbox-icon {
-    text-align: center;
-    width: 72px;
-  }
-
-  .modalbox-title {
-    font-size: inherit;
-    text-align: center;
-    margin-bottom: 10px;
-    white-space: nowrap;
-  }
-
-  .modalbox > table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .modalbox td,
-  .modalbox th {
-    border: 0px solid rgb(var(--background-color));
-    padding: 8px;
-  }
-
-  .modalbox td:hover {
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  .modalbox > tr:nth-child(even) {
-    background-color: rgb(var(--background-color));
-  }
-
-  .modalbox > tr:hover {
-    background-color: rgb(var(--background-color));
-    cursor: pointer;
-  }
-
-  .modalbox > th {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    text-align: left;
-    background-color: rgb(var(--background-color));
-    color: rgb(var(--font-color));
-  }
-
-  .database-actions {
-    margin-bottom: 20px;
-  }
-  
-  .modalbox-button {
-    border-color: rgb(var(--background-color));
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    padding: 10px 15px;
-    text-align: center;
-    border-radius: 4px;
-    align-self: center;
-    margin-bottom: 10px;
-  }
-
-  .modalbox-button:hover {
-    background-color: rgba(var(--background-color_button-hover));
-    cursor: pointer;
-  }
-
-  .visible {
-    display: block !important;
-  }
-
-  .hidden {
-    display: none !important;
-  }
-</style>

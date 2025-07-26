@@ -445,41 +445,23 @@
   };
 </script>
 
-<main id="content-input" on:contextmenu={handleContextMenu}>
+<main
+  id="content-input"
+  class="[grid-area:body] overflow-auto relative min-h-full w-full h-full box-border pt-2 pb-2 pl-[var(--mainWindow-padding)] pr-[var(--mainWindow-padding)]"
+  on:contextmenu={handleContextMenu}
+>
   {#if isLearningMode}
     <LearningMode />
   {:else}
-    <div class="editor-wrapper">
-      <div bind:this={editor} class="editor-container"></div>
+    <div class="h-full">
+      <div bind:this={editor} class="h-full"></div>
       {@render children()}
     </div>
   {/if}
 </main>
 
-<style>
-  .editor-wrapper {
-    height: 100%;
-  }
-  
-  .editor-container {
-    height: 100%;
-  }
-  
-  #content-input {
-    grid-area: body;
-    overflow: auto;
-    position: relative;
-    min-height: 100%;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: var(--mainWindow-padding);
-    padding-right: var(--mainWindow-padding);
-  }
-  
+<style global>
   .ql-editor {
-    font-size: var(--font-size);
+    @apply text-[var(--font-size)];
   }
 </style>

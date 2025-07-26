@@ -19,11 +19,11 @@
       openaiApiKey = $profile.openaiApiKey || '';
       anthropicApiKey = $profile.anthropicApiKey || '';
     });
-    
+
     const unsubscribeModal = modal.subscribe(($modal) => {
       isSettingsModalOpen = $modal.isSettingsModalOpen;
     });
-    
+
     return () => {
       unsubscribeProfile();
       unsubscribeModal();
@@ -42,7 +42,7 @@
     if (shortcut.altKey) {
       combination += 'Alt + ';
     }
-    
+
     // Map keyCode to readable key name
     const keyMap: { [key: number]: string } = {
       8: 'Backspace',
@@ -70,10 +70,10 @@
       122: 'F11',
       123: 'F12'
     };
-    
+
     const keyName = keyMap[shortcut.keyCode] || String.fromCharCode(shortcut.keyCode);
     combination += keyName;
-    
+
     return combination;
   }
 
@@ -81,11 +81,11 @@
   function startRecording(event: string) {
     isRecording = true;
     recordingEvent = event;
-    
+
     // Add temporary event listener to capture the key combination
     const handleKeyDown = (e: KeyboardEvent) => {
       e.preventDefault();
-      
+
       // Create new shortcut object
       const newShortcut: Shortcut = {
         event: event,
@@ -104,20 +104,20 @@
           combination: ''
         } as Shortcut)
       };
-      
+
       // Update the shortcut in the local array
       shortcuts = shortcuts.map(s =>
         s.event === event ? newShortcut : s
       );
-      
+
       // Stop recording
       isRecording = false;
       recordingEvent = null;
-      
+
       // Remove event listener
       window.removeEventListener('keydown', handleKeyDown);
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
   }
 
@@ -127,7 +127,7 @@
     shortcuts.forEach(shortcut => {
       profile.updateShortcut(shortcut.event, shortcut);
     });
-    
+
     modal.showAlert('Keyboard shortcuts saved successfully', 'success');
   }
 
@@ -149,7 +149,7 @@
   // Function to filter shortcuts
   function filterShortcuts() {
     if (!filterText) return shortcuts;
-    
+
     const lowerFilter = filterText.toLowerCase();
     return shortcuts.filter(shortcut =>
       shortcut.event.toLowerCase().includes(lowerFilter) ||
@@ -164,333 +164,135 @@
 </script>
 
 {#if isSettingsModalOpen}
-  <div class="visible modalbox" id="modalbox-settings">
-    <div class="modalbox-header">
-      <img class="modalbox-icon" src="/img/settings.svg" alt="Settings icon" />
-      <span class="modalbox-title">Settings</span>
+  <div id="modalbox-settings" class="fixed inset-0 flex items-center justify-center z-10">
+    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[600px] h-[500px] grid grid-rows-[auto_1fr_auto] p-8 border border-[rgb(var(--background-color))] rounded overflow-hidden">
+      <div class="flex flex-col items-center gap-2 mb-5">
+        <img class="w-[72px]" src="/img/settings.svg" alt="Settings icon" />
+        <span class="text-2xl font-semibold whitespace-nowrap">Settings</span>
+      </div>
+
+      <div class="flex flex-col h-full overflow-hidden">
+        <!-- Keyboard Shortcuts Section -->
+        <div class="flex flex-col h-full">
+          <div class="flex justify-between items-center mb-5">
+            <h2 class="text-lg font-bold">Keyboard Shortcuts</h2>
+            <input
+              type="text"
+              placeholder="Filter shortcuts..."
+              bind:value={filterText}
+              class="px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))] text-sm"
+            />
+          </div>
+
+          <div class="flex-1 overflow-y-auto mb-5">
+            <table class="w-full table-auto text-sm">
+              <thead>
+                <tr class="border-b-2 border-[rgb(var(--background-color))]">
+                  <th class="text-left p-3 font-bold">Action</th>
+                  <th class="text-left p-3 font-bold">Shortcut</th>
+                  <th class="text-left p-3 font-bold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each filterShortcuts() as shortcut}
+                  <tr class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.5)]">
+                    <td class="p-3">{shortcut.event.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
+                    <td class="p-3">
+                      {#if isRecording && recordingEvent === shortcut.event}
+                        <span class="text-green-600 font-bold">Press keys...</span>
+                      {:else}
+                        {shortcut.combination}
+                      {/if}
+                    </td>
+                    <td class="p-3">
+                      <button
+                        class="px-3 py-1 text-xs rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[rgba(var(--background-color_button-hover))]"
+                        on:click={() => startRecording(shortcut.event)}
+                        disabled={isRecording && recordingEvent !== shortcut.event}
+                        type="button"
+                      >
+                        {#if isRecording && recordingEvent === shortcut.event}
+                          Recording...
+                        {:else}
+                          Change
+                        {/if}
+                      </button>
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex justify-between mb-5">
+            <button
+              class="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700"
+              on:click={resetToDefaults}
+              type="button"
+            >
+              Reset to Defaults
+            </button>
+            <button
+              class="px-4 py-2 text-sm rounded bg-green-600 text-white hover:bg-green-700"
+              on:click={saveChanges}
+              type="button"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Settings Section -->
+        <div class="border-t border-[rgb(var(--background-color))] pt-5">
+          <h2 class="text-lg font-bold mb-5">AI Service Settings</h2>
+
+          <div class="mb-5">
+            <label for="openai-api-key" class="block text-sm font-medium mb-1">OpenAI API Key:</label>
+            <input
+              type="password"
+              id="openai-api-key"
+              bind:value={openaiApiKey}
+              placeholder="Enter your OpenAI API key"
+              class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm mb-1"
+            />
+            <p class="text-xs text-[rgb(var(--font-color-secondary))] mb-3">
+              Used for text summarization with GPT-3.5. Get your API key from the OpenAI dashboard.
+            </p>
+          </div>
+
+          <div class="mb-5">
+            <label for="anthropic-api-key" class="block text-sm font-medium mb-1">Anthropic API Key:</label>
+            <input
+              type="password"
+              id="anthropic-api-key"
+              bind:value={anthropicApiKey}
+              placeholder="Enter your Anthropic API key"
+              class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm mb-1"
+            />
+            <p class="text-xs text-[rgb(var(--font-color-secondary))] mb-3">
+              Used for text summarization with Claude. Get your API key from the Anthropic console.
+            </p>
+          </div>
+
+          <div class="flex justify-end mb-5">
+            <button
+              class="px-4 py-2 text-sm rounded bg-green-600 text-white hover:bg-green-700"
+              on:click={saveApiKeys}
+              type="button"
+            >
+              Save API Keys
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button
+        class="absolute bottom-4 left-1/2 -translate-x-1/2 border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] px-4 py-2 rounded hover:bg-[rgba(var(--background-color_button-hover))]"
+        on:click={closeSettings}
+        type="button"
+      >
+        Close
+      </button>
     </div>
-    
-    <div class="settings-container">
-      <div class="settings-header">
-        <h2>Keyboard Shortcuts</h2>
-        <div class="filter-container">
-          <input
-            type="text"
-            placeholder="Filter shortcuts..."
-            bind:value={filterText}
-            class="filter-input"
-          />
-        </div>
-      </div>
-      
-      <div class="shortcuts-list">
-        <table class="shortcuts-table">
-          <thead>
-            <tr>
-              <th>Action</th>
-              <th>Shortcut</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each filterShortcuts() as shortcut}
-              <tr>
-                <td>{shortcut.event.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
-                <td>
-                  {#if isRecording && recordingEvent === shortcut.event}
-                    <span class="recording">Press keys...</span>
-                  {:else}
-                    {shortcut.combination}
-                  {/if}
-                </td>
-                <td>
-                  <button
-                    class="record-button"
-                    on:click={() => startRecording(shortcut.event)}
-                    disabled={isRecording && recordingEvent !== shortcut.event}
-                    type="button"
-                  >
-                    {#if isRecording && recordingEvent === shortcut.event}
-                      Recording...
-                    {:else}
-                      Change
-                    {/if}
-                  </button>
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="settings-actions">
-        <button class="reset-button" on:click={resetToDefaults} type="button">
-          Reset to Defaults
-        </button>
-        <button class="save-button" on:click={saveChanges} type="button">
-          Save Changes
-        </button>
-      </div>
-    </div>
-    
-    <div class="ai-settings-container">
-      <div class="settings-header">
-        <h2>AI Service Settings</h2>
-      </div>
-      
-      <div class="api-key-settings">
-        <div class="form-group">
-          <label for="openai-api-key">OpenAI API Key:</label>
-          <input
-            type="password"
-            id="openai-api-key"
-            bind:value={openaiApiKey}
-            placeholder="Enter your OpenAI API key"
-            class="api-key-input"
-          />
-          <p class="help-text">
-            Used for text summarization with GPT-3.5. Get your API key from the OpenAI dashboard.
-          </p>
-        </div>
-        
-        <div class="form-group">
-          <label for="anthropic-api-key">Anthropic API Key:</label>
-          <input
-            type="password"
-            id="anthropic-api-key"
-            bind:value={anthropicApiKey}
-            placeholder="Enter your Anthropic API key"
-            class="api-key-input"
-          />
-          <p class="help-text">
-            Used for text summarization with Claude. Get your API key from the Anthropic console.
-          </p>
-        </div>
-        
-        <div class="settings-actions">
-          <button class="save-button" on:click={saveApiKeys} type="button">
-            Save API Keys
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <button class="modalbox-button" on:click={closeSettings} type="button">Close</button>
   </div>
 {/if}
-
-<style>
-  .modalbox {
-    position: absolute;
-    overflow: hidden;
-    background-color: rgb(var(--background-color_modalbox));
-    color: rgb(var(--font-color));
-    width: 600px;
-    height: 500px;
-    left: 50%;
-    top: 50%;
-    margin-left: -300px;
-    margin-top: -250px;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    padding: 32px;
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    z-index: 10;
-  }
-
-  .modalbox-header {
-    font-size: 26px;
-    margin-bottom: 20px;
-    display: grid;
-    grid-template-columns: min-content;
-    grid-template-rows: min-content min-content;
-    text-align: center;
-    align-self: center;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    justify-self: center;
-    justify-items: center;
-    grid-gap: 10px;
-  }
-
-  .modalbox-icon {
-    text-align: center;
-    width: 72px;
-  }
-
-  .modalbox-title {
-    font-size: inherit;
-    text-align: center;
-    margin-bottom: 10px;
-    white-space: nowrap;
-  }
-
-  .settings-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  
-  .ai-settings-container {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid rgb(var(--background-color));
-  }
-
-  .settings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .settings-header h2 {
-    margin: 0;
-  }
-
-  .filter-container {
-    display: flex;
-    align-items: center;
-  }
-
-  .filter-input {
-    padding: 8px 12px;
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    background-color: rgb(var(--background-color));
-    color: rgb(var(--font-color));
-    font-size: 14px;
-  }
-
-  .shortcuts-list {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 20px;
-  }
-  
-  .api-key-settings {
-    margin-bottom: 20px;
-  }
-
-  .shortcuts-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  
-  .api-key-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    background-color: rgb(var(--background-color_input));
-    color: rgb(var(--font-color));
-    font-size: 14px;
-    margin-bottom: 5px;
-  }
-
-  .shortcuts-table th {
-    text-align: left;
-    padding: 12px;
-    border-bottom: 2px solid rgb(var(--background-color));
-    font-weight: bold;
-  }
-
-  .shortcuts-table td {
-    padding: 12px;
-    border-bottom: 1px solid rgb(var(--background-color));
-  }
-
-  .shortcuts-table tr:hover {
-    background-color: rgba(var(--background-color), 0.5);
-  }
-  
-  .help-text {
-    font-size: 12px;
-    color: rgb(var(--font-color-secondary));
-    margin: 5px 0 15px 0;
-  }
-
-  .recording {
-    color: #4caf50;
-    font-weight: bold;
-  }
-
-  .record-button {
-    padding: 6px 12px;
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    border: 1px solid rgb(var(--background-color));
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-  }
-
-  .record-button:hover:not(:disabled) {
-    background-color: rgba(var(--background-color_button-hover));
-  }
-
-  .record-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .settings-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  .reset-button {
-    padding: 10px 15px;
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .reset-button:hover {
-    background-color: #d32f2f;
-  }
-
-  .save-button {
-    padding: 10px 15px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .save-button:hover {
-    background-color: #45a049;
-  }
-
-  .modalbox-button {
-    border-color: rgb(var(--background-color));
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    padding: 10px 15px;
-    text-align: center;
-    border-radius: 4px;
-    align-self: center;
-  }
-
-  .modalbox-button:hover {
-    background-color: rgba(var(--background-color_button-hover));
-    cursor: pointer;
-  }
-
-  .visible {
-    display: block !important;
-  }
-
-  .hidden {
-    display: none !important;
-  }
-</style>
