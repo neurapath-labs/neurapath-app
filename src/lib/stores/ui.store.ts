@@ -90,6 +90,16 @@ const toggleSpotlightMode = () => {
 
 const openExplorer = () => {
   console.log('[ui.store] Opening Explorer, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
     isExplorerOpen: true,
@@ -114,9 +124,30 @@ const closeExplorer = () => {
 };
 
 const openFlagged = () => {
+  console.log('[ui.store] Opening Flagged, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isFlaggedOpen: true
+    isFlaggedOpen: true,
+    isExplorerOpen: false,
+    isStatisticsOpen: false,
+    isDatabasesOpen: false,
+    isChangelogOpen: false,
+    isPolicyOpen: false,
+    isTutorialOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isPdfImportOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
@@ -198,9 +229,30 @@ const closeDatabases = () => {
 };
 
 const openChangelog = () => {
+  console.log('[ui.store] Opening Changelog, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isChangelogOpen: true
+    isChangelogOpen: true,
+    isExplorerOpen: false,
+    isFlaggedOpen: false,
+    isStatisticsOpen: false,
+    isDatabasesOpen: false,
+    isPolicyOpen: false,
+    isTutorialOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isPdfImportOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 
@@ -212,9 +264,30 @@ const closeChangelog = () => {
 };
 
 const openPolicy = () => {
+  console.log('[ui.store] Opening Policy, closing other UI modals');
+  // Close all modal store modals as well
+  modal.closeLoginModal();
+  modal.closeSettingsModal();
+  modal.closeDatabaseModal();
+  modal.closeStatisticsModal();
+  modal.closeTutorialModal();
+  modal.closeOcclusionCreateModal();
+  modal.closeOcclusionLearningModal();
+  modal.closeSummaryModal();
+  modal.closeSpotlightSearchModal();
   update(state => ({
     ...state,
-    isPolicyOpen: true
+    isPolicyOpen: true,
+    isExplorerOpen: false,
+    isFlaggedOpen: false,
+    isStatisticsOpen: false,
+    isDatabasesOpen: false,
+    isChangelogOpen: false,
+    isTutorialOpen: false,
+    isSpotlightSearchModalOpen: false,
+    isPdfImportOpen: false,
+    isExportImportOpen: false,
+    isShareModalOpen: false
   }));
 };
 

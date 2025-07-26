@@ -18,7 +18,7 @@
 	import MoonIcon      from '@lucide/svelte/icons/moon';
 	import SunIcon      from '@lucide/svelte/icons/sun';
 	import DatabaseIcon  from '@lucide/svelte/icons/database';
-	import FileTextIcon  from '@lucide/svelte/icons/file-text';
+	// import FileTextIcon  from '@lucide/svelte/icons/file-text';
 	import SearchIcon    from '@lucide/svelte/icons/search';
 	import FlagIcon      from '@lucide/svelte/icons/flag';
 	import BarChartIcon  from '@lucide/svelte/icons/bar-chart';
@@ -148,9 +148,9 @@
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderDatabases}>
 			<DatabaseIcon class="h-4 w-4" /><span>Shared databases</span>
 		</div>
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={openPdfImport}>
+		<!-- <div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={openPdfImport}>
 			<FileTextIcon class="h-4 w-4" /><span>Import PDF</span>
-		</div>
+		</div> -->
 		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" on:click={renderExplorer}>
 			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>
 		</div>

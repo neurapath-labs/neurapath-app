@@ -35,6 +35,18 @@ const { subscribe, set, update } = writable(initialState);
 
 const openLoginModal = () => {
   console.log('[modal.store] Opening LoginModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
     isLoginModalOpen: true,
@@ -127,9 +139,30 @@ const closeDatabaseModal = () => {
 };
 
 const openStatisticsModal = () => {
+  console.log('[modal.store] Opening StatisticsModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
-    isStatisticsModalOpen: true
+    isStatisticsModalOpen: true,
+    isLoginModalOpen: false,
+    isSettingsModalOpen: false,
+    isDatabaseModalOpen: false,
+    isTutorialModalOpen: false,
+    isOcclusionCreateModalOpen: false,
+    isOcclusionLearningModalOpen: false,
+    isSummaryModalOpen: false,
+    isSpotlightSearchModalOpen: false
   }));
 };
 
@@ -141,9 +174,30 @@ const closeStatisticsModal = () => {
 };
 
 const openTutorialModal = () => {
+  console.log('[modal.store] Opening TutorialModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
-    isTutorialModalOpen: true
+    isTutorialModalOpen: true,
+    isLoginModalOpen: false,
+    isSettingsModalOpen: false,
+    isDatabaseModalOpen: false,
+    isStatisticsModalOpen: false,
+    isOcclusionCreateModalOpen: false,
+    isOcclusionLearningModalOpen: false,
+    isSummaryModalOpen: false,
+    isSpotlightSearchModalOpen: false
   }));
 };
 
@@ -155,9 +209,30 @@ const closeTutorialModal = () => {
 };
 
 const openOcclusionCreateModal = () => {
+  console.log('[modal.store] Opening OcclusionCreateModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
-    isOcclusionCreateModalOpen: true
+    isOcclusionCreateModalOpen: true,
+    isLoginModalOpen: false,
+    isSettingsModalOpen: false,
+    isDatabaseModalOpen: false,
+    isStatisticsModalOpen: false,
+    isTutorialModalOpen: false,
+    isOcclusionLearningModalOpen: false,
+    isSummaryModalOpen: false,
+    isSpotlightSearchModalOpen: false
   }));
 };
 
@@ -169,9 +244,30 @@ const closeOcclusionCreateModal = () => {
 };
 
 const openOcclusionLearningModal = () => {
+  console.log('[modal.store] Opening OcclusionLearningModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
-    isOcclusionLearningModalOpen: true
+    isOcclusionLearningModalOpen: true,
+    isLoginModalOpen: false,
+    isSettingsModalOpen: false,
+    isDatabaseModalOpen: false,
+    isStatisticsModalOpen: false,
+    isTutorialModalOpen: false,
+    isOcclusionCreateModalOpen: false,
+    isSummaryModalOpen: false,
+    isSpotlightSearchModalOpen: false
   }));
 };
 
@@ -183,9 +279,30 @@ const closeOcclusionLearningModal = () => {
 };
 
 const openSummaryModal = () => {
+  console.log('[modal.store] Opening SummaryModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
-    isSummaryModalOpen: true
+    isSummaryModalOpen: true,
+    isLoginModalOpen: false,
+    isSettingsModalOpen: false,
+    isDatabaseModalOpen: false,
+    isStatisticsModalOpen: false,
+    isTutorialModalOpen: false,
+    isOcclusionCreateModalOpen: false,
+    isOcclusionLearningModalOpen: false,
+    isSpotlightSearchModalOpen: false
   }));
 };
 
@@ -197,9 +314,30 @@ const closeSummaryModal = () => {
 };
 
 const openSpotlightSearchModal = () => {
+  console.log('[modal.store] Opening SpotlightSearchModal, closing others');
+  // Close all UI modals as well
+  ui.closeExplorer();
+  ui.closeFlagged();
+  ui.closeStatistics();
+  ui.closeDatabases();
+  ui.closeChangelog();
+  ui.closePolicy();
+  ui.closeTutorial();
+  ui.closeSpotlightSearch();
+  ui.closePdfImport();
+  ui.closeExportImport();
+  ui.closeShareModal();
   update(state => ({
     ...state,
-    isSpotlightSearchModalOpen: true
+    isSpotlightSearchModalOpen: true,
+    isLoginModalOpen: false,
+    isSettingsModalOpen: false,
+    isDatabaseModalOpen: false,
+    isStatisticsModalOpen: false,
+    isTutorialModalOpen: false,
+    isOcclusionCreateModalOpen: false,
+    isOcclusionLearningModalOpen: false,
+    isSummaryModalOpen: false
   }));
 };
 
