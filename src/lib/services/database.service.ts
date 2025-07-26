@@ -37,13 +37,16 @@ export async function register(username: string, password: string) {
 }
 
 export async function login(username: string, password: string) {
+  console.log('[DatabaseService] Attempting login for user:', username);
   // successful response ⇒ credentials are valid
-  return handle<unknown>(
+  const result = await handle<unknown>(
     fetch(`${BASE}/user/data`, {
       method: 'GET',
       headers: buildHeaders(username, password)
     })
   );
+  console.log('[DatabaseService] Login successful for user:', username);
+  return result;
 }
 
 export async function deleteAccount(username: string, password: string) {

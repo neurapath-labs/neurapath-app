@@ -20,13 +20,18 @@ export const authenticateUser = async (
   username: string,
   password: string
 ): Promise<User | null> => {
+  console.log('[UserService] Attempting to authenticate user:', username);
   try {
     // Will throw if credentials are wrong.
+    console.log('[UserService] Calling backendLogin');
     await backendLogin(username, password);
+    console.log('[UserService] Backend login successful');
 
-    return { id: username, username };
+    const user = { id: username, username };
+    console.log('[UserService] Authentication successful for user:', username);
+    return user;
   } catch (error) {
-    console.error('Authentication error:', error);
+    console.error('[UserService] Authentication error:', error);
     return null;
   }
 };
@@ -40,14 +45,19 @@ export const createUser = async (
   username: string,
   password: string
 ): Promise<User> => {
+  console.log('[UserService] Attempting to create user:', username);
   // Basic validation
   if (username.length < 3) throw new Error('Username must be at least 3 characters');
   if (password.length < 6) throw new Error('Password must be at least 6 characters');
 
+  console.log('[UserService] Calling backendRegister');
   // Backend will throw if the username already exists
   await backendRegister(username, password);
+  console.log('[UserService] Backend registration successful');
 
-  return { id: username, username };
+  const user = { id: username, username };
+  console.log('[UserService] User creation successful for user:', username);
+  return user;
 };
 
 /* ------------------------------------------------------------------ */
@@ -55,7 +65,8 @@ export const createUser = async (
 /* ------------------------------------------------------------------ */
 
 export const generateToken = async (user: User): Promise<string> => {
-  return jwt.sign(
+  console.log('[UserService] Generating token for user:', user.username);
+  const token = jwt.sign(
     {
       userId: user.id,
       username: user.username,
@@ -64,16 +75,23 @@ export const generateToken = async (user: User): Promise<string> => {
     },
     JWT_SECRET
   );
+  console.log('[UserService] Token generated successfully for user:', user.username);
+  return token;
 };
 
 export const verifyToken = async (token: string): Promise<User | null> => {
+  console.log('[UserService] Verifying token');
   try {
-    const decoded = (await jwt.verify(token, JWT_SECRET)) as unknown as {
-      userId: string;
-      username: string;
+    const { payload } = (await jwt.verify(token, JWT_SECRET)) as unknown as {
+      payload: {
+        userId: string;
+        username: string;
+      };
     };
-    return { id: decoded.userId, username: decoded.username };
-  } catch {
+    console.log('[UserService] Token verified successfully for user:', payload.username);
+    return { id: payload.userId, username: payload.username };
+  } catch (error) {
+    console.error('[UserService] Token verification failed:', error);
     return null;
   }
 };
