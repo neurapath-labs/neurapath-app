@@ -47,9 +47,10 @@
 
 <div class="pl-2">
 	<!-- clickable line -->
-	<p
+	<button
+		type="button"
 		data-fullpath={fullPath}
-		class="flex cursor-pointer items-center gap-1 rounded px-1 py-[2px] text-sm hover:bg-black/5 {activeItemId === fullPath ? 'bg-black/10' : ''}"
+		class="flex cursor-pointer items-center gap-1 rounded px-1 py-[2px] text-sm hover:bg-black/5 {activeItemId === fullPath ? 'bg-black/10' : ''} w-full text-left"
 		onclick={toggleFolder}
 		oncontextmenu={openContext}
 	>
@@ -57,6 +58,7 @@
 		{#if isFolder}
 			<img
 				src={`/img/${expandedFolders.has(fullPath) ? 'folderopen' : 'folderclose'}.svg`}
+				alt={expandedFolders.has(fullPath) ? 'Open folder' : 'Closed folder'}
 				class="h-4 w-4"
 			/>
 		{:else if record?.contentType === 'Cloze'}
@@ -71,7 +73,7 @@
 
 		<span class="truncate">{path.at(-1)}</span>
 		{#if record?.isFlagged} <span>🚩</span> {/if}
-	</p>
+	</button>
 
 	<!-- children -->
 	{#if isFolder && expandedFolders.has(fullPath)}

@@ -122,8 +122,8 @@
           type="text"
           placeholder="Type to search..."
           value={searchQuery}
-          on:input={handleInput}
-          on:keydown={handleKeydown}
+          oninput={handleInput}
+          onkeydown={handleKeydown}
           class="w-full px-4 py-3 text-base rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))] focus:outline-none focus:border-[rgb(var(--font-color))]"
         />
       </div>
@@ -135,13 +135,14 @@
         {:else if searchResults.length > 0}
           <ul class="divide-y divide-[rgb(var(--background-color))]">
             {#each searchResults as item, i}
-              <li
-                class="p-3 cursor-pointer hover:bg-[rgb(var(--background-color))] text-sm {i === selectedIndex ? 'bg-[rgb(var(--background-color))]' : ''}"
-                on:click={() => selectItem(item)}
+              <button
+                type="button"
+                class="p-3 cursor-pointer hover:bg-[rgb(var(--background-color))] text-sm w-full text-left {i === selectedIndex ? 'bg-[rgb(var(--background-color))]' : ''}"
+                onclick={() => selectItem(item)}
               >
                 <div class="font-semibold mb-1">{item.id}</div>
                 <div class="text-[rgba(var(--font-color),0.7)]">{getContentPreview(item)}</div>
-              </li>
+              </button>
             {/each}
           </ul>
         {:else}

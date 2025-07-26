@@ -250,14 +250,5 @@
 			</div>
 		</section>
 
-		<!-- Close X -->
-		<Dialog.Close asChild>
-			<button
-				class="absolute right-4 top-4 rounded p-1 text-lg leading-none hover:bg-black/10"
-				aria-label="Close"
-			>
-				×
-			</button>
-		</Dialog.Close>
 	</Dialog.Content>
 </Dialog.Root>

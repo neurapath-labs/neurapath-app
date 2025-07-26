@@ -121,36 +121,36 @@
 
 	<!-- quick actions -->
 	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={() => modal.openSettingsModal()}>
+		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={() => modal.openSettingsModal()}>
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
-		</div>
+		</button>
 
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={toggleTheme}>
+		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={toggleTheme}>
 			{#if currentTheme === 'day'} <MoonIcon  class="h-4 w-4" /> {:else} <SunIcon class="h-4 w-4" /> {/if}
 			<span id="darkmode-text">
 				{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}
 			</span>
-		</div>
+		</button>
 
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderDatabases}>
+		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderDatabases}>
 			<DatabaseIcon class="h-4 w-4" /><span>Shared databases</span>
-		</div>
+		</button>
 
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderExplorer}>
+		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderExplorer}>
 			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>
-		</div>
+		</button>
 
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderFlagged}>
+		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderFlagged}>
 			<FlagIcon class="h-4 w-4" /><span>Flagged items</span>
-		</div>
+		</button>
 
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderStatistics}>
+		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderStatistics}>
 			<BarChartIcon class="h-4 w-4" /><span>Statistics</span>
-		</div>
+		</button>
 
-		<div class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={handleLogout}>
+		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={handleLogout}>
 			<LogOutIcon class="h-4 w-4" /><span>Logout</span>
-		</div>
+		</button>
 	</nav>
 
 	<!-- tree -->

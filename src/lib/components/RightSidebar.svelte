@@ -52,14 +52,15 @@
       {:else if similarContent.length > 0}
         <div class="space-y-2">
           {#each similarContent as item}
-            <div
-              class="cursor-pointer text-[rgb(var(--font-color))] p-2 rounded bg-[rgba(var(--background-color_modalbox),0.5)] hover:bg-[rgba(var(--background-color_modalbox),1)]"
-              on:click={() => handleItemClick(item)}
-              on:contextmenu={(e) => handleContextMenu(e, item.id)}
+            <button
+              type="button"
+              class="cursor-pointer text-[rgb(var(--font-color))] p-2 rounded bg-[rgba(var(--background-color_modalbox),0.5)] hover:bg-[rgba(var(--background-color_modalbox),1)] w-full text-left"
+              onclick={() => handleItemClick(item)}
+              oncontextmenu={(e) => handleContextMenu(e, item.id)}
             >
               <h6 class="m-0 mb-1 text-sm font-semibold">{item.title}</h6>
               <p  class="m-0 text-xs">{item.content}</p>
-            </div>
+            </button>
           {/each}
         </div>
 
@@ -77,12 +78,13 @@
       {#if relatedWords.length > 0}
         <div class="space-y-1">
           {#each relatedWords as word}
-            <div
-              class="cursor-pointer text-[rgb(var(--font-color))] hover:underline"
-              on:click={() => copyToClipboard(word.word)}
+            <button
+              type="button"
+              class="cursor-pointer text-[rgb(var(--font-color))] hover:underline w-full text-left"
+              onclick={() => copyToClipboard(word.word)}
             >
               {word.word} ({word.score})
-            </div>
+            </button>
           {/each}
         </div>
       {:else}
@@ -99,14 +101,15 @@
       {#if wikipediaArticles.length > 0}
         <div class="space-y-2">
           {#each wikipediaArticles as article}
-            <div
-              class="cursor-pointer text-[rgb(var(--font-color))] p-2 rounded bg-[rgba(var(--background-color_modalbox),0.5)] hover:bg-[rgba(var(--background-color_modalbox),1)]"
-              on:click={() => copyToClipboard(article.summary)}
-              on:contextmenu={(e) => handleContextMenu(e, article.title)}
+            <button
+              type="button"
+              class="cursor-pointer text-[rgb(var(--font-color))] p-2 rounded bg-[rgba(var(--background-color_modalbox),0.5)] hover:bg-[rgba(var(--background-color_modalbox),1)] w-full text-left"
+              onclick={() => copyToClipboard(article.summary)}
+              oncontextmenu={(e) => handleContextMenu(e, article.title)}
             >
               <h6 class="m-0 mb-1 text-sm font-semibold">{article.title}</h6>
               <p  class="m-0 text-xs">{article.summary}</p>
-            </div>
+            </button>
           {/each}
         </div>
       {:else}
