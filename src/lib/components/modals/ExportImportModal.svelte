@@ -184,8 +184,8 @@
 
 				<!-- Format toggle -->
 				<div class="mb-4 text-sm">
-					<label class="mb-1 block font-medium">Import format:</label>
-					<div class="flex items-center gap-4">
+					<label class="mb-1 block font-medium" for="import-format">Import format:</label>
+					<div id="import-format" class="flex items-center gap-4">
 						<label>
 							<input
 								type="radio"

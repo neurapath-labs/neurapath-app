@@ -29,12 +29,12 @@
 </script>
 
 <!-- Header -->
-<header role="banner">
+<header>
 	<!-- Navigation will be handled by LeftSidebar -->
 </header>
 
 <!-- Main content area -->
-<main id="main-content" role="main">
+<main id="main-content">
 	<div id="wrapper">
 		<LeftSidebar />
 		<MainContent>
@@ -45,7 +45,7 @@
 </main>
 
 <!-- Footer -->
-<footer role="contentinfo">
+<footer>
 	<!-- Footer content -->
 </footer>
 

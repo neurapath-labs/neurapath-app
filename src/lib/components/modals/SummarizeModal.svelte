@@ -8,12 +8,12 @@
   import type { SelectionState } from '$lib/stores/selection.store';
   import BrainIcon from '@lucide/svelte/icons/brain';
 
-  let isOpen = false;
-  let selectionData: SelectionState = { isSelected: false, text: '', range: null };
-  let isProcessing = false;
-  let apiKey = '';
-  let provider: 'openai' | 'anthropic' = 'openai';
-  let errorMessage = '';
+  let isOpen = $state(false);
+  let selectionData: SelectionState = $state({ isSelected: false, text: '', range: null });
+  let isProcessing = $state(false);
+  let apiKey = $state('');
+  let provider: 'openai' | 'anthropic' = $state('openai');
+  let errorMessage = $state('');
 
   let unsubscribeModal: (() => void) | undefined;
   let unsubscribeSelection: (() => void) | undefined;

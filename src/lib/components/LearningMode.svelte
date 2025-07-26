@@ -175,7 +175,7 @@
         <h3 class="text-lg mb-2">Question</h3>
         {#if currentRecord.contentType === 'Occlusion' && currentRecord.url}
           <div class="relative inline-block max-w-full">
-            <img src={currentRecord.url} alt="Occlusion image" class="block max-w-full" on:load={handleOcclusionImageLoad} />
+            <img src={currentRecord.url} alt="Occlusion image" class="block max-w-full" onload={handleOcclusionImageLoad} />
             <canvas bind:this={questionOcclusionCanvas} class="absolute inset-0 pointer-events-none"></canvas>
           </div>
         {:else}

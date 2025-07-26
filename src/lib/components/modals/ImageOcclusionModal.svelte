@@ -295,10 +295,6 @@
     grid-gap: 10px;
   }
 
-  .modalbox-icon {
-    text-align: center;
-    width: 72px;
-  }
 
   .modalbox-title {
     font-size: inherit;
@@ -343,18 +339,7 @@
     border-bottom: 1px solid rgb(var(--background-color));
   }
 
-  .remove-button {
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    cursor: pointer;
-  }
 
-  .remove-button:hover {
-    background-color: rgba(var(--background-color_button-hover));
-  }
 
   .modalbox-button-container {
     display: flex;
@@ -363,26 +348,8 @@
     grid-column: 1 / span 2;
   }
 
-  .modalbox-button {
-    border-color: rgb(var(--background-color));
-    background-color: rgb(var(--background-color_button));
-    color: rgb(var(--font-color_button));
-    padding: 10px 15px;
-    text-align: center;
-    border-radius: 4px;
-    align-self: center;
-    flex: 1;
-  }
 
-  .modalbox-button:hover {
-    background-color: rgba(var(--background-color_button-hover));
-    cursor: pointer;
-  }
 
-  .modalbox-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 
   .visible {
     display: block !important;
