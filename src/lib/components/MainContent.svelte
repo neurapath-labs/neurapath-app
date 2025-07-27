@@ -7,6 +7,7 @@
   import { contextmenu } from '$lib/stores/contextmenu.store';
   import { occlusion } from '$lib/stores/occlusion.store';
   import { profile } from '$lib/stores/profile.store';
+  import { ui } from '$lib/stores/ui.store';
   import { toast } from "svelte-sonner";
   import type { Record, Cloze } from '$lib/models';
   import { createID, mobileCheck } from '$lib/utils/helpers';
@@ -23,18 +24,30 @@
   let lastActiveImageURL: string | null = null;
   let activeOcclusionsList: any[] = [];
   let saveTimeout: any = null;
+  let activeItemId: string | null = $state(null);
 
   // Subscribe to database changes
   const unsubscribe = database.subscribe(($database) => {
-    // For now, just load the first record with content
-    const recordWithContent = $database.items.find(item =>
-      item.contentType === 'Extract' || item.contentType === 'Cloze'
-    );
-    
-    if (recordWithContent && recordWithContent.content) {
-      activeRecord = recordWithContent;
-      if (quill) {
-        quill.setContents(recordWithContent.content);
+    // Find the active record based on the active item ID
+    if (activeItemId) {
+      const record = $database.items.find(item => item.id === activeItemId);
+      if (record) {
+        activeRecord = record;
+        if (quill && record.content) {
+          quill.setContents(record.content);
+        }
+      }
+    } else {
+      // For now, just load the first record with content if no active item
+      const recordWithContent = $database.items.find(item =>
+        item.contentType === 'Extract' || item.contentType === 'Cloze'
+      );
+      
+      if (recordWithContent && recordWithContent.content) {
+        activeRecord = recordWithContent;
+        if (quill) {
+          quill.setContents(recordWithContent.content);
+        }
       }
     }
   });
@@ -61,12 +74,18 @@
     }
   });
 
+  // Subscribe to UI changes (active item)
+  const unsubscribeUI = ui.subscribe(($ui) => {
+    activeItemId = $ui.activeItemId;
+  });
+
   // Clean up subscriptions
   onDestroy(() => {
     unsubscribe();
     unsubscribeProfile();
     unsubscribeSelection();
     unsubscribeLearning();
+    unsubscribeUI();
     if (saveTimeout) {
       clearTimeout(saveTimeout);
     }

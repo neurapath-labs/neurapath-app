@@ -54,6 +54,12 @@
 		ui.toggleFolderExpanded(fullPath());
 	}
 
+	function selectItem(e: MouseEvent) {
+		e.stopPropagation();
+		if (isFolder()) return;
+		ui.setActiveItemId(fullPath());
+	}
+
 	function openContext(e: MouseEvent) {
 		e.preventDefault();
 		contextmenu.showContextMenu(e.clientX, e.clientY, fullPath(), 'sidebar-item');
@@ -66,7 +72,7 @@
 		type="button"
 		data-fullpath={fullPath()}
 		class="flex cursor-pointer items-center gap-1 rounded px-1 py-[2px] text-sm hover:bg-black/5 {activeItemId === fullPath() ? 'bg-black/10' : ''} w-full text-left"
-		onclick={toggleFolder}
+		onclick={isFolder() ? toggleFolder : selectItem}
 		oncontextmenu={openContext}
 	>
 		<!-- icon -->

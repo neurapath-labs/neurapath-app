@@ -116,7 +116,7 @@
 		}`}
 		onclick={toggleLearningMode}
 	>
-		{learningMode ? 'Stop learning!' : 'Engage!'}
+		{learningMode ? 'Stop learning!' : 'Practice mode!'}
 	</Button>
 
 	<!-- quick actions -->
