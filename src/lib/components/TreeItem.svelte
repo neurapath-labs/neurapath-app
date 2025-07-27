@@ -29,6 +29,7 @@
 	let fullPath  = $derived(() => path.join('/'));
 
 	let isFolder  = $derived(() => {
+				console.log(n);
 		const n = node;
 		return !n?._item || n._item.contentType === 'Folder';
 	});
