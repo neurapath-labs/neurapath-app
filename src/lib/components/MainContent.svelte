@@ -113,7 +113,7 @@
               const content = quill.getContents();
               saveContentToDatabase(activeRecord.id, content);
             }
-          }, 1000);
+          }, 5000);
         }
       });
 

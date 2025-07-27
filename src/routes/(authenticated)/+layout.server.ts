@@ -15,6 +15,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
   }
 
   return {
-    user: locals.user // ↴ accessible in +page.svelte via `export let data`
+    user: locals.user, // ↴ accessible in +page.svelte via `export let data`
+    password: locals.password // ↴ accessible in +page.svelte via `export let data`
   };
 };

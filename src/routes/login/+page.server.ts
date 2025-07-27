@@ -39,6 +39,16 @@ export const actions: Actions = {
       const token = await generateToken(user);
       console.log('[Login] Token generated successfully');
 
+      // Store password in session for database operations
+      cookies.set('password', password, {
+        path: '/',
+        httpOnly: true,
+        secure: !dev,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 2 // 2 hours
+      });
+      console.log('[Login] Password cookie set successfully');
+
       console.log('[Login] Setting token cookie');
       cookies.set('token', token, {
         path: '/',

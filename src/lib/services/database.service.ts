@@ -18,7 +18,7 @@ function buildHeaders(username?: string, password?: string): Headers {
 async function handle<ResponseShape = unknown>(promise: Promise<Response>) {
   const res = await promise;
   const json = await res.json();
-  if (!res.ok || json?.error) {
+  if (!res.ok || (json?.error && json.error !== 200)) {
     throw new Error(json?.message ?? `Request failed with status ${res.status}`);
   }
   return json as ResponseShape;

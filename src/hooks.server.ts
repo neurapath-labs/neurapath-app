@@ -32,6 +32,12 @@ export const handle: Handle = async ({ event, resolve }) => {
           name: user.username,
           role: 'user', // In a real app, this would come from the user object
         };
+        
+        // Also set the password in locals if available
+        const password = event.cookies.get('password');
+        if (password) {
+          event.locals.password = password;
+        }
       } else {
         console.log('[Hooks] Token invalid, setting user to null');
         event.locals.user = null;

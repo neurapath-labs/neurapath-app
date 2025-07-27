@@ -31,6 +31,7 @@ const { subscribe, set, update } = writable<Database>(initialState);
    Session state – set via setCurrentUserId()
 ------------------------------------------------- */
 let currentUserId: string | null = null;
+let currentUserPassword: string | null = null;
 let lastSyncTime: number | null = null;
 
 /* -------------------------------------------------
@@ -49,6 +50,10 @@ export const setCurrentUserId = (userId: string | null) => {
   currentUserId = userId;
 };
 
+export const setCurrentUserPassword = (password: string | null) => {
+  currentUserPassword = password;
+};
+
 /* -------------------------------------------------
    CRUD helpers – write‑through to Cloudflare Worker
    (password arg left empty for now -> '')
@@ -61,7 +66,7 @@ export const addRecord = async (record: Record) => {
   update((db) => ({ ...db, items: [...db.items, record] }));
 
   if (currentUserId) {
-    await serviceAddRecord(currentUserId, '', record);
+    await serviceAddRecord(currentUserId, currentUserPassword || '', record);
   }
 };
 
@@ -70,7 +75,7 @@ export const removeRecordById = async (id: string) => {
   update((db) => ({ ...db, items: db.items.filter((r) => r.id !== id) }));
 
   if (currentUserId) {
-    await serviceDeleteRecord(currentUserId, '', id);
+    await serviceDeleteRecord(currentUserId, currentUserPassword || '', id);
   }
 };
 
@@ -90,7 +95,7 @@ export const updateRecordRemotely = async (
   if (currentUserId) {
     const record = getRecordById(id);
     if (record) {
-      await serviceUpdateRecord(currentUserId, '', { ...record, ...changes });
+      await serviceUpdateRecord(currentUserId, currentUserPassword || '', { ...record, ...changes });
     }
   }
 };
@@ -126,7 +131,7 @@ export const loadDatabase = async (userId: string) => {
       set(initialState);
       lastSyncTime = Date.now();
       if (currentUserId) {
-        await serviceSaveMyDb(userId, '', { items: [] });
+        await serviceSaveMyDb(userId, currentUserPassword || '', { items: [] });
       }
     }
   } catch (err) {
@@ -142,7 +147,7 @@ export const saveDatabase = async (userId: string) => {
   const dbRecord: { [key: string]: unknown } = {
     items: db.items
   };
-  await serviceSaveMyDb(userId, '', dbRecord);
+  await serviceSaveMyDb(userId, currentUserPassword || '', dbRecord);
   lastSyncTime = Date.now();
 };
 
@@ -169,5 +174,6 @@ export const database = {
   saveDatabase,
   syncDatabase,
   needsSync,
-  setCurrentUserId
+  setCurrentUserId,
+  setCurrentUserPassword
 };

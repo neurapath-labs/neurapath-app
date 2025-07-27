@@ -16,6 +16,15 @@ const handler: RequestHandler = async ({ cookies }) => {
     maxAge: 0          // Expire immediately
   });
 
+  // Remove the password cookie
+  cookies.set('password', '', {
+    path: '/',
+    httpOnly: true,
+    secure: !dev,      // secure in prod, loose in dev
+    sameSite: 'lax',   // Changed from 'strict' to 'lax'
+    maxAge: 0          // Expire immediately
+  });
+
   // Send the user back to the login screen
   throw redirect(303, '/login');
 };

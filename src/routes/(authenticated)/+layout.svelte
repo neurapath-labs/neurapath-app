@@ -14,8 +14,20 @@
 	import SummarizeModal from '$lib/components/modals/SummarizeModal.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { keyboardService } from '$lib/services/keyboard.service';
+	import { database } from '$lib/stores/database.store';
+	import { page } from '$app/stores';
 
 	let { children } = $props();
+	
+	// Initialize database store with user credentials
+	$effect(() => {
+		if ($page.data.user) {
+			database.setCurrentUserId($page.data.user.name);
+		}
+		if ($page.data.password) {
+			database.setCurrentUserPassword($page.data.password);
+		}
+	});
 
 	// Initialize keyboard service
 	onMount(() => {

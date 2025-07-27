@@ -14,5 +14,6 @@ declare namespace App {
             name: string;
             role: string;
         } | null;
+        password?: string;
     }
 }
