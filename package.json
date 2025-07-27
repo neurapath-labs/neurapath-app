@@ -26,7 +26,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "@types/pdfjs-dist": "^2.10.378",
     "clsx": "^2.1.1",
-    "layerchart": "2.0.0-next.27",
+    "layerchart": "^2.0.0-next.33",
     "mode-watcher": "^1.1.0",
     "svelte": "^5.37.0",
     "svelte-check": "^4.3.0",
