@@ -17,6 +17,7 @@
 
   onMount(() => {
     unsubscribeUI = ui.subscribe(($ui) => {
+      console.log('[DatabasesModal] UI store updated, isDatabasesOpen:', $ui.isDatabasesOpen);
       isOpen = $ui.isDatabasesOpen;
       if (isOpen && databases.length === 0) {
         loadDatabases();
@@ -59,17 +60,28 @@
   function testClick() {
     console.log('[DatabasesModal] Button was clicked!');
   }
+  
+  // Handle dialog open change
+  function handleOpenChange(open: boolean) {
+    console.log('[DatabasesModal] Dialog open state changed to:', open);
+    if (!open) {
+      console.log('[DatabasesModal] Dialog closed, updating UI store');
+      ui.closeDatabases();
+    }
+  }
 </script>
 
 <!-- DATABASES DIALOG -->
-<Dialog.Root bind:open={isOpen}>
+<Dialog.Root bind:open={isOpen} onOpenChange={handleOpenChange}>
   <Dialog.Portal>
     <!-- Overlay without dim -->
-    <Dialog.Overlay class="fixed inset-0 bg-transparent z-50" onclick={() => console.log('[DatabasesModal] Overlay clicked')} />
+    <Dialog.Overlay class="fixed inset-0 bg-transparent z-50" />
 
     <!-- Centered card -->
     <Dialog.Content
       class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[500px] max-h-[90vh] grid grid-rows-[auto_1fr_auto] overflow-hidden rounded-lg border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] p-6 shadow-lg focus:outline-none z-50"
+      interactOutsideBehavior="close"
+      escapeKeydownBehavior="close"
     >
       <!-- Header -->
       <div class="flex items-center gap-3 mb-4">
