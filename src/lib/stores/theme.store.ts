@@ -32,7 +32,7 @@ const setTheme = (theme: Theme) => {
         root.style.setProperty('--font-color_button', '255, 255, 255');
         root.style.setProperty('--background-color', '255, 255, 255');
         root.style.setProperty('--background-color_sidebar', '252, 252, 252');
-        root.style.setProperty('--background-color_modalbox', '240, 240, 240');
+        root.style.setProperty('--background-color_modalbox', '255, 255, 255');
         root.style.setProperty('--background-color_button', '163, 205, 255');
         root.style.setProperty('--background-color_button-hover', '118, 180, 255');
         root.style.setProperty('--background-color_checkbox', '33, 150, 243');

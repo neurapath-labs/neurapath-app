@@ -4,8 +4,10 @@
   import { profile } from '$lib/stores/profile.store';
   import type { Shortcut } from '$lib/models';
   import { modal } from '$lib/stores/modal.store';
-  import SettingsIcon from '@lucide/svelte/icons/settings';
+  import { toast } from "svelte-sonner";
   import { Input } from "$lib/components/ui/input";
+  import { BrainIcon, KeyboardIcon, SettingsIcon} from '@lucide/svelte/icons';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from "$lib/components/ui/tabs";
 
   // Using Svelte 5 runes for reactivity
   let shortcuts: Shortcut[] = $state([]);
@@ -134,21 +136,61 @@
       <div class="flex items-center gap-3 mb-6">
         <SettingsIcon class="w-10 h-10" />
         <h1 class="text-2xl font-semibold">Settings</h1>
-        <div class="ml-auto">
-        </div>
+        <div class="ml-auto"></div>
       </div>
 
-      <div class="flex flex-col h-full overflow-hidden space-y-8">
-        <!-- Keyboard Shortcuts Section -->
-        <section class="flex flex-col h-full">
+      <!-- Body with Tabs -->
+      <Tabs defaultValue="ai" class="flex flex-col h-full">
+        <!-- Tab Triggers -->
+        <TabsList class="mb-6 w-full">
+          <TabsTrigger value="ai" class="flex-1"><BrainIcon/>AI Settings</TabsTrigger>
+          <TabsTrigger value="shortcuts" class="flex-1"><KeyboardIcon/>Keyboard Shortcuts</TabsTrigger>
+        </TabsList>
+
+        <!-- AI SETTINGS TAB -->
+        <TabsContent value="ai" class="space-y-4 overflow-y-auto">
+          <div class="grid gap-6 md:grid-cols-2">
+            <div>
+              <label for="openai-api-key" class="block text-sm font-medium mb-1">OpenAI API Key</label>
+              <Input
+                id="openai-api-key"
+                type="text"
+                bind:value={openaiApiKey}
+                placeholder="sk-..."
+                class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-sm"
+              />
+              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">Used for GPT‑3.5 summarization</p>
+            </div>
+
+            <div>
+              <label for="anthropic-api-key" class="block text-sm font-medium mb-1">Anthropic API Key</label>
+              <Input
+                id="anthropic-api-key"
+                type="text"
+                bind:value={anthropicApiKey}
+                placeholder="claude-..."
+                class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-sm"
+              />
+              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">Used for Claude summarization</p>
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <Button size="sm" onclick={saveApiKeys}>Save API Keys</Button>
+          </div>
+        </TabsContent>
+
+        <!-- KEYBOARD SHORTCUTS TAB -->
+        <TabsContent value="shortcuts" class="flex-1 flex flex-col overflow-hidden">
           <header class="flex items-center mb-4 gap-4 flex-wrap">
-            <h2 class="text-lg font-bold flex-1">Keyboard Shortcuts</h2>
             <Input
               type="text"
-              placeholder="Filter..."
+              placeholder="Filter shortcuts..."
               bind:value={filterText}
-              class="px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-sm w-48"
+              class="px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-sm flex-1 min-w-[200px]"
             />
+            <Button variant="ghost" size="sm" onclick={resetToDefaults}>Reset to Defaults</Button>
+            <Button size="sm" onclick={saveChanges}>Save Changes</Button>
           </header>
 
           <div class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]">
@@ -190,48 +232,8 @@
               </tbody>
             </table>
           </div>
-
-          <footer class="flex justify-between pt-4">
-            <Button variant="ghost" size="sm" onclick={resetToDefaults}>Reset to Defaults</Button>
-            <Button size="sm" onclick={saveChanges}>Save Changes</Button>
-          </footer>
-        </section>
-
-        <!-- AI Settings Section -->
-        <section class="space-y-4 border-t border-[rgb(var(--background-color))] pt-6">
-          <h2 class="text-lg font-bold">AI Service Settings</h2>
-
-          <div class="grid gap-6 md:grid-cols-2">
-            <div>
-              <label for="openai-api-key" class="block text-sm font-medium mb-1">OpenAI API Key</label>
-              <Input
-                id="openai-api-key"
-                type="password"
-                bind:value={openaiApiKey}
-                placeholder="••••••••••"
-                class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-sm"
-              />
-              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">Used for GPT‑3.5 summarization</p>
-            </div>
-
-            <div>
-              <label for="anthropic-api-key" class="block text-sm font-medium mb-1">Anthropic API Key</label>
-              <Input
-                id="anthropic-api-key"
-                type="password"
-                bind:value={anthropicApiKey}
-                placeholder="••••••••••"
-                class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-sm"
-              />
-              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">Used for Claude summarization</p>
-            </div>
-          </div>
-
-          <div class="flex justify-end">
-            <Button size="sm" class="bg-green-600 text-white hover:bg-green-700" onclick={saveApiKeys}>Save API Keys</Button>
-          </div>
-        </section>
-      </div>
+        </TabsContent>
+      </Tabs>
 
       <!-- Bottom spacer row to keep grid happy -->
       <span class="sr-only">bottom spacer</span>

@@ -13,17 +13,17 @@
   let relatedWords: any[] = [];
   let wikipediaArticles: any[] = [];
   
-  const unsubscribe = profile.subscribe(($profile) => {
+  const unsubscribe = profile.subscribe(($profile: { showRightSidebar: boolean; }) => {
     showRightSidebar = $profile.showRightSidebar ?? true;
   });
   
-  const unsubscribeSelection = selection.subscribe(($selection) => {
+  const unsubscribeSelection = selection.subscribe(($selection: any) => {
     selectionData = $selection;
-    if ($selection.isSelected) {
-      searchSimilarContent($selection.text);
-      searchRelatedWords($selection.text);
-      searchWikipedia($selection.text);
-    }
+    // if ($selection.isSelected) {
+    //   searchSimilarContent($selection.text);
+    //   searchRelatedWords($selection.text);
+    //   searchWikipedia($selection.text);
+    // }
   });
   
   onDestroy(() => {
@@ -32,6 +32,7 @@
   });
   
   /* …your search‑/helper functions stay exactly the same… */
+
 </script>
 
 <aside

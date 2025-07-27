@@ -11,7 +11,7 @@
 
   --background-color: 255, 255, 255;
   --background-color_sidebar: 252, 252, 252;
-  --background-color_modalbox: 240, 240, 240;
+  --background-color_modalbox: 255, 255, 255;
   --background-color_button: 163, 205, 255;
   --background-color_button-hover: 118, 180, 255;
   --background-color_checkbox: 33, 150, 243;
@@ -24,7 +24,7 @@
 
   --day-background-color: 255, 255, 255;
   --day-background-color_sidebar: 252, 252, 252;
-  --day-background-color_modalbox: 240, 240, 240;
+  --day-background-color_modalbox: 255, 255, 255;
   --day-background-color_button: 163, 205, 255;
   --day-background-color_button-hover: 118, 180, 255;
   --day-background-color_checkbox: 33, 150, 243;

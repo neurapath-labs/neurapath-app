@@ -11,4 +11,5 @@ binding = "ASSETS"
 mode = "smart"
 
 [vars]
+NODE_VERSION = "24.4.1"
 ENVIRONMENT = "production"

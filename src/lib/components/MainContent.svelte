@@ -7,7 +7,7 @@
   import { contextmenu } from '$lib/stores/contextmenu.store';
   import { occlusion } from '$lib/stores/occlusion.store';
   import { profile } from '$lib/stores/profile.store';
-  import { modal } from '$lib/stores/modal.store';
+  import { toast } from "svelte-sonner";
   import type { Record, Cloze } from '$lib/models';
   import { createID, mobileCheck } from '$lib/utils/helpers';
   import LearningMode from '$lib/components/LearningMode.svelte';
@@ -217,6 +217,8 @@
 
   // Function to create a cloze deletion
   const createCloze = () => {
+    console.log(selectionData.isSelected, quill, activeRecord);
+    
     if (selectionData.isSelected && quill && activeRecord) {
       try {
         const range = selectionData.range;

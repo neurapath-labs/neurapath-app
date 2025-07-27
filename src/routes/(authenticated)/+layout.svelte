@@ -2,7 +2,7 @@
 	import '../../app.css';
 	import LeftSidebar from '$lib/components/LeftSidebar.svelte';
 	import MainContent from '$lib/components/MainContent.svelte';
-	import RightSidebar from '$lib/components/RightSidebar.svelte';
+	// import RightSidebar from '$lib/components/RightSidebar.svelte';
 	import ExplorerModal from '$lib/components/modals/ExplorerModal.svelte';
 	import FlaggedItemsModal from '$lib/components/modals/FlaggedItemsModal.svelte';
 	import StatisticsModal from '$lib/components/modals/StatisticsModal.svelte';
@@ -40,7 +40,7 @@
 		<MainContent>
 			{@render children()}
 		</MainContent>
-		<RightSidebar />
+		<!-- <RightSidebar /> -->
 	</div>
 </main>
 
