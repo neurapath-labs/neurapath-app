@@ -4,6 +4,14 @@
 	import { ui }          from '$lib/stores/ui.store';
 	import type { Record } from '$lib/models';
 
+	/* ─────── icons ─────── */
+	import FolderIcon from '@lucide/svelte/icons/folder';
+	import FolderOpenIcon from '@lucide/svelte/icons/folder-open';
+	import FileTextIcon from '@lucide/svelte/icons/file-text';
+	import ListIcon from '@lucide/svelte/icons/list';
+	import ImageIcon from '@lucide/svelte/icons/image';
+	import FileIcon from '@lucide/svelte/icons/file';
+
 	/* ─────── incoming props (runes) ─────── */
 	const {
 		node,
@@ -56,19 +64,19 @@
 	>
 		<!-- icon -->
 		{#if isFolder}
-			<img
-				src={`/img/${expandedFolders.has(fullPath) ? 'folderopen' : 'folderclose'}.svg`}
-				alt={expandedFolders.has(fullPath) ? 'Open folder' : 'Closed folder'}
-				class="h-4 w-4"
-			/>
+			{#if expandedFolders.has(fullPath)}
+				<FolderOpenIcon class="h-4 w-4" />
+			{:else}
+				<FolderIcon class="h-4 w-4" />
+			{/if}
 		{:else if record?.contentType === 'Cloze'}
-			<img src="/img/cloze.svg" alt="Cloze icon" class="h-4 w-4" />
+			<ListIcon class="h-4 w-4" />
 		{:else if record?.contentType === 'Extract'}
-			<img src="/img/extract.svg" alt="Extract icon" class="h-4 w-4" />
+			<FileTextIcon class="h-4 w-4" />
 		{:else if record?.contentType === 'Occlusion'}
-			<img src="/img/occlusion2.svg" alt="Occlusion icon" class="h-4 w-4" />
+			<ImageIcon class="h-4 w-4" />
 		{:else}
-			<img src="/img/file.svg" alt="File icon" class="h-4 w-4" />
+			<FileIcon class="h-4 w-4" />
 		{/if}
 
 		<span class="truncate">{path.at(-1)}</span>

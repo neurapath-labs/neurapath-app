@@ -38,7 +38,9 @@ let lastSyncTime: number | null = null;
 ------------------------------------------------- */
 const getState = (): Database => {
   let state: Database = initialState;
-  const unsub = subscribe((s) => (state = s));
+  const unsub = subscribe((s) => {
+    state = s;
+  });
   unsub();
   return state;
 };
@@ -101,15 +103,30 @@ export const loadDatabase = async (userId: string) => {
     const data = await fetchPublicDatabaseByUser(userId);
     console.log("Fetching public database: ", data);
 
-    if (data && (data as any).items) {
-      set({ items: (data as any).items as Record[] });
+    // Handle different data formats from backend
+    let items: Record[] = [];
+    if (data) {
+      if ((data as any).items) {
+        // Already in correct format
+        items = (data as any).items as Record[];
+      } else if ((data as any).records) {
+        // Backend returns { records: [...] }
+        items = (data as any).records as Record[];
+      } else if ((data as any).data && (data as any).data.records) {
+        // Backend returns { data: { records: [...] } }
+        items = (data as any).data.records as Record[];
+      }
+    }
+
+    if (items.length > 0) {
+      set({ items });
       lastSyncTime = Date.now();
     } else {
       // Initialise empty DB for new users
       set(initialState);
       lastSyncTime = Date.now();
       if (currentUserId) {
-        await serviceSaveMyDb(userId, '', initialState);
+        await serviceSaveMyDb(userId, '', { items: [] });
       }
     }
   } catch (err) {
@@ -121,7 +138,11 @@ export const loadDatabase = async (userId: string) => {
 
 export const saveDatabase = async (userId: string) => {
   const db = getState();
-  await serviceSaveMyDb(userId, '', db);
+  // Convert Database object to Record<string, unknown>
+  const dbRecord: { [key: string]: unknown } = {
+    items: db.items
+  };
+  await serviceSaveMyDb(userId, '', dbRecord);
   lastSyncTime = Date.now();
 };
 
