@@ -1,11 +1,9 @@
-/* src/lib/database.service.ts */
 import type {
   Database,
   Record as DBRecord,
   User
 } from '$lib/models';
-
-const BASE = 'https://neurapath-backend.neurapath.workers.dev';
+import { BASE } from '$lib/config/config';
 
 /* ---------- helpers ---------- */
 function buildHeaders(username?: string, password?: string): Headers {

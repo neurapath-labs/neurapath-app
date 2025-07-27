@@ -10,7 +10,7 @@
 	import SeoHead        from '$lib/components/SeoHead.svelte';
 
 	/* ---------- route data (provided by +page.ts load) ---------- */
-	const { data } = $props<{ data: { user: { username: string } } }>();
+	const { data } = $props<{ data: { user: { name: string } } }>();
 
 	/* ---------- local state (runes) ---------- */
 	let loaded: boolean        = $state(false);
@@ -19,7 +19,7 @@
 	/* ---------- initialise DB once on mount ---------- */
 	onMount(async () => {
 		try {
-			const username = data.user.username;
+			const username = data.user.name;
 
 			// Tell the DB store which user we’re dealing with
 			database.setCurrentUserId(username);
@@ -65,7 +65,7 @@
 		<p class="error">{initError}</p>
 	{:else if loaded}
 		<p>
-			Welcome <strong>{data.user.username}</strong>! Your private database is now loaded.
+			Welcome <strong>{data.user.name}</strong>! Your private database is now loaded.
 		</p>
 	{:else}
 		<p>Initialising your database…</p>
