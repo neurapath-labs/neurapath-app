@@ -50,7 +50,6 @@ function createAuthStore() {
   /* 2 — actions */
   const login = async (username: string) => {
     console.log('[AuthStore] Logging in user:', username);
-    // (AJAX login can go here if needed)
     const state: AuthState = { isLoggedIn: true, user: { username } };
     set(state);
     writeStorage(state);

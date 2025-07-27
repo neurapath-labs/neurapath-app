@@ -99,6 +99,7 @@ export const updateRecordRemotely = async (
 export const loadDatabase = async (userId: string) => {
   try {
     const data = await fetchPublicDatabaseByUser(userId);
+    console.log("Fetching public database: ", data);
 
     if (data && (data as any).items) {
       set({ items: (data as any).items as Record[] });

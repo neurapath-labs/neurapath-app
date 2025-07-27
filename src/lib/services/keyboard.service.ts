@@ -182,6 +182,8 @@ class KeyboardService {
     // Get current selection
     const selectionData = get(selection);
 
+    console.log(selectionData, selectionData.isSelected, selectionData.text);
+
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
       toast('Please select text to create a cloze');
       return;
