@@ -36,7 +36,7 @@
     "tailwindcss": "^4.1.11",
     "tw-animate-css": "^1.3.6",
     "typescript": "^5.8.3",
-    "vite": "^7.0.6"
+    "vite": "npm:rolldown-vite@latest"
   },
   "dependencies": {
     "@tsndr/cloudflare-worker-jwt": "^3.2.0",
