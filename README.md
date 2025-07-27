@@ -1,6 +1,8 @@
 # Neuraa
-
+<img width="987" height="859" alt="image" src="https://github.com/user-attachments/assets/2c0905e0-a9f0-417e-9efb-f8e23adfb2b6" />
 Neuraa is a web-based learning platform designed for evidence-based effective studying. It implements proven methods such as spaced repetition (SM-2), interleaved practice, and incremental reading to optimize learning outcomes.
+
+Discord: https://discord.gg/2xkMPmcGZh
 
 ## Features
 
@@ -123,7 +125,7 @@ If you find a bug or have a feature request, please:
 
 ### License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache-2.0 license.
 
 ### Contact
 
