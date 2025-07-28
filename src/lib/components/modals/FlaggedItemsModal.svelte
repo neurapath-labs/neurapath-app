@@ -33,6 +33,12 @@
   function closeFlagged() {
     ui.closeFlagged();
   }
+
+  // Click handler for items
+  function handleItemClick(itemId: string) {
+    ui.setActiveItemId(itemId);
+    ui.expandAllParentsToId(itemId);
+  }
 </script>
 
 <!-- FLAGGED DIALOG -->
@@ -69,6 +75,7 @@
               <tr
                 class="border-b border-[rgb(var(--background-color))] even:bg-[rgba(var(--background-color),0.1)]
                        hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer"
+                on:click={() => handleItemClick(item.id)}
               >
                 <td class="p-3">{item.id}</td>
                 <td class="p-3">{item.totalRepetitionCount ?? 0}</td>
