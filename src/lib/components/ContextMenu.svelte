@@ -22,25 +22,37 @@
 	/* ------------------------------------------------------------------
 	   LOCAL REACTIVE COPIES (Svelte 5 runes)
 	------------------------------------------------------------------ */
-	let ctx = $state(contextmenu.get());
-	let sel = $state(selection.get());
+	let ctx = $state({ isVisible: false, x: 0, y: 0, targetId: null as string | null, targetType: null as 'sidebar-item' | 'sidebar-right-item' | 'content-area' | null });
+	let sel = $state({ isSelected: false, text: '', range: null as { index: number; length: number } | null });
 	let targetRecord = $state<Record | null>(null);
 
-	$effect(() => contextmenu.subscribe((s) => {
-		console.log('[contextmenu] update', s);
-		ctx = s;
-	}));
-	$effect(() => selection.subscribe((s) => (sel = s)));
+	$effect(() => {
+		const unsubscribe = contextmenu.subscribe((s) => {
+			console.log('[contextmenu] update', s);
+			ctx = s;
+		});
+		return () => unsubscribe();
+	});
+	
+	$effect(() => {
+		const unsubscribe = selection.subscribe((s) => {
+			sel = s;
+		});
+		return () => unsubscribe();
+	});
+	
 	$effect(() => {
 		targetRecord = ctx.targetId ? database.getRecordById(ctx.targetId) ?? null : null;
 	});
 
 	/* open binding for <ContextMenu> */
-	let open = ctx.isVisible;
-	$effect(() => (open = ctx.isVisible));
+	let open = $state(false);
+	$effect(() => {
+		open = ctx.isVisible;
+	});
 
-	function handleOpenChange(e: CustomEvent<boolean>) {
-		if (!e.detail) contextmenu.hideContextMenu();
+	function handleOpenChange(open: boolean) {
+		if (!open) contextmenu.hideContextMenu();
 	}
 
 	/* ------------------------------------------------------------------
@@ -90,17 +102,14 @@
 <!-- ------------------------------------------------------------------
      SHADCN CONTEXT‑MENU
 ------------------------------------------------------------------- -->
-<ContextMenu {open} on:openChange={handleOpenChange} modal={false}>
+<ContextMenu {open} onOpenChange={handleOpenChange}>
 	<!-- Invisible trigger positioned under the cursor -->
-	<ContextMenuTrigger asChild>
-		<div
-			style="position:fixed; top:{ctx.y}px; left:{ctx.x}px; width:1px; height:1px;"
-		/>
+	<ContextMenuTrigger style="position: fixed; top: {ctx.y}px; left: {ctx.x}px; width: 1px; height: 1px; pointer-events: none; opacity: 0;">
 	</ContextMenuTrigger>
 
 	<!-- Dynamic menu ------------------------------------------------- -->
-	<ContextMenuContent class="min-w-40">
-		{#if ctx.targetType === 'sidebar-background'}
+	<ContextMenuContent class="min-w-40" style="position: fixed; top: {ctx.y}px; left: {ctx.x}px;">
+		{#if ctx.targetType === null}
 			<ContextMenuItem onSelect={createRootFolder}>Create folder</ContextMenuItem>
 			<ContextMenuItem onSelect={createRootText}>Create text</ContextMenuItem>
 		{:else if ctx.targetType === 'sidebar-item'}
