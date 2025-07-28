@@ -1,7 +1,6 @@
 <script lang="ts">
-  import LoginModal from '$lib/components/modals/LoginModal.svelte';
+  import AuthForm from "@/components/AuthForm.svelte";
   import SeoHead from '$lib/components/SeoHead.svelte';
-  // SvelteKit injects `form` for us so we can show server-side errors
   const { form } = $props<{ form: import('./$types').ActionData | undefined }>();
 </script>
 
@@ -16,4 +15,9 @@
   canonicalUrl="https://neurapath.io/login"
 />
 
-<LoginModal {form} />
+<!-- <LoginModal {form} /> -->
+
+
+<div class="flex h-screen w-full items-center justify-center px-8">
+	<AuthForm {form} />
+</div>

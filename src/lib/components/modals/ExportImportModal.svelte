@@ -20,6 +20,8 @@
 
 	/* ---------- icons ---------- */
 	import DatabaseIcon from '@lucide/svelte/icons/database';
+	import DownloadIcon from '@lucide/svelte/icons/download';
+	import UploadIcon from '@lucide/svelte/icons/upload';
 
 	/* ---------- Svelte 5 runes ---------- */
 	let isOpen: boolean       = $state(false);
@@ -161,6 +163,7 @@
 						size="sm"
 						class="flex-1"
 					>
+						{#if !isExporting}<DownloadIcon class="mr-2 h-4 w-4" />{/if}
 						{isExporting ? 'Exporting…' : 'Export to JSON'}
 					</Button>
 					<Button
@@ -170,6 +173,7 @@
 						size="sm"
 						class="flex-1"
 					>
+						{#if !isExporting}<DownloadIcon class="mr-2 h-4 w-4" />{/if}
 						{isExporting ? 'Exporting…' : 'Export to CSV'}
 					</Button>
 				</div>
@@ -247,6 +251,7 @@
 					variant="outline"
 					class="w-full"
 				>
+					{#if !isImporting}<UploadIcon class="mr-2 h-4 w-4" />{/if}
 					{isImporting ? 'Importing…' : 'Import Database'}
 				</Button>
 			</div>
