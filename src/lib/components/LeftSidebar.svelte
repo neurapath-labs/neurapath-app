@@ -180,6 +180,15 @@
 		<button
 			type="button"
 			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={() => modal.openSpotlightSearchModal()}
+		>
+			<SearchIcon class="h-4 w-4" /><span>Search</span>
+			<Badge variant="outline" class="ml-auto text-xs">Ctrl/Cmd + J</Badge>
+		</button>
+		
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
 			onclick={() => modal.openSettingsModal()}
 		>
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
