@@ -35,6 +35,24 @@
 		return () => unsubscribe();
 	});
 	
+	// Close context menu when clicking outside
+	function handleClickOutside(e: MouseEvent) {
+		if (ctx.isVisible) {
+			contextmenu.hideContextMenu();
+		}
+	}
+	
+	$effect(() => {
+		if (ctx.isVisible) {
+			document.addEventListener('click', handleClickOutside);
+		} else {
+			document.removeEventListener('click', handleClickOutside);
+		}
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		};
+	});
+	
 	$effect(() => {
 		const unsubscribe = selection.subscribe((s) => {
 			sel = s;
@@ -103,37 +121,31 @@
 <!-- ------------------------------------------------------------------
      SHADCN CONTEXT‑MENU
 ------------------------------------------------------------------- -->
-<ContextMenu {open} onOpenChange={handleOpenChange}>
-	<!-- Invisible trigger positioned under the cursor -->
-	<ContextMenuTrigger style="position: fixed; top: {ctx.y}px; left: {ctx.x}px; width: 1px; height: 1px; opacity: 0; z-index: 9999;">
-		<div style="width: 1px; height: 1px;"></div>
-	</ContextMenuTrigger>
-
 	<!-- Dynamic menu ------------------------------------------------- -->
-	<ContextMenuContent class="min-w-40">
+	<div class="min-w-40 bg-popover text-popover-foreground rounded-md border p-1 shadow-md z-50" style="position: fixed; top: {ctx.y}px; left: {ctx.x}px; display: {ctx.isVisible ? 'block' : 'none'};">
 		{#if ctx.targetType === null}
-			<ContextMenuItem onSelect={createRootFolder}>Create folder</ContextMenuItem>
-			<ContextMenuItem onSelect={createRootText}>Create text</ContextMenuItem>
+			<button class="w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer" onclick={createRootFolder}>Create folder</button>
+			<button class="w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer" onclick={createRootText}>Create text</button>
 		{:else if ctx.targetType === 'sidebar-item'}
-			<ContextMenuItem
-				onSelect={removeItem}
+			<button
+				class="w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer text-red-500"
+				onclick={removeItem}
 				disabled={!ctx.targetId}
-				variant="destructive"
 			>
 				Remove item
-			</ContextMenuItem>
+			</button>
 		{:else if ctx.targetType === 'content-area'}
-			<ContextMenuItem
-				onSelect={createExtract}
+			<button
+				class="w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+				onclick={createExtract}
 				disabled={!sel.isSelected}
 			>
 				Create extract
-			</ContextMenuItem>
+			</button>
 		{/if}
 
 		<!-- separator shown if both background & item actions coexist -->
 		{#if ctx.targetType === 'sidebar-item' && ctx.targetId === null}
-			<ContextMenuSeparator />
+			<div class="h-px bg-border my-1"></div>
 		{/if}
-	</ContextMenuContent>
-</ContextMenu>
+	</div>

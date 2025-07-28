@@ -11,89 +11,57 @@ interface SummarizationResponse {
   summary: string;
 }
 
-// Function to summarize text using OpenAI API
-export const summarizeTextWithOpenAI = async (text: string, apiKey: string): Promise<string> => {
+// Function to summarise text via OpenRouter
+export const summarizeTextWithOpenRouter = async (
+  text: string,
+  apiKey: string,
+  model: string = "qwen/qwen3-235b-a22b-thinking-2507"
+): Promise<string> => {
   try {
-    console.log('Calling OpenAI API with text:', text.substring(0, 100) + '...');
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    console.log('Calling OpenRouter API with text:', text.slice(0, 100) + '…');
+
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${apiKey}`,
+        // Optional but recommended:
+        // 'HTTP-Referer': window.location.origin, // your site/domain
+        // 'X-Title': 'Neurapath',                    // short app name
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: model,
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that summarizes text. Provide concise, clear summaries that capture the key points.'
+            content:
+              'You are a helpful assistant that summarizes text. Provide concise, clear summaries that capture the key points.',
           },
           {
             role: 'user',
-            content: `Please summarize the following text:\n\n${text}`
-          }
+            content: `Please summarize the following text:\n\n${text}`,
+          },
         ],
-        max_tokens: 150,
-        temperature: 0.3
-      })
+      }),
     });
-    
-    console.log('OpenAI API response status:', response.status);
+
+    console.log('OpenRouter API response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('OpenAI API error:', errorData);
-      throw new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`);
+      console.error('OpenRouter API error:', errorData);
+      throw new Error(`OpenRouter API error: ${errorData.error?.message || response.statusText}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI API response data:', data);
+    console.log('OpenRouter API response data:', data);
     return data.choices[0].message.content.trim();
   } catch (error) {
-    console.error('Error summarizing text with OpenAI:', error);
+    console.error('Error summarizing text with OpenRouter:', error);
     throw error;
   }
 };
 
-// Function to summarize text using Anthropic API
-export const summarizeTextWithAnthropic = async (text: string, apiKey: string): Promise<string> => {
-  try {
-    console.log('Calling Anthropic API with text:', text.substring(0, 100) + '...');
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 150,
-        messages: [
-          {
-            role: 'user',
-            content: `Please summarize the following text:\n\n${text}`
-          }
-        ]
-      })
-    });
-    
-    console.log('Anthropic API response status:', response.status);
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Anthropic API error:', errorData);
-      throw new Error(`Anthropic API error: ${errorData.error?.message || response.statusText}`);
-    }
-
-    const data = await response.json();
-    console.log('Anthropic API response data:', data);
-    return data.content[0].text.trim();
-  } catch (error) {
-    console.error('Error summarizing text with Anthropic:', error);
-    throw error;
-  }
-};
 
 // Function to create a summary record in the database
 export const createSummaryRecord = async (originalText: string, summary: string, parentId?: string): Promise<void> => {
@@ -125,16 +93,15 @@ export const createSummaryRecord = async (originalText: string, summary: string,
 };
 
 // Function to get API keys from profile
-export const getApiKeysFromProfile = (): { openaiApiKey: string; anthropicApiKey: string } => {
+export const getApiKeysFromProfile = (): { openRouterApiKey: string; } => {
   const profileStore: any = get(profile);
   return {
-    openaiApiKey: profileStore.openaiApiKey || '',
-    anthropicApiKey: profileStore.anthropicApiKey || ''
+    openRouterApiKey: profileStore.openRouterApiKey || ''
   };
 };
 
 // Main function to summarize selected text
-export const summarizeSelectedText = async (apiKey: string, provider: 'openai' | 'anthropic' = 'openai'): Promise<boolean> => {
+export const summarizeSelectedText = async (apiKey: string, provider: 'openRouter' = 'openRouter'): Promise<boolean> => {
   try {
     console.log('Starting text summarization with provider:', provider);
     // Get current selection
@@ -151,14 +118,10 @@ export const summarizeSelectedText = async (apiKey: string, provider: 'openai' |
 
     // Summarize the text
     let summary: string;
-    if (provider === 'openai') {
-      console.log('Using OpenAI provider');
-      summary = await summarizeTextWithOpenAI(selectionData.text, apiKey);
-    } else {
-      console.log('Using Anthropic provider');
-      summary = await summarizeTextWithAnthropic(selectionData.text, apiKey);
+    if (provider === 'openRouter') {
+      console.log('Using OpenRouter provider');
+      summary = await summarizeTextWithOpenRouter(selectionData.text, apiKey);
     }
-    console.log('Summary generated:', summary);
 
     // Get active record for parent ID
     const databaseData = get(database);

@@ -12,7 +12,7 @@
   let selectionData: SelectionState = $state({ isSelected: false, text: '', range: null });
   let isProcessing = $state(false);
   let apiKey = $state('');
-  let provider: 'openai' | 'anthropic' = $state('openai');
+  let provider: 'openRouter' = $state('openRouter');
   let errorMessage = $state('');
 
   let unsubscribeModal: (() => void) | undefined;
@@ -29,8 +29,8 @@
     });
 
     unsubscribeProfile = profile.subscribe(($profile) => {
-      apiKey = $profile.openaiApiKey || $profile.anthropicApiKey || '';
-      provider = $profile.openaiApiKey ? 'openai' : ($profile.anthropicApiKey ? 'anthropic' : provider);
+      apiKey = $profile.openRouterApiKey || '';
+      provider = $profile.openRouterApiKey ? 'openRouter'
     });
   });
 
@@ -97,13 +97,12 @@
         <div class="flex flex-col gap-4">
           <div>
             <label for="api-key" class="block text-sm font-medium mb-1">API Key:</label>
-            <input id="api-key" type="password" bind:value={apiKey} placeholder="Enter your OpenAI or Anthropic API key" class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm" disabled={isProcessing} />
+            <input id="api-key" type="password" bind:value={apiKey} placeholder="Enter your OpenRouter API key" class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm" disabled={isProcessing} />
           </div>
           <div>
             <label for="provider" class="block text-sm font-medium mb-1">AI Provider:</label>
             <select id="provider" bind:value={provider} class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm" disabled={isProcessing}>
-              <option value="openai">OpenAI (GPT‑3.5)</option>
-              <option value="anthropic">Anthropic (Claude)</option>
+              <option value="openrouter">OpenRouter</option>
             </select>
           </div>
         </div>

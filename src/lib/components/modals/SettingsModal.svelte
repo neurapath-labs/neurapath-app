@@ -15,15 +15,13 @@
   let recordingEvent: string | null = $state(null);
   let filterText: string = $state('');
   let isSettingsModalOpen: boolean = $state(false);
-  let openaiApiKey: string = $state('');
-  let anthropicApiKey: string = $state('');
+  let openRouterApiKey: string = $state('');
 
   // Subscribe to profile & modal changes
   $effect(() => {
     const unsubscribeProfile = profile.subscribe(($profile) => {
-      shortcuts = [...$profile.shortcuts];
-      openaiApiKey = $profile.openaiApiKey || '';
-      anthropicApiKey = $profile.anthropicApiKey || '';
+      shortcuts = [...$profile.openRouterApiKey];
+      openRouterApiKey = $profile.openRouterApiKey || '';
     });
 
     const unsubscribeModal = modal.subscribe(($modal) => {
@@ -100,7 +98,7 @@
   }
 
   function saveApiKeys() {
-    profile.updateProfile({ openaiApiKey, anthropicApiKey });
+    profile.updateProfile({ openrouterApiKey });
     toast('API keys saved successfully');
   }
 
@@ -151,28 +149,17 @@
         <TabsContent value="ai" class="space-y-4 overflow-y-auto">
           <div class="grid gap-6 md:grid-cols-2">
             <div>
-              <label for="openai-api-key" class="block text-sm font-medium mb-1">OpenAI API Key</label>
+              <label for="openrouter-api-key" class="block text-sm font-medium mb-1">OpenRouter API Key</label>
               <Input
-                id="openai-api-key"
+                id="openrouter-api-key"
                 type="text"
-                bind:value={openaiApiKey}
+                bind:value={openRouterApiKey}
                 placeholder="sk-..."
                 class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-sm"
               />
-              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">Used for GPT‑3.5 summarization</p>
+              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">Used for text summarization</p>
             </div>
 
-            <div>
-              <label for="anthropic-api-key" class="block text-sm font-medium mb-1">Anthropic API Key</label>
-              <Input
-                id="anthropic-api-key"
-                type="text"
-                bind:value={anthropicApiKey}
-                placeholder="claude-..."
-                class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-sm"
-              />
-              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">Used for Claude summarization</p>
-            </div>
           </div>
 
           <div class="flex justify-end">

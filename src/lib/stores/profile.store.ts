@@ -75,8 +75,7 @@ const defaultProfile: Profile = {
   acceptedPolicy: false,
   statistics: {},
   shortcuts: defaultShortcuts,
-  openaiApiKey: "",
-  anthropicApiKey: ""
+  openRouterApiKey: "",
 };
 
 const { subscribe, set, update } = writable(defaultProfile);
