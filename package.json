@@ -10,9 +10,8 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "clean": "rm -rf node_modules && rm -rf .svelte-kit && bun i",
     "typegen": "wrangler types",
-    "cf:dev": "wrangler pages dev .svelte-kit/cloudflare --compatibility-date=2025-07-22",
-    "cf:deploy": "bun run build && wrangler pages deploy .svelte-kit/cloudflare",
-    "cf:deploy:prod": "bun run build && wrangler pages deploy .svelte-kit/cloudflare --env production"
+    "deploy": "bun run build && wrangler pages deploy .svelte-kit/cloudflare",
+    "deploy:prod": "bun run build && wrangler pages deploy .svelte-kit/cloudflare --env production"
   },
   "devDependencies": {
     "@internationalized/date": "^3.8.2",
