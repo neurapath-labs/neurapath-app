@@ -1,44 +1,51 @@
+<svelte:options runes />
+
 <script lang="ts">
-	/* ── UI primitives ───────────────────────────────── */
-	import * as Card       from "$lib/components/ui/card/index.js";
-	import { Button }     from "$lib/components/ui/button/index.js";
-	import { Input }      from "$lib/components/ui/input/index.js";
-	import { Label }      from "$lib/components/ui/label/index.js";
+	/* ── UI primitives ─────────────────────────────── */
+	import * as Card   from "$lib/components/ui/card/index.js";
+	import { Button } from "$lib/components/ui/button/index.js";
+	import { Input }  from "$lib/components/ui/input/index.js";
+	import { Label }  from "$lib/components/ui/label/index.js";
 
-	/* ── props ───────────────────────────────────────── */
-	const { form } = $props<{ form?: { error?: string } }>();
-	/* The parent passes `id: () => string` so every control gets a
-	   truly unique ID (SSR‑safe). */
-	const id = $props.id();
+	/* ── props ─────────────────────────────────────── */
+	const {
+		form,
+		id,                                // () => string  (SSR‑safe uid)
+		mode = 'login'                     // 'login' | 'register'
+	} = $props<{
+		form?: { error?: string };
+		id:   () => string;
+		mode?: 'login' | 'register';
+	}>();
 
-	/* ── signals (reactive state) ───────────────────── */
-	let username      = $state("");
-	let password      = $state("");
-	let isRegistering = $state(false);
+	/* ── reactive state ───────────────────────────── */
+	let username      = $state('');
+	let password      = $state('');
+	let isRegistering = $state(mode === 'register');
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm">
 	<form
 		method="POST"
-		action={isRegistering ? "/register" : "/login"}
+		action={isRegistering ? '/register' : '/login'}
 		class="contents"
 	>
-		<!-- header --------------------------------------------------- -->
-		<Card.Header class="flex items-center gap-3">
-			<img alt="Neurapath logo" src={"img/logo/logo.svg"} />
-			<div>
-				<Card.Title class="text-2xl">
-					{isRegistering ? "Register" : "Login"}
-				</Card.Title>
-				<Card.Description>
-					{isRegistering
-						? "Create a new account"
-						: "Enter your username to log in"}
-				</Card.Description>
-			</div>
+		<!-- header ------------------------------------ -->
+		<Card.Header class="flex flex-col items-center gap-4 text-center">
+			<img src="/img/logo/logo.svg" alt="Neurapath logo" class="h-12 w-auto" />
+
+			<Card.Title class="text-2xl">
+				{isRegistering ? 'Register' : 'Login'}
+			</Card.Title>
+
+			<Card.Description>
+				{isRegistering
+					? 'Create a new account'
+					: 'Enter your username to log in'}
+			</Card.Description>
 		</Card.Header>
 
-		<!-- content -------------------------------------------------- -->
+		<!-- content ----------------------------------- -->
 		<Card.Content>
 			<div class="grid gap-4">
 				{#if form?.error}
@@ -47,9 +54,9 @@
 
 				<!-- username -->
 				<div class="grid gap-2">
-					<Label for="username-{id}">Username</Label>
+					<Label for="username-{id()}">Username</Label>
 					<Input
-						id="username-{id}"
+						id="username-{id()}"
 						name="username"
 						placeholder="jane_doe"
 						bind:value={username}
@@ -61,32 +68,32 @@
 				<!-- password -->
 				<div class="grid gap-2">
 					<div class="flex items-center">
-						<Label for="password-{id}">Password</Label>
+						<Label for="password-{id()}">Password</Label>
 						<button
 							type="button"
 							class="ml-auto inline-block text-sm underline"
-							onclick={() => /* trigger forgot‑password flow */ void 0}
+							onclick={() => /* forgot‑password flow */ void 0}
 						>
 							Forgot your password?
 						</button>
 					</div>
 					<Input
-						id="password-{id}"
+						id="password-{id()}"
 						name="password"
 						type="password"
 						bind:value={password}
 						required
-						autocomplete={isRegistering ? "new-password" : "current-password"}
+						autocomplete={isRegistering ? 'new-password' : 'current-password'}
 					/>
 				</div>
 
 				<!-- submit -->
 				<Button type="submit" class="w-full">
-					{isRegistering ? "Register" : "Login"}
+					{isRegistering ? 'Register' : 'Login'}
 				</Button>
 			</div>
 
-			<!-- footer / toggle -------------------------------------- -->
+			<!-- footer / toggle ------------------------- -->
 			<div class="mt-4 text-center text-sm">
 				{#if isRegistering}
 					Already have an account?
