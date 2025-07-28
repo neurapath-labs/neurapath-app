@@ -24,31 +24,69 @@ class KeyboardService {
   }
 
   private handleKeyDown(event: KeyboardEvent) {
-    // Don't handle key events when typing in input fields
-    if (
+    const isInputField = (
       event.target instanceof HTMLInputElement ||
       event.target instanceof HTMLTextAreaElement ||
       (event.target instanceof HTMLElement && event.target.isContentEditable)
-    ) {
-      return;
-    }
+    );
 
     // Get current shortcuts from profile
     const profileData = get(profile);
     this.shortcuts = profileData.shortcuts || [];
+    // console.log('Current shortcuts:', this.shortcuts);
 
     // Match the key event with defined shortcuts
     const matchedShortcut = this.shortcuts.find((shortcut) => {
-      return (
-        event.keyCode === shortcut.keyCode &&
-        event.altKey === shortcut.altKey &&
-        event.ctrlKey === shortcut.ctrlKey &&
-        event.metaKey === shortcut.metaKey &&
-        event.shiftKey === (shortcut.shift || false)
-      );
+      // Check if keyCode and shift key match
+      if (event.keyCode !== shortcut.keyCode || event.shiftKey !== (shortcut.shift || false)) {
+        return false;
+      }
+      
+      // Check if alt key matches
+      if (event.altKey !== shortcut.altKey) {
+        return false;
+      }
+      
+      // For modifier keys, we want to match either ctrlKey or metaKey (Cmd on Mac, Ctrl on Windows)
+      // The shortcut definition has both ctrlKey and metaKey as true, which means it requires both
+      // Instead, we should match if either one is pressed (platform-appropriate modifier)
+      const hasCtrl = event.ctrlKey;
+      const hasMeta = event.metaKey;
+      const shortcutWantsCtrl = shortcut.ctrlKey;
+      const shortcutWantsMeta = shortcut.metaKey;
+      
+      // If shortcut requires a modifier, match either Ctrl or Cmd (but not both necessarily)
+      if (shortcutWantsCtrl || shortcutWantsMeta) {
+        return hasCtrl || hasMeta;
+      } else {
+        // If shortcut doesn't require a modifier, neither should be pressed
+        return !hasCtrl && !hasMeta;
+      }
     });
+    // console.log('Event:', {
+    //   keyCode: event.keyCode,
+    //   altKey: event.altKey,
+    //   ctrlKey: event.ctrlKey,
+    //   metaKey: event.metaKey,
+    //   shiftKey: event.shiftKey
+    // });
+    // console.log('Matched shortcut:', matchedShortcut);
+
+    // If we're in an input field and there's no matched shortcut, return early
+    if (isInputField && !matchedShortcut) {
+      return;
+    }
+
+    // If we're in an input field, only allow shortcuts with modifier keys to prevent interference with typing
+    if (isInputField && matchedShortcut) {
+      const hasModifier = event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
+      if (!hasModifier) {
+        return;
+      }
+    }
 
     if (matchedShortcut) {
+      // console.log('Matched shortcut:', matchedShortcut);
       event.preventDefault();
       this.executeShortcut(matchedShortcut.event);
     }
@@ -174,7 +212,7 @@ class KeyboardService {
 
       // Default case
       default:
-        ('Unhandled shortcut event:', event);
+        console.log('Unhandled shortcut event:', event);
         break;
     }
   }
@@ -183,7 +221,7 @@ class KeyboardService {
     // Get current selection
     const selectionData = get(selection);
 
-    (selectionData, selectionData.isSelected, selectionData.text);
+    console.log(selectionData, selectionData.isSelected, selectionData.text);
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
       toast('Please select text to create a cloze');
@@ -294,14 +332,21 @@ class KeyboardService {
   }
 
   private async flagItem() {
+    // console.log('flagItem called');
     // Get active record
     const databaseData = get(database);
-    const activeRecord = databaseData.items.find(item =>
-      item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
-    ) || null;
+    const uiData = get(ui);
+    const activeItemId = uiData.activeItemId;
+    
+    // console.log('activeItemId:', activeItemId);
+    // Find the active record based on the active item ID
+    const activeRecord = activeItemId
+      ? databaseData.items.find(item => item.id === activeItemId)
+      : null;
 
+    // console.log('activeRecord:', activeRecord);
     if (!activeRecord || !activeRecord.id) {
-      toast('No active record to flag');
+      toast('Please select an item to flag first');
       return;
     }
 
@@ -320,12 +365,16 @@ class KeyboardService {
   private async removeItem() {
     // Get active record
     const databaseData = get(database);
-    const activeRecord = databaseData.items.find(item =>
-      item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
-    ) || null;
+    const uiData = get(ui);
+    const activeItemId = uiData.activeItemId;
+    
+    // Find the active record based on the active item ID
+    const activeRecord = activeItemId
+      ? databaseData.items.find(item => item.id === activeItemId)
+      : null;
 
     if (!activeRecord || !activeRecord.id) {
-      toast('No active record to remove');
+      toast('Please select an item to remove first');
       return;
     }
 
@@ -343,12 +392,16 @@ class KeyboardService {
   private async duplicateItem() {
     // Get active record
     const databaseData = get(database);
-    const activeRecord = databaseData.items.find(item =>
-      item.contentType === 'Extract' || item.contentType === 'Cloze' || item.contentType === 'Occlusion'
-    ) || null;
+    const uiData = get(ui);
+    const activeItemId = uiData.activeItemId;
+    
+    // Find the active record based on the active item ID
+    const activeRecord = activeItemId
+      ? databaseData.items.find(item => item.id === activeItemId)
+      : null;
 
     if (!activeRecord) {
-      toast('No active record to duplicate');
+      toast('Please select an item to duplicate first');
       return;
     }
 
