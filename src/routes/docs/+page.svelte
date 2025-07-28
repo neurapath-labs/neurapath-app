@@ -3,29 +3,29 @@
 </script>
 
 <SeoHead
-  title="Neuraa Documentation - Learning Platform Guide"
-  description="Complete documentation for Neuraa's evidence-based learning platform. Learn how to use spaced repetition, incremental reading, and other powerful study techniques."
+  title="Neurapath Documentation - Learning Platform Guide"
+  description="Complete documentation for Neurapath's evidence-based learning platform. Learn how to use spaced repetition, incremental reading, and other powerful study techniques."
   keywords="learning platform documentation, spaced repetition guide, incremental reading tutorial, study techniques"
-  ogTitle="Neuraa Documentation - Learning Platform Guide"
-  ogDescription="Complete documentation for Neuraa's evidence-based learning platform. Learn how to use spaced repetition, incremental reading, and other powerful study techniques."
-  twitterTitle="Neuraa Documentation - Learning Platform Guide"
-  twitterDescription="Complete documentation for Neuraa's evidence-based learning platform. Learn how to use spaced repetition, incremental reading, and other powerful study techniques."
+  ogTitle="Neurapath Documentation - Learning Platform Guide"
+  ogDescription="Complete documentation for Neurapath's evidence-based learning platform. Learn how to use spaced repetition, incremental reading, and other powerful study techniques."
+  twitterTitle="Neurapath Documentation - Learning Platform Guide"
+  twitterDescription="Complete documentation for Neurapath's evidence-based learning platform. Learn how to use spaced repetition, incremental reading, and other powerful study techniques."
   canonicalUrl="https://neurapath.io/docs"
   schema={[{
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "Neuraa Documentation",
+    "headline": "Neurapath Documentation",
     "description": "Complete guide to using evidence-based learning techniques",
     "author": {
       "@type": "Organization",
-      "name": "Neuraa"
+      "name": "Neurapath"
     }
   }]}
 />
 
 <div class="docs-page">
   <header>
-    <h1>Neuraa Documentation</h1>
+    <h1>Neurapath Documentation</h1>
     <p>Learn how to maximize your learning with evidence-based techniques</p>
   </header>
 
@@ -43,8 +43,8 @@
   <main class="docs-content">
     <section id="getting-started">
       <h2>Getting Started</h2>
-      <p>Welcome to Neuraa! This guide will help you understand how to use our evidence-based learning platform effectively.</p>
-      <p>Neuraa combines proven learning techniques like spaced repetition, incremental reading, and active recall to help you study smarter, not harder.</p>
+      <p>Welcome to Neurapath! This guide will help you understand how to use our evidence-based learning platform effectively.</p>
+      <p>Neurapath combines proven learning techniques like spaced repetition, incremental reading, and active recall to help you study smarter, not harder.</p>
     </section>
 
     <section id="spaced-repetition">

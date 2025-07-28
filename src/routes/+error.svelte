@@ -4,13 +4,13 @@
 </script>
 
 <SeoHead
-  title="Page Not Found - Neuraa Learning Platform"
-  description="The page you're looking for doesn't exist on Neuraa's evidence-based learning platform."
+  title="Page Not Found - Neurapath Learning Platform"
+  description="The page you're looking for doesn't exist on Neurapath's evidence-based learning platform."
   keywords="404, page not found, learning platform error"
-  ogTitle="Page Not Found - Neuraa Learning Platform"
-  ogDescription="The page you're looking for doesn't exist on Neuraa's evidence-based learning platform."
-  twitterTitle="Page Not Found - Neuraa Learning Platform"
-  twitterDescription="The page you're looking for doesn't exist on Neuraa's evidence-based learning platform."
+  ogTitle="Page Not Found - Neurapath Learning Platform"
+  ogDescription="The page you're looking for doesn't exist on Neurapath's evidence-based learning platform."
+  twitterTitle="Page Not Found - Neurapath Learning Platform"
+  twitterDescription="The page you're looking for doesn't exist on Neurapath's evidence-based learning platform."
   canonicalUrl="https://neurapath.io/404"
 />
 

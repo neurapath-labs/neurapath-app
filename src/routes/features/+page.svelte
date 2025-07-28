@@ -3,13 +3,13 @@
 </script>
 
 <SeoHead
-  title="Neuraa Features - Evidence-Based Learning Tools"
-  description="Discover Neuraa's powerful evidence-based learning features including spaced repetition, incremental reading, and active recall techniques."
+  title="Neurapath Features - Evidence-Based Learning Tools"
+  description="Discover Neurapath's powerful evidence-based learning features including spaced repetition, incremental reading, and active recall techniques."
   keywords="spaced repetition, incremental reading, active recall, learning features, educational tools"
-  ogTitle="Neuraa Features - Evidence-Based Learning Tools"
-  ogDescription="Discover Neuraa's powerful evidence-based learning features including spaced repetition, incremental reading, and active recall techniques."
-  twitterTitle="Neuraa Features - Evidence-Based Learning Tools"
-  twitterDescription="Discover Neuraa's powerful evidence-based learning features including spaced repetition, incremental reading, and active recall techniques."
+  ogTitle="Neurapath Features - Evidence-Based Learning Tools"
+  ogDescription="Discover Neurapath's powerful evidence-based learning features including spaced repetition, incremental reading, and active recall techniques."
+  twitterTitle="Neurapath Features - Evidence-Based Learning Tools"
+  twitterDescription="Discover Neurapath's powerful evidence-based learning features including spaced repetition, incremental reading, and active recall techniques."
   canonicalUrl="https://neurapath.io/features"
   schema={[{
     "@context": "https://schema.org",
@@ -18,14 +18,14 @@
     "description": "Master learning techniques based on cognitive science research including spaced repetition, incremental reading, and active recall",
     "provider": {
       "@type": "Organization",
-      "name": "Neuraa"
+      "name": "Neurapath"
     }
   }]}
 />
 
 <div class="features-page">
   <header>
-    <h1>Neuraa Features</h1>
+    <h1>Neurapath Features</h1>
     <p>Powerful evidence-based learning tools designed to optimize your study sessions</p>
   </header>
 
@@ -63,7 +63,7 @@
 
   <section class="cta-section">
     <h2>Ready to Transform Your Learning?</h2>
-    <p>Join thousands of students and professionals who have improved their learning outcomes with Neuraa.</p>
+    <p>Join thousands of students and professionals who have improved their learning outcomes with Neurapath.</p>
     <a href="/login" class="cta-button">Get Started Free</a>
   </section>
 </div>

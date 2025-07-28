@@ -18,13 +18,13 @@
 	<form method="POST" action="?/login" class="contents">
 		<!-- header -->
 		<div class="mb-2 grid place-items-center text-center text-2xl">
-			<img src="/img/logo/logo.svg" alt="Neuraa logo" class="w-[72px]" />
-			<span class="whitespace-nowrap">Neuraa</span>
+			<img src="/img/logo/logo.svg" alt="Neurapath logo" class="w-[72px]" />
+			<span class="whitespace-nowrap">Neurapath</span>
 		</div>
 
 		<!-- intro text -->
 		<div class="mb-2 text-justify text-base">
-			Welcome aboard! Neuraa is specifically tailored for effective studying.
+			Welcome aboard! Neurapath is specifically tailored for effective studying.
 			<u>New user:</u> enter a username and password then press login to create a new
 			account. <u>Existing user:</u> enter your username and password below.
 		</div>

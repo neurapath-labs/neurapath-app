@@ -1,6 +1,6 @@
 {
-  "name": "Neuraa",
-  "short_name": "Neuraa",
+  "name": "Neurapath",
+  "short_name": "Neurapath",
   "description": "Evidence-based learning platform implementing spaced repetition and incremental reading",
   "start_url": "/",
   "display": "standalone",

@@ -3,15 +3,15 @@
 
 	/* ─────────────── incoming props ─────────────── */
 	const {
-		title  = 'Neuraa - Evidence-Based Learning Platform',
-		description = "Boost your learning with Neuraa's evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques.",
+		title  = 'Neurapath - Evidence-Based Learning Platform',
+		description = "Boost your learning with Neurapath's evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques.",
 		keywords = 'evidence-based learning, spaced repetition, incremental reading, active recall, learning platform, educational technology',
-		ogTitle = 'Neuraa - Evidence-Based Learning Platform',
-		ogDescription = "Boost your learning with Neuraa's evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques.",
+		ogTitle = 'Neurapath - Evidence-Based Learning Platform',
+		ogDescription = "Boost your learning with Neurapath's evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques.",
 		ogImage = '/img/preview/og-image.svg',
 		ogUrl   = '',
-		twitterTitle = 'Neuraa - Evidence-Based Learning Platform',
-		twitterDescription = "Boost your learning with Neuraa's evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques.",
+		twitterTitle = 'Neurapath - Evidence-Based Learning Platform',
+		twitterDescription = "Boost your learning with Neurapath's evidence-based platform. Master spaced repetition, incremental reading, and active recall techniques.",
 		twitterImage = '/img/preview/twitter-image.svg',
 		canonicalUrl = '',
 		schema = []
@@ -51,7 +51,7 @@
 	<meta property="og:description" content={ogDescription} />
 	<meta property="og:type"        content="website" />
 	<meta property="og:url"         content={ogUrlFinal} />
-	<meta property="og:site_name"   content="Neuraa" />
+	<meta property="og:site_name"   content="Neurapath" />
 	{#if ogImage}
 		<meta property="og:image"        content={ogImage} />
 		<meta property="og:image:width"  content="1200" />
@@ -81,7 +81,7 @@
 		{JSON.stringify({
 			"@context": "https://schema.org",
 			"@type": "WebSite",
-			"name": "Neuraa",
+			"name": "Neurapath",
 			"url": "https://neurapath.io",
 			"description":
 				"Evidence-based learning platform implementing spaced repetition and incremental reading"

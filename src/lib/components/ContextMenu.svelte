@@ -29,6 +29,7 @@
 	$effect(() => {
 		const unsubscribe = contextmenu.subscribe((s) => {
 			console.log('[contextmenu] update', s);
+			console.log('[contextmenu] coordinates', s.x, s.y);
 			ctx = s;
 		});
 		return () => unsubscribe();
@@ -104,11 +105,12 @@
 ------------------------------------------------------------------- -->
 <ContextMenu {open} onOpenChange={handleOpenChange}>
 	<!-- Invisible trigger positioned under the cursor -->
-	<ContextMenuTrigger style="position: fixed; top: {ctx.y}px; left: {ctx.x}px; width: 1px; height: 1px; pointer-events: none; opacity: 0;">
+	<ContextMenuTrigger style="position: fixed; top: {ctx.y}px; left: {ctx.x}px; width: 1px; height: 1px; opacity: 0; z-index: 9999;">
+		<div style="width: 1px; height: 1px;"></div>
 	</ContextMenuTrigger>
 
 	<!-- Dynamic menu ------------------------------------------------- -->
-	<ContextMenuContent class="min-w-40" style="position: fixed; top: {ctx.y}px; left: {ctx.x}px;">
+	<ContextMenuContent class="min-w-40">
 		{#if ctx.targetType === null}
 			<ContextMenuItem onSelect={createRootFolder}>Create folder</ContextMenuItem>
 			<ContextMenuItem onSelect={createRootText}>Create text</ContextMenuItem>

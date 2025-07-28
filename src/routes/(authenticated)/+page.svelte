@@ -37,12 +37,12 @@
 </script>
 
 <SeoHead
-	title="Neuraa Dashboard - Evidence-Based Learning"
+	title="Neurapath Dashboard - Evidence-Based Learning"
 	description="Access your personalized learning dashboard with spaced repetition cards, incremental reading materials, and progress tracking."
 	keywords="learning dashboard, spaced repetition, incremental reading, study progress"
-	ogTitle="Neuraa Dashboard - Evidence-Based Learning"
+	ogTitle="Neurapath Dashboard - Evidence-Based Learning"
 	ogDescription="Access your personalized learning dashboard with spaced repetition cards, incremental reading materials, and progress tracking."
-	twitterTitle="Neuraa Dashboard - Evidence-Based Learning"
+	twitterTitle="Neurapath Dashboard - Evidence-Based Learning"
 	twitterDescription="Access your personalized learning dashboard with spaced repetition cards, incremental reading materials, and progress tracking."
 	canonicalUrl="https://neurapath.io/dashboard"
 	schema={[
@@ -51,7 +51,7 @@
 			"@type": "EducationalOccupationalProgram",
 			"name": "Evidence-Based Learning Techniques",
 			"description": "Master learning techniques based on cognitive science research including spaced repetition, incremental reading, and active recall",
-			"provider": { "@type": "Organization", "name": "Neuraa" },
+			"provider": { "@type": "Organization", "name": "Neurapath" },
 			"occupationalCategory": "Education",
 			"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 		}

@@ -3,13 +3,13 @@
 </script>
 
 <SeoHead
-  title="Privacy Policy - Neuraa Learning Platform"
-  description="Learn how Neuraa protects your privacy and handles your personal data in our evidence-based learning platform."
+  title="Privacy Policy - Neurapath Learning Platform"
+  description="Learn how Neurapath protects your privacy and handles your personal data in our evidence-based learning platform."
   keywords="privacy policy, data protection, learning platform privacy, user data"
-  ogTitle="Privacy Policy - Neuraa Learning Platform"
-  ogDescription="Learn how Neuraa protects your privacy and handles your personal data in our evidence-based learning platform."
-  twitterTitle="Privacy Policy - Neuraa Learning Platform"
-  twitterDescription="Learn how Neuraa protects your privacy and handles your personal data in our evidence-based learning platform."
+  ogTitle="Privacy Policy - Neurapath Learning Platform"
+  ogDescription="Learn how Neurapath protects your privacy and handles your personal data in our evidence-based learning platform."
+  twitterTitle="Privacy Policy - Neurapath Learning Platform"
+  twitterDescription="Learn how Neurapath protects your privacy and handles your personal data in our evidence-based learning platform."
   canonicalUrl="https://neurapath.io/privacy"
 />
 
@@ -22,7 +22,7 @@
   <main class="privacy-content">
     <section>
       <h2>Introduction</h2>
-      <p>Neuraa ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect your personal information when you use our evidence-based learning platform.</p>
+      <p>Neurapath ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect your personal information when you use our evidence-based learning platform.</p>
     </section>
 
     <section>

@@ -3,13 +3,13 @@
 </script>
 
 <SeoHead
-  title="Terms of Service - Neuraa Learning Platform"
-  description="Terms and conditions for using Neuraa's evidence-based learning platform and services."
+  title="Terms of Service - Neurapath Learning Platform"
+  description="Terms and conditions for using Neurapath's evidence-based learning platform and services."
   keywords="terms of service, user agreement, learning platform terms, service conditions"
-  ogTitle="Terms of Service - Neuraa Learning Platform"
-  ogDescription="Terms and conditions for using Neuraa's evidence-based learning platform and services."
-  twitterTitle="Terms of Service - Neuraa Learning Platform"
-  twitterDescription="Terms and conditions for using Neuraa's evidence-based learning platform and services."
+  ogTitle="Terms of Service - Neurapath Learning Platform"
+  ogDescription="Terms and conditions for using Neurapath's evidence-based learning platform and services."
+  twitterTitle="Terms of Service - Neurapath Learning Platform"
+  twitterDescription="Terms and conditions for using Neurapath's evidence-based learning platform and services."
   canonicalUrl="https://neurapath.io/terms"
 />
 
@@ -22,12 +22,12 @@
   <main class="terms-content">
     <section>
       <h2>Acceptance of Terms</h2>
-      <p>By accessing or using the Neuraa learning platform ("Service"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, you may not access the Service.</p>
+      <p>By accessing or using the Neurapath learning platform ("Service"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, you may not access the Service.</p>
     </section>
 
     <section>
       <h2>Description of Service</h2>
-      <p>Neuraa provides an evidence-based learning platform that implements proven techniques such as spaced repetition, incremental reading, and active recall to optimize learning outcomes. The Service is provided "as is" and may be modified or discontinued at any time.</p>
+      <p>Neurapath provides an evidence-based learning platform that implements proven techniques such as spaced repetition, incremental reading, and active recall to optimize learning outcomes. The Service is provided "as is" and may be modified or discontinued at any time.</p>
     </section>
 
     <section>
@@ -62,7 +62,7 @@
 
     <section>
       <h2>Intellectual Property</h2>
-      <p>The Service and its original content, features, and functionality are and will remain the exclusive property of Neuraa and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries.</p>
+      <p>The Service and its original content, features, and functionality are and will remain the exclusive property of Neurapath and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries.</p>
     </section>
 
     <section>
@@ -72,7 +72,7 @@
 
     <section>
       <h2>Limitation of Liability</h2>
-      <p>In no event shall Neuraa, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:</p>
+      <p>In no event shall Neurapath, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:</p>
       <ul>
         <li>Your access to or use of or inability to access or use the Service;</li>
         <li>Any conduct or content of any third party on the Service;</li>
