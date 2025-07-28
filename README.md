@@ -1,6 +1,6 @@
-# Neuraa
+# Neurapath
 <img width="987" height="859" alt="image" src="https://github.com/user-attachments/assets/2c0905e0-a9f0-417e-9efb-f8e23adfb2b6" />
-Neuraa is a web-based learning platform designed for evidence-based effective studying. It implements proven methods such as spaced repetition (SM-2), interleaved practice, and incremental reading to optimize learning outcomes.
+Neurapath is a web-based learning platform designed for evidence-based effective studying. It implements proven methods such as spaced repetition (SM-2), interleaved practice, and incremental reading to optimize learning outcomes.
 
 Discord: https://discord.gg/2xkMPmcGZh
 
@@ -89,7 +89,7 @@ The application can be configured through environment variables in your `.env` f
 
 ### API Documentation
 
-Neuraa uses a Cloudflare Worker backend for data storage and user management. The API endpoints include:
+Neurapath uses a Cloudflare Worker backend for data storage and user management. The API endpoints include:
 
 - `POST /user/register`: Register a new user
 - `GET /user/data`: Fetch user's database
@@ -102,7 +102,7 @@ For detailed API documentation, please refer to the backend service implementati
 
 ### Contributing
 
-We welcome contributions to Neuraa! Here's how you can help:
+We welcome contributions to Neurapath! Here's how you can help:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
