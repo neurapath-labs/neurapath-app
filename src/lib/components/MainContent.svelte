@@ -30,8 +30,10 @@
   // Subscribe to database changes
   const unsubscribe = database.subscribe(($database) => {
     currentDatabase = $database;
+    console.log('[MainContent] Database updated');
     // Use setTimeout to ensure the database update happens after the database state update
     setTimeout(() => {
+      console.log('[MainContent] Triggering updateActiveRecord after database update');
       updateActiveRecord($database);
     }, 0);
   });
@@ -118,6 +120,7 @@
 
   onMount(async () => {
     if (editor && browser) {
+      console.log('[MainContent] Initializing Quill');
       const { default: Quill } = await import('quill');
       quill = new Quill(editor, {
         theme: 'bubble',
@@ -125,9 +128,11 @@
           toolbar: getToolbarOptions()
         }
       });
+      console.log('[MainContent] Quill initialized:', quill);
 
       // Set initial content
       if (activeRecord && activeRecord.content) {
+        console.log('[MainContent] Setting initial Quill content');
         quill.setContents(activeRecord.content);
       }
 
@@ -268,7 +273,7 @@
     console.log('[MainContent] updateQuillContent called with record:', record);
     console.log('[MainContent] Quill instance:', quill);
     if (quill && record.content) {
-      ('[MainContent] Setting Quill content');
+      console.log('[MainContent] Setting Quill content');
       console.log('[MainContent] Content format:', typeof record.content, record.content);
       // Convert string content to Delta format if needed
       const content = typeof record.content === 'string'
@@ -278,6 +283,9 @@
       quill.setContents({ ops: [] });
       // Set new content
       quill.setContents(content);
+      console.log('[MainContent] Quill content updated');
+    } else {
+      console.log('[MainContent] Skipping Quill content update. Quill:', quill, 'Record content:', record.content);
     }
   };
 
@@ -339,7 +347,14 @@
             id: newRecordId,
             contentType: "Cloze",
             content: contentDelta,
-            clozes: [cloze]
+            clozes: [cloze],
+            // Initialize with SM-2 algorithm properties for immediate review
+            repetition: 0,
+            interval: 0,
+            efactor: 2.5,
+            dueDate: new Date().toISOString(),
+            priority: 1,
+            totalRepetitionCount: 0
           };
           
           // Add to database
@@ -385,7 +400,14 @@
           const newRecord: Record = {
             id: newRecordId,
             contentType: "Extract",
-            content: selectedContent
+            content: selectedContent,
+            // Initialize with SM-2 algorithm properties for immediate review
+            repetition: 0,
+            interval: 0,
+            efactor: 2.5,
+            dueDate: new Date().toISOString(),
+            priority: 1,
+            totalRepetitionCount: 0
           };
           
           // Add to database
@@ -430,7 +452,14 @@
           contentType: "Extract",
           content: {
             "ops": [{"insert": summarizedText}]
-          }
+          },
+          // Initialize with SM-2 algorithm properties for immediate review
+          repetition: 0,
+          interval: 0,
+          efactor: 2.5,
+          dueDate: new Date().toISOString(),
+          priority: 1,
+          totalRepetitionCount: 0
         };
         
         // Add to database
