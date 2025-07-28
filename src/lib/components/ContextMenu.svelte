@@ -176,18 +176,47 @@
 		}
 		
 		try {
-			// Create new record with duplicated content
+			// Get all items from the database
+			let allItems: Record[] = [];
+			const unsubscribe = database.subscribe((db) => {
+				allItems = db.items;
+			});
+			unsubscribe();
+			
+			// Find all subitems of the target item
+			const subItems = allItems.filter((item: Record) =>
+				item.id.startsWith(`${record.id}/`)
+			);
+			
+			// Create new ID for the duplicated item
 			const newRecordId = "Copy of " + record.id;
 			
+			// Create new record with duplicated content
 			const newRecord: Record = {
 				...record,
 				id: newRecordId
 			};
 			
-			// Add to database
+			// Add the duplicated item to database
 			await database.addRecord(newRecord);
 			
-			toast('Item duplicated successfully');
+			// Duplicate all subitems
+			for (const subItem of subItems) {
+				// Create new ID for the duplicated subitem
+				const relativePath = subItem.id.substring(record.id.length + 1);
+				const newSubItemId = `${newRecordId}/${relativePath}`;
+				
+				// Create new subitem with duplicated content
+				const newSubItem: Record = {
+					...subItem,
+					id: newSubItemId
+				};
+				
+				// Add the duplicated subitem to database
+				await database.addRecord(newSubItem);
+			}
+			
+			toast('Item and subitems duplicated successfully');
 		} catch (error) {
 			console.error('Error duplicating item:', error);
 			toast('Error duplicating item');
