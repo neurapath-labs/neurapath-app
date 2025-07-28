@@ -44,8 +44,8 @@
 
 	$effect(() => {
 		const unsubscribe = contextmenu.subscribe((s) => {
-			("[contextmenu] update", s);
-			("[contextmenu] coordinates", s.x, s.y);
+			//("[contextmenu] update", s);
+			//("[contextmenu] coordinates", s.x, s.y);
 			ctx = s;
 		});
 		return () => unsubscribe();
@@ -384,7 +384,7 @@
 			disabled={!ctx.targetId}
 		>
 			<FlagIcon class="h-4 w-4" />
-			<span>Flag item</span>
+			<span>{targetRecord && targetRecord.isFlagged ? 'Unflag item' : 'Flag item'}</span>
 		</button>
 		<button
 			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
