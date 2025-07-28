@@ -18,7 +18,7 @@
 	import { ui } from "$lib/stores/ui.store";
 	import { createID } from "$lib/utils/helpers";
 	import type { Record } from "$lib/models";
-	import { Trash2Icon, FolderPlusIcon, FilePlusIcon } from "@lucide/svelte";
+	import { Trash2Icon, FolderPlusIcon, FilePlusIcon, FlagIcon, CopyIcon } from "@lucide/svelte";
 
 	/* ------------------------------------------------------------------
 	   LOCAL REACTIVE COPIES (Svelte 5 runes)
@@ -143,6 +143,57 @@
 		toast("Extract created");
 		contextmenu.hideContextMenu();
 	}
+
+	async function flagItem() {
+		if (!ctx.targetId) return;
+		
+		const record = database.getRecordById(ctx.targetId);
+		if (!record) {
+			toast("No record found to flag");
+			return;
+		}
+		
+		try {
+			// Toggle flagged status
+			const isFlagged = !(record.isFlagged || false);
+			await database.updateRecordRemotely(record.id, { isFlagged });
+			
+			toast(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`);
+		} catch (error) {
+			console.error('Error flagging item:', error);
+			toast('Error flagging item');
+		}
+		contextmenu.hideContextMenu();
+	}
+
+	async function duplicateItem() {
+		if (!ctx.targetId) return;
+		
+		const record = database.getRecordById(ctx.targetId);
+		if (!record) {
+			toast("No record found to duplicate");
+			return;
+		}
+		
+		try {
+			// Create new record with duplicated content
+			const newRecordId = "Copy of " + record.id;
+			
+			const newRecord: Record = {
+				...record,
+				id: newRecordId
+			};
+			
+			// Add to database
+			await database.addRecord(newRecord);
+			
+			toast('Item duplicated successfully');
+		} catch (error) {
+			console.error('Error duplicating item:', error);
+			toast('Error duplicating item');
+		}
+		contextmenu.hideContextMenu();
+	}
 </script>
 
 <!-- ------------------------------------------------------------------
@@ -171,6 +222,22 @@
 			<span>Create text</span>
 		</button>
 	{:else if ctx.targetType === "sidebar-item" || ctx.targetType === "content-area"}
+		<button
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			onclick={flagItem}
+			disabled={!ctx.targetId}
+		>
+			<FlagIcon class="h-4 w-4" />
+			<span>Flag item</span>
+		</button>
+		<button
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			onclick={duplicateItem}
+			disabled={!ctx.targetId}
+		>
+			<CopyIcon class="h-4 w-4" />
+			<span>Duplicate item</span>
+		</button>
 		<button
 			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer text-red-500"
 			onclick={removeItem}
