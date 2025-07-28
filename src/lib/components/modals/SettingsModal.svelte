@@ -10,8 +10,10 @@
   import { profile } from "$lib/stores/profile.store";
   import { modal   } from "$lib/stores/modal.store";
   import { toast   } from "svelte-sonner";
+  import { database } from "$lib/stores/database.store";
+  import { auth } from "$lib/stores/auth.store";
 
-  import { BrainIcon, KeyboardIcon, SettingsIcon }
+  import { BrainIcon, KeyboardIcon, SettingsIcon, SaveIcon, Loader2Icon }
           from "@lucide/svelte/icons";
 
   import type { Shortcut } from "$lib/models";
@@ -27,6 +29,7 @@
   // AI settings
   let openRouterApiKey = $state('');
   let openRouterModel  = $state('openai/gpt-3.5-turbo');
+  let isSaving = $state(false);
 
   /* ─────────────── model options & derived trigger label ──────────── */
   const models = [
@@ -102,9 +105,30 @@
     toast('Keyboard shortcuts saved');
   }
 
-  function saveAiSettings() {
-    profile.updateProfile({ openRouterApiKey, openRouterModel });
-    toast('AI settings saved');
+  async function saveAiSettings() {
+    isSaving = true;
+    try {
+      // Save AI settings to profile
+      profile.updateProfile({ openRouterApiKey, openRouterModel });
+      
+      // Save database
+      let currentUser: any = null;
+      const unsubscribe = auth.subscribe((user) => {
+        currentUser = user;
+      });
+      unsubscribe();
+      
+      if (currentUser && currentUser.user) {
+        await database.saveDatabase(currentUser.user.username);
+      }
+      
+      toast('AI settings and database saved');
+    } catch (error) {
+      console.error('Error saving AI settings and database:', error);
+      toast('Error saving AI settings and database');
+    } finally {
+      isSaving = false;
+    }
   }
 
   function resetToDefaults() {
@@ -205,7 +229,15 @@
           </div>
 
           <div class="flex justify-end">
-            <Button size="sm" onclick={saveAiSettings}>Save&nbsp;AI&nbsp;Settings</Button>
+            <Button size="sm" onclick={saveAiSettings} disabled={isSaving}>
+              {#if isSaving}
+                <Loader2Icon class="w-4 h-4 mr-2 animate-spin" />
+                Saving...
+              {:else}
+                <SaveIcon class="w-4 h-4 mr-2" />
+                Save&nbsp;AI&nbsp;Settings
+              {/if}
+            </Button>
           </div>
         </TabsContent>
 
