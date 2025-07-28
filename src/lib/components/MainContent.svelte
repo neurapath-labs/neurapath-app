@@ -149,7 +149,7 @@
   const saveContentToDatabase = async (recordId: string, content: any) => {
     try {
       await database.updateRecordRemotely(recordId, { content });
-      ('Content saved to database:', recordId);
+      console.log('Content saved to database:', recordId);
     } catch (error) {
       console.error('Error saving content to database:', error);
       toast('Error saving content');
@@ -161,7 +161,7 @@
     if (quill && activeRecord) {
       const content = quill.getContents();
       // TODO: Update the store with the new content
-      ('Content updated:', content);
+      console.log('Content updated:', content);
     }
   };
 
@@ -179,11 +179,11 @@
 
   // Function to update active record based on active item ID
   function updateActiveRecord($database: any) {
-    ('[MainContent] updateActiveRecord called with activeItemId:', activeItemId);
+    console.log('[MainContent] updateActiveRecord called with activeItemId:', activeItemId);
     // Find the active record based on the active item ID
     if (activeItemId) {
       const record = $database.items.find((item: Record) => item.id === activeItemId);
-      ('[MainContent] Found record:', record);
+      console.log('[MainContent] Found record:', record);
       if (record) {
         activeRecord = record;
         updateQuillContent(record);
@@ -224,11 +224,11 @@
 
   // Function to update Quill content
   const updateQuillContent = (record: Record) => {
-    ('[MainContent] updateQuillContent called with record:', record);
-    ('[MainContent] Quill instance:', quill);
+    console.log('[MainContent] updateQuillContent called with record:', record);
+    console.log('[MainContent] Quill instance:', quill);
     if (quill && record.content) {
       ('[MainContent] Setting Quill content');
-      ('[MainContent] Content format:', typeof record.content, record.content);
+      console.log('[MainContent] Content format:', typeof record.content, record.content);
       // Convert string content to Delta format if needed
       const content = typeof record.content === 'string'
         ? { ops: [{ insert: record.content }] }
@@ -283,7 +283,8 @@
           const selectedText = selectionData.text;
           
           // Create new record for the cloze
-          const newRecordId = (activeRecord.id || "record") + "/" + createID(6);
+          const parentId = activeRecord.id || "record";
+          const newRecordId = parentId + "/" + createID(6);
           const cloze: Cloze = {
             cloze: selectedText,
             startindex: range.index,
@@ -299,6 +300,9 @@
           
           // Add to database
           database.addRecord(newRecord);
+          
+          // Expand all parent folders to show the new item
+          ui.expandAllParentsToId(newRecordId);
           
           // Highlight the text visually
           quill.formatText(range.index, range.length, {
@@ -326,7 +330,8 @@
           const selectedContent = quill.getContents(range.index, range.length);
           
           // Create new record for the extract
-          const newRecordId = (activeRecord.id || "record") + "/" + createID(6);
+          const parentId = activeRecord.id || "record";
+          const newRecordId = parentId + "/" + createID(6);
           const newRecord: Record = {
             id: newRecordId,
             contentType: "Extract",
@@ -335,6 +340,9 @@
           
           // Add to database
           database.addRecord(newRecord);
+          
+          // Expand all parent folders to show the new item
+          ui.expandAllParentsToId(newRecordId);
           
           // Format the text visually with yellow overlay
           quill.formatText(range.index, range.length, {
@@ -365,7 +373,8 @@
         const summarizedText = "Summary of: " + selectedText; // Placeholder
         
         // Create new record for the summarized extract
-        const newRecordId = (activeRecord.id || "record") + "/" + createID(6);
+        const parentId = activeRecord.id || "record";
+        const newRecordId = parentId + "/" + createID(6);
         const newRecord: Record = {
           id: newRecordId,
           contentType: "Extract",
@@ -376,6 +385,9 @@
         
         // Add to database
         database.addRecord(newRecord);
+        
+        // Expand all parent folders to show the new item
+        ui.expandAllParentsToId(newRecordId);
         
         if (quill) {
           quill.setSelection(null);
@@ -396,7 +408,7 @@
       try {
         // This would typically involve creating occlusions from the active image
         // For now, we'll just show a success message
-        ('Create occlusion, separate:', separateOcclusions);
+        console.log('Create occlusion, separate:', separateOcclusions);
         toast('Occlusion created successfully');
       } catch (error) {
         console.error('Error creating occlusion:', error);
@@ -467,7 +479,7 @@
       else if (file.type === 'application/pdf') {
         try {
           // In a real implementation, this would parse the PDF and create records
-          ('PDF file detected:', file.name);
+          console.log('PDF file detected:', file.name);
           toast('PDF imported successfully');
         } catch (error) {
           console.error('Error importing PDF:', error);

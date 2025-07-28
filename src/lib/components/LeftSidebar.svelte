@@ -105,7 +105,7 @@
 	const renderFlagged = () => ui.openFlagged();
 	const renderStatistics = () => ui.openStatistics();
 	const renderDatabases = () => ui.openDatabases();
-	const renderImportExport = () => ui.open();
+	const renderImportExport = () => ui.openExportImport();
 	const toggleTheme = () =>
 		theme.setTheme(currentTheme === "day" ? "homebrew" : "day");
 

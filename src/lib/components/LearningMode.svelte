@@ -140,6 +140,13 @@
     };
     img.src = currentRecord.url;
   }
+  function handleOcclusionImageLoad() {
+    // This function is called when the occlusion image is loaded
+    // We can trigger the drawing of the occlusion question here
+    if (currentRecord?.contentType === 'Occlusion') {
+      drawOcclusionQuestion();
+    }
+  }
   function drawOcclusionAnswer() {
     if (!answerOcclusionCanvas || !currentRecord?.url) return;
     const img = new Image();

@@ -4,6 +4,7 @@ import { modal } from '$lib/stores/modal.store';
 import { selection } from '$lib/stores/selection.store';
 import { database } from '$lib/stores/database.store';
 import { learning } from '$lib/stores/learning.store';
+import { ui } from '$lib/stores/ui.store';
 import { createID } from '$lib/utils/helpers';
 import { toast } from "svelte-sonner";
 import type { Shortcut, Record } from '$lib/models';
@@ -191,9 +192,15 @@ class KeyboardService {
 
     // Get active record
     const databaseData = get(database);
-    const activeRecord = databaseData.items.find(item =>
-      item.contentType === 'Extract' || item.contentType === 'Cloze'
-    ) || null;
+    const uiData = get(ui);
+    const activeItemId = uiData.activeItemId;
+    
+    // Find the active record based on the active item ID
+    const activeRecord = activeItemId
+      ? databaseData.items.find(item => item.id === activeItemId)
+      : databaseData.items.find(item =>
+          item.contentType === 'Extract' || item.contentType === 'Cloze'
+        ) || null;
 
     if (!activeRecord) {
       toast('No active record to create cloze');
@@ -208,7 +215,15 @@ class KeyboardService {
       }
 
       // Create new record for the cloze
-      const newRecordId = (activeRecord.id || "record") + "/" + createID(6);
+      let newRecordId: string;
+      
+      // If the active record is an Extract, create the cloze as a subitem
+      if (activeRecord.contentType === 'Extract') {
+        newRecordId = activeRecord.id + "/" + createID(6);
+      } else {
+        // Otherwise, use the existing logic
+        newRecordId = (activeRecord.id || "record") + "/" + createID(6);
+      }
 
       const newRecord: Record = {
         id: newRecordId,
