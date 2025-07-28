@@ -18,7 +18,7 @@
 
   onMount(() => {
     unsubscribeUI = ui.subscribe(($ui) => {
-      console.log('[DatabasesModal] UI store updated, isDatabasesOpen:', $ui.isDatabasesOpen);
+      ('[DatabasesModal] UI store updated, isDatabasesOpen:', $ui.isDatabasesOpen);
       const wasOpen = isOpen;
       isOpen = $ui.isDatabasesOpen;
       
@@ -53,29 +53,29 @@
 
   // Close & navigate helpers
   function closeDatabases() {
-    console.log('[DatabasesModal] closeDatabases called');
+    ('[DatabasesModal] closeDatabases called');
     ui.closeDatabases();
   }
   function openExportImport() {
-    console.log('[DatabasesModal] openExportImport called');
-    console.log('[DatabasesModal] Current isOpen value:', isOpen);
-    console.log('[DatabasesModal] Current databases length:', databases.length);
+    ('[DatabasesModal] openExportImport called');
+    ('[DatabasesModal] Current isOpen value:', isOpen);
+    ('[DatabasesModal] Current databases length:', databases.length);
     ui.closeDatabases();
-    console.log('[DatabasesModal] databases closed, opening export/import');
+    ('[DatabasesModal] databases closed, opening export/import');
     ui.openExportImport();
-    console.log('[DatabasesModal] export/import opened');
+    ('[DatabasesModal] export/import opened');
   }
   
   // Add a test function to verify button clicks are being registered
   function testClick() {
-    console.log('[DatabasesModal] Button was clicked!');
+    ('[DatabasesModal] Button was clicked!');
   }
   
   // Handle dialog open change
   function handleOpenChange(open: boolean) {
-    console.log('[DatabasesModal] Dialog open state changed to:', open);
+    ('[DatabasesModal] Dialog open state changed to:', open);
     if (!open) {
-      console.log('[DatabasesModal] Dialog closed, updating UI store');
+      ('[DatabasesModal] Dialog closed, updating UI store');
       ui.closeDatabases();
     }
   }
@@ -103,7 +103,7 @@
       <div class="flex flex-col space-y-6 overflow-hidden">
         <!-- Actions -->
         <div>
-          <Button class="w-full mt-2" onclick={openExportImport} on:pointerdown={() => console.log('[DatabasesModal] Button pointerdown event')}>Export / Import Database</Button>
+          <Button class="w-full mt-2" onclick={openExportImport} on:pointerdown={() => ('[DatabasesModal] Button pointerdown event')}>Export / Import Database</Button>
         </div>
 
         <!-- Database list -->

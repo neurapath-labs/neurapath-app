@@ -80,6 +80,31 @@ export const removeRecordById = async (id: string) => {
   }
 };
 
+/* ---------- DELETE FOLDER AND CONTENTS ---------- */
+export const removeFolderAndContents = async (folderId: string) => {
+  update((db) => ({
+    ...db,
+    items: db.items.filter(
+      (r) => r.id !== folderId && !r.id.startsWith(`${folderId}/`)
+    )
+  }));
+
+  if (currentUserId) {
+    // Get the current database state
+    const db = getState();
+
+    // Find all items that are in this folder or its subfolders
+    const itemsToRemove = db.items.filter(
+      (r) => r.id === folderId || r.id.startsWith(`${folderId}/`)
+    );
+
+    // Delete all items remotely
+    for (const item of itemsToRemove) {
+      await serviceDeleteRecord(currentUserId, currentUserPassword || '', item.id);
+    }
+  }
+};
+
 /* ---------- UPDATE ---------- */
 export const updateRecordLocally = (id: string, changes: Partial<Record>) =>
   update((db) => ({
@@ -164,7 +189,7 @@ export const updateRecordRemotely = async (
 export const loadDatabase = async (userId: string) => {
   try {
     const data = await fetchPublicDatabaseByUser(userId);
-    console.log("Fetching public database: ", data);
+    ("Fetching public database: ", data);
 
     // Handle different data formats from backend
     let items: Record[] = [];
@@ -226,6 +251,7 @@ export const database = {
   getRecordById,
   addRecord,
   removeRecordById,
+  removeFolderAndContents,
   updateRecord: updateRecordLocally,
   updateRecordRemotely,
   moveItem,

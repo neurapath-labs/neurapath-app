@@ -92,7 +92,7 @@
   }
 
   function selectItem(item: Record) {
-    console.log('Selected item:', item);
+    ('Selected item:', item);
     closeSpotlightSearch();
   }
 

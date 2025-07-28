@@ -89,7 +89,7 @@ const toggleSpotlightMode = () => {
 };
 
 const openExplorer = () => {
-  console.log('[ui.store] Opening Explorer, closing other UI modals');
+  ('[ui.store] Opening Explorer, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -124,7 +124,7 @@ const closeExplorer = () => {
 };
 
 const openFlagged = () => {
-  console.log('[ui.store] Opening Flagged, closing other UI modals');
+  ('[ui.store] Opening Flagged, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -159,7 +159,7 @@ const closeFlagged = () => {
 };
 
 const openStatistics = () => {
-  console.log('[ui.store] Opening Statistics, closing other UI modals');
+  ('[ui.store] Opening Statistics, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -194,7 +194,7 @@ const closeStatistics = () => {
 };
 
 const openDatabases = () => {
-  console.log('[ui.store] Opening Databases, closing other UI modals');
+  ('[ui.store] Opening Databases, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -229,7 +229,7 @@ const closeDatabases = () => {
 };
 
 const openChangelog = () => {
-  console.log('[ui.store] Opening Changelog, closing other UI modals');
+  ('[ui.store] Opening Changelog, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -264,7 +264,7 @@ const closeChangelog = () => {
 };
 
 const openPolicy = () => {
-  console.log('[ui.store] Opening Policy, closing other UI modals');
+  ('[ui.store] Opening Policy, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -299,7 +299,7 @@ const closePolicy = () => {
 };
 
 const openTutorial = () => {
-  console.log('[ui.store] Opening Tutorial, closing other UI modals');
+  ('[ui.store] Opening Tutorial, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -334,7 +334,7 @@ const closeTutorial = () => {
 };
 
 const openSpotlightSearch = () => {
-  console.log('[ui.store] Opening SpotlightSearch, closing other UI modals');
+  ('[ui.store] Opening SpotlightSearch, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -369,7 +369,7 @@ const closeSpotlightSearch = () => {
 };
 
 const openPdfImport = () => {
-  console.log('[ui.store] Opening PdfImport, closing other UI modals');
+  ('[ui.store] Opening PdfImport, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -404,7 +404,7 @@ const closePdfImport = () => {
 };
 
 const openExportImport = () => {
-  console.log('[ui.store] Opening ExportImport, closing other UI modals');
+  ('[ui.store] Opening ExportImport, closing other UI modals');
   // Close all modal store modals as well
   modal.closeLoginModal();
   modal.closeSettingsModal();
@@ -429,7 +429,7 @@ const openExportImport = () => {
     isPdfImportOpen: false,
     isShareModalOpen: false
   }));
-  console.log('[ui.store] ExportImport opened, isExportImportOpen should be true');
+  ('[ui.store] ExportImport opened, isExportImportOpen should be true');
 };
 
 const closeExportImport = () => {

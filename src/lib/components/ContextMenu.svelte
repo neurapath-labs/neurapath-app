@@ -44,8 +44,8 @@
 
 	$effect(() => {
 		const unsubscribe = contextmenu.subscribe((s) => {
-			console.log("[contextmenu] update", s);
-			console.log("[contextmenu] coordinates", s.x, s.y);
+			("[contextmenu] update", s);
+			("[contextmenu] coordinates", s.x, s.y);
 			ctx = s;
 		});
 		return () => unsubscribe();
@@ -117,8 +117,17 @@
 
 	async function removeItem() {
 		if (!ctx.targetId) return;
-		await database.removeRecordById(ctx.targetId);
-		toast("Item removed");
+		
+		// Check if the item is a folder by looking at its record
+		if (targetRecord && targetRecord.contentType === "Folder") {
+			// Use the new function to remove folder and all its contents
+			await database.removeFolderAndContents(ctx.targetId);
+			toast("Folder and contents removed");
+		} else {
+			// Remove single item as before
+			await database.removeRecordById(ctx.targetId);
+			toast("Item removed");
+		}
 		contextmenu.hideContextMenu();
 	}
 

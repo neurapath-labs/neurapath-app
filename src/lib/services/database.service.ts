@@ -36,7 +36,7 @@ export async function register(username: string, password: string) {
 }
 
 export async function login(username: string, password: string) {
-  console.log('[DatabaseService] Attempting login for user:', username);
+  ('[DatabaseService] Attempting login for user:', username);
   // successful response ⇒ credentials are valid
   try {
     const result = await handle<unknown>(
@@ -45,7 +45,7 @@ export async function login(username: string, password: string) {
         headers: buildHeaders(username, password)
       })
     );
-    console.log('[DatabaseService] Login successful for user:', username);
+    ('[DatabaseService] Login successful for user:', username);
     return result;
   } catch (error: any) {
     console.error('[DatabaseService] Login error for user:', username, error);

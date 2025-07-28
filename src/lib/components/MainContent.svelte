@@ -149,7 +149,7 @@
   const saveContentToDatabase = async (recordId: string, content: any) => {
     try {
       await database.updateRecordRemotely(recordId, { content });
-      console.log('Content saved to database:', recordId);
+      ('Content saved to database:', recordId);
     } catch (error) {
       console.error('Error saving content to database:', error);
       toast('Error saving content');
@@ -161,29 +161,29 @@
     if (quill && activeRecord) {
       const content = quill.getContents();
       // TODO: Update the store with the new content
-      console.log('Content updated:', content);
+      ('Content updated:', content);
     }
   };
 
   // Function to handle selection changes
   const handleSelectionChange = () => {
     // TODO: Implement selection change handling
-    console.log('Selection changed');
+    ('Selection changed');
   };
 
   // Function to handle paste events
   const handlePaste = async (e: ClipboardEvent) => {
-    console.log('Paste event detected');
+    ('Paste event detected');
     handleDocumentImport(e);
   };
 
   // Function to update active record based on active item ID
   function updateActiveRecord($database: any) {
-    console.log('[MainContent] updateActiveRecord called with activeItemId:', activeItemId);
+    ('[MainContent] updateActiveRecord called with activeItemId:', activeItemId);
     // Find the active record based on the active item ID
     if (activeItemId) {
       const record = $database.items.find((item: Record) => item.id === activeItemId);
-      console.log('[MainContent] Found record:', record);
+      ('[MainContent] Found record:', record);
       if (record) {
         activeRecord = record;
         updateQuillContent(record);
@@ -218,17 +218,17 @@
   // Function to handle drop events
   const handleDrop = async (e: DragEvent) => {
     e.preventDefault();
-    console.log('Drop event detected');
+    ('Drop event detected');
     handleDocumentImport(e);
   };
 
   // Function to update Quill content
   const updateQuillContent = (record: Record) => {
-    console.log('[MainContent] updateQuillContent called with record:', record);
-    console.log('[MainContent] Quill instance:', quill);
+    ('[MainContent] updateQuillContent called with record:', record);
+    ('[MainContent] Quill instance:', quill);
     if (quill && record.content) {
-      console.log('[MainContent] Setting Quill content');
-      console.log('[MainContent] Content format:', typeof record.content, record.content);
+      ('[MainContent] Setting Quill content');
+      ('[MainContent] Content format:', typeof record.content, record.content);
       // Convert string content to Delta format if needed
       const content = typeof record.content === 'string'
         ? { ops: [{ insert: record.content }] }
@@ -273,7 +273,7 @@
 
   // Function to create a cloze deletion
   const createCloze = () => {
-    console.log(selectionData.isSelected, quill, activeRecord);
+    (selectionData.isSelected, quill, activeRecord);
     
     if (selectionData.isSelected && quill && activeRecord) {
       try {
@@ -396,7 +396,7 @@
       try {
         // This would typically involve creating occlusions from the active image
         // For now, we'll just show a success message
-        console.log('Create occlusion, separate:', separateOcclusions);
+        ('Create occlusion, separate:', separateOcclusions);
         toast('Occlusion created successfully');
       } catch (error) {
         console.error('Error creating occlusion:', error);
@@ -467,7 +467,7 @@
       else if (file.type === 'application/pdf') {
         try {
           // In a real implementation, this would parse the PDF and create records
-          console.log('PDF file detected:', file.name);
+          ('PDF file detected:', file.name);
           toast('PDF imported successfully');
         } catch (error) {
           console.error('Error importing PDF:', error);

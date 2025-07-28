@@ -181,7 +181,7 @@
       // Close modal
       closeImageOcclusion();
       
-      console.log('Occlusion saved successfully');
+      ('Occlusion saved successfully');
     } catch (error) {
       console.error('Error saving occlusion:', error);
     }

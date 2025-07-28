@@ -18,7 +18,7 @@ export const summarizeTextWithOpenRouter = async (
   model: string = "qwen/qwen3-235b-a22b-thinking-2507"
 ): Promise<string> => {
   try {
-    console.log('Calling OpenRouter API with text:', text.slice(0, 100) + '…');
+    ('Calling OpenRouter API with text:', text.slice(0, 100) + '…');
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -45,7 +45,7 @@ export const summarizeTextWithOpenRouter = async (
       }),
     });
 
-    console.log('OpenRouter API response status:', response.status);
+    ('OpenRouter API response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -54,7 +54,7 @@ export const summarizeTextWithOpenRouter = async (
     }
 
     const data = await response.json();
-    console.log('OpenRouter API response data:', data);
+    ('OpenRouter API response data:', data);
     return data.choices[0].message.content.trim();
   } catch (error) {
     console.error('Error summarizing text with OpenRouter:', error);
@@ -66,9 +66,9 @@ export const summarizeTextWithOpenRouter = async (
 // Function to create a summary record in the database
 export const createSummaryRecord = async (originalText: string, summary: string, parentId?: string): Promise<void> => {
   try {
-    console.log('Creating summary record with parent ID:', parentId);
+    ('Creating summary record with parent ID:', parentId);
     const id = parentId ? `${parentId}/summary-${createID(6)}` : `summary-${createID(6)}`;
-    console.log('Generated record ID:', id);
+    ('Generated record ID:', id);
     
     const newRecord: Record = {
       id,
@@ -82,10 +82,10 @@ export const createSummaryRecord = async (originalText: string, summary: string,
       }
     };
     
-    console.log('Adding record to database:', newRecord);
+    ('Adding record to database:', newRecord);
 
     await database.addRecord(newRecord);
-    console.log('Record added to database successfully');
+    ('Record added to database successfully');
   } catch (error) {
     console.error('Error creating summary record:', error);
     throw error;
@@ -103,10 +103,10 @@ export const getApiKeysFromProfile = (): { openRouterApiKey: string; } => {
 // Main function to summarize selected text
 export const summarizeSelectedText = async (apiKey: string, provider: 'openRouter' = 'openRouter'): Promise<boolean> => {
   try {
-    console.log('Starting text summarization with provider:', provider);
+    ('Starting text summarization with provider:', provider);
     // Get current selection
     const selectionData = get(selection);
-    console.log('Selection data:', selectionData);
+    ('Selection data:', selectionData);
     
     if (!selectionData.isSelected || !selectionData.text) {
       toast('Please select text to summarize');
@@ -119,7 +119,7 @@ export const summarizeSelectedText = async (apiKey: string, provider: 'openRoute
     // Summarize the text
     let summary: string;
     if (provider === 'openRouter') {
-      console.log('Using OpenRouter provider');
+      ('Using OpenRouter provider');
       summary = await summarizeTextWithOpenRouter(selectionData.text, apiKey);
     }
 
@@ -130,7 +130,7 @@ export const summarizeSelectedText = async (apiKey: string, provider: 'openRoute
     ) || null;
 
     // Create a new record with the summary
-    console.log('Creating summary record with parent ID:', activeRecord?.id);
+    ('Creating summary record with parent ID:', activeRecord?.id);
     await createSummaryRecord(selectionData.text, summary, activeRecord?.id);
 
     // Show success message

@@ -34,7 +34,7 @@ const initialState: ModalState = {
 const { subscribe, set, update } = writable(initialState);
 
 const openLoginModal = () => {
-  console.log('[modal.store] Opening LoginModal, closing others');
+  ('[modal.store] Opening LoginModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();
@@ -69,7 +69,7 @@ const closeLoginModal = () => {
 };
 
 const openSettingsModal = () => {
-  console.log('[modal.store] Opening SettingsModal, closing others');
+  ('[modal.store] Opening SettingsModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();
@@ -104,7 +104,7 @@ const closeSettingsModal = () => {
 };
 
 const openDatabaseModal = () => {
-  console.log('[modal.store] Opening DatabaseModal, closing others');
+  ('[modal.store] Opening DatabaseModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();
@@ -139,7 +139,7 @@ const closeDatabaseModal = () => {
 };
 
 const openStatisticsModal = () => {
-  console.log('[modal.store] Opening StatisticsModal, closing others');
+  ('[modal.store] Opening StatisticsModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();
@@ -174,7 +174,7 @@ const closeStatisticsModal = () => {
 };
 
 const openTutorialModal = () => {
-  console.log('[modal.store] Opening TutorialModal, closing others');
+  ('[modal.store] Opening TutorialModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();
@@ -209,7 +209,7 @@ const closeTutorialModal = () => {
 };
 
 const openOcclusionCreateModal = () => {
-  console.log('[modal.store] Opening OcclusionCreateModal, closing others');
+  ('[modal.store] Opening OcclusionCreateModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();
@@ -244,7 +244,7 @@ const closeOcclusionCreateModal = () => {
 };
 
 const openOcclusionLearningModal = () => {
-  console.log('[modal.store] Opening OcclusionLearningModal, closing others');
+  ('[modal.store] Opening OcclusionLearningModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();
@@ -279,7 +279,7 @@ const closeOcclusionLearningModal = () => {
 };
 
 const openSummaryModal = () => {
-  console.log('[modal.store] Opening SummaryModal, closing others');
+  ('[modal.store] Opening SummaryModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();
@@ -314,7 +314,7 @@ const closeSummaryModal = () => {
 };
 
 const openSpotlightSearchModal = () => {
-  console.log('[modal.store] Opening SpotlightSearchModal, closing others');
+  ('[modal.store] Opening SpotlightSearchModal, closing others');
   // Close all UI modals as well
   ui.closeExplorer();
   ui.closeFlagged();

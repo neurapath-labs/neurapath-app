@@ -173,7 +173,7 @@ class KeyboardService {
 
       // Default case
       default:
-        console.log('Unhandled shortcut event:', event);
+        ('Unhandled shortcut event:', event);
         break;
     }
   }
@@ -182,7 +182,7 @@ class KeyboardService {
     // Get current selection
     const selectionData = get(selection);
 
-    console.log(selectionData, selectionData.isSelected, selectionData.text);
+    (selectionData, selectionData.isSelected, selectionData.text);
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
       toast('Please select text to create a cloze');

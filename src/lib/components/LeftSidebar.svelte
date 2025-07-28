@@ -193,7 +193,7 @@
 			onclick={renderImportExport}
 		>
 			<DatabaseIcon class="h-4 w-4" /><span>Import/export</span>
-					  <!-- <button class="w-full mt-2" onclick={openExportImport} on:pointerdown={() => console.log('[DatabasesModal] Button pointerdown event')}>Export / Import Database</Button> -->
+					  <!-- <button class="w-full mt-2" onclick={openExportImport} on:pointerdown={() => ('[DatabasesModal] Button pointerdown event')}>Export / Import Database</Button> -->
 		</button> 
 
 
