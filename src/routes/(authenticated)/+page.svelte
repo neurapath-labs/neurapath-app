@@ -1,12 +1,9 @@
-<!-- @compileOptions { "runes": true } -->
-
 <script lang="ts">
 	/* ---------- framework / stores ---------- */
 	import { onMount }   from 'svelte';
 	import { database }  from '$lib/stores/database.store';
 
 	/* ---------- types & components ---------- */
-	import type { Record } from '$lib/models';
 	import SeoHead        from '$lib/components/SeoHead.svelte';
 
 	/* ---------- route data (provided by +page.ts load) ---------- */
@@ -57,34 +54,3 @@
 		}
 	]}
 />
-
-<div id="app">
-	<h1>Neurapath</h1>
-
-	{#if initError}
-		<p class="error">{initError}</p>
-	{:else if loaded}
-		<p>
-			Welcome <strong>{data.user.name}</strong>! Your private database is now loaded.
-		</p>
-	{:else}
-		<p>Initialising your database…</p>
-	{/if}
-</div>
-
-<style>
-	#app {
-		padding: 20px;
-		text-align: center;
-	}
-	h1 {
-		color: rgb(var(--font-color));
-	}
-	p {
-		color: rgb(var(--font-color));
-		font-size: var(--font-size);
-	}
-	.error {
-		color: red;
-	}
-</style>

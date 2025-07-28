@@ -79,6 +79,7 @@
 		if (!isFolder()) return;
 		
 		e.preventDefault();
+		e.stopPropagation(); // Prevent event from bubbling to sidebar
 		e.dataTransfer!.dropEffect = 'move';
 		isDragOver = true;
 	}
@@ -91,6 +92,7 @@
 		if (!isFolder()) return;
 		
 		e.preventDefault();
+		e.stopPropagation(); // Prevent event from bubbling to sidebar
 		isDragOver = false;
 		
 		if (!e.dataTransfer) return;

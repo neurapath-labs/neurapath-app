@@ -120,11 +120,32 @@
 			fullPath ? "sidebar-item" : "sidebar-background",
 		);
 	}
+	
+	/* ────────── drag and drop handlers ────────── */
+	async function handleSidebarDrop(e: DragEvent) {
+		e.preventDefault();
+		
+		if (!e.dataTransfer) return;
+		
+		const itemId = e.dataTransfer.getData('text/plain');
+		if (!itemId) return;
+		
+		// Move the item to the root level (empty parent path)
+		await database.moveItem(itemId, "");
+	}
+	
+	function handleSidebarDragOver(e: DragEvent) {
+		// Allow dropping on the sidebar background to move items to root
+		e.preventDefault();
+		e.dataTransfer!.dropEffect = 'move';
+	}
 </script>
 
 <aside
 	class="grid-area[sidebar] flex h-screen w-[clamp(230px,26vw,280px)] min-w-[220px] flex-col gap-4 overflow-y-auto border-r border-black/5 bg-[rgb(var(--background-color_sidebar))] p-4 text-[rgb(var(--font-color))] select-none"
 	oncontextmenu={handleSidebarContextMenu}
+	ondrop={handleSidebarDrop}
+	ondragover={handleSidebarDragOver}
 >
 	<!-- header -->
 	<header class="flex gap-3">
