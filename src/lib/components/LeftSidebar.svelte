@@ -106,7 +106,7 @@
 	const renderStatistics = () => ui.openStatistics();
 	const renderDatabases = () => ui.openDatabases();
 	const toggleTheme = () =>
-		theme.setTheme(currentTheme === "day" ? "night" : "day");
+		theme.setTheme(currentTheme === "day" ? "homebrew" : "day");
 
 	function handleSidebarContextMenu(e: MouseEvent) {
 		e.preventDefault();
