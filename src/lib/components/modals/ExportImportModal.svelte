@@ -124,12 +124,10 @@
 		       w-[min(100vw,560px)] max-h-[90vh] overflow-y-auto"
 	>
 		<!-- Header -->
-		<Dialog.Header class="mb-6 flex flex-col items-center gap-2">
-			<DatabaseIcon class="h-[72px] w-[72px]" />
-			<Dialog.Title class="whitespace-nowrap text-2xl font-semibold">
-				Export / Import Database
-			</Dialog.Title>
-		</Dialog.Header>
+		<div class="flex items-center gap-3 mb-6">
+			<DatabaseIcon class="w-9 h-9" />
+			<h1 class="text-xl font-semibold">Export / Import Database</h1>
+		</div>
 
 		<!-- Content -->
 		<section class="space-y-10">
