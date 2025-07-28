@@ -1,9 +1,6 @@
 <script lang="ts">
-	/* ─────── type definitions ─────── */
-	interface TreeNode {
-		[k: string]: TreeNode | Record | undefined;
-		_item?: Record;
-	}
+	// Define TreeNode type
+	type TreeNode = { [k: string]: any; _item?: any };
 
 	/* ─────── stores & types ─────── */
 	import { contextmenu } from '$lib/stores/contextmenu.store';
@@ -154,7 +151,7 @@
 	{#if isFolder() && expandedFolders.has(fullPath())}
 		{#each Object.entries(node).filter(([k]) => k !== '_item') as [childKey, childNode]}
 			<TreeItem
-			node={childNode}
+			node={childNode as TreeNode}
 			path={[...path, childKey]}
 			{expandedFolders}
 			{activeItemId}

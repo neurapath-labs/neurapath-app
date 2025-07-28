@@ -89,33 +89,64 @@ export const updateRecordLocally = (id: string, changes: Partial<Record>) =>
 
 /* ---------- MOVE ---------- */
 export const moveItem = async (itemId: string, newParentPath: string) => {
-  update((db) => {
-    const updatedItems = db.items.map((item) => {
-      if (item.id === itemId) {
-        // Extract the item name from the current ID
-        const itemName = item.id.split('/').pop() || '';
-        // Create new ID with the new parent path
-        const newId = newParentPath ? `${newParentPath}/${itemName}` : itemName;
-        return { ...item, id: newId };
-      } else if (item.id.startsWith(`${itemId}/`)) {
-        // Handle children of the moved item
-        const itemName = itemId.split('/').pop() || '';
-        const relativePath = item.id.substring(itemId.length + 1);
-        const newId = newParentPath ? `${newParentPath}/${itemName}/${relativePath}` : `${itemName}/${relativePath}`;
-        return { ...item, id: newId };
-      }
-      return item;
-    });
-    return { ...db, items: updatedItems };
+  // Get the item name from the current ID
+  const itemName = itemId.split('/').pop() || '';
+  
+  // Create new ID with the new parent path
+  const newId = newParentPath ? `${newParentPath}/${itemName}` : itemName;
+  
+  // Get the current database state
+  const db = getState();
+  
+  // Find the item and its children
+  const itemToMove = db.items.find(item => item.id === itemId);
+  const childItems = db.items.filter(item => item.id.startsWith(`${itemId}/`));
+  
+  // If item doesn't exist, return
+  if (!itemToMove) return;
+  
+  // Filter out the item and its children from the current items
+  const filteredItems = db.items.filter(item =>
+    item.id !== itemId && !item.id.startsWith(`${itemId}/`)
+  );
+  
+  // Update the item and its children with new IDs
+  const movedItem = { ...itemToMove, id: newId };
+  const movedChildren = childItems.map(childItem => {
+    const relativePath = childItem.id.substring(itemId.length + 1);
+    const childNewId = newParentPath ? `${newParentPath}/${itemName}/${relativePath}` : `${itemName}/${relativePath}`;
+    return { ...childItem, id: childNewId };
   });
+  
+  // Update the database with filtered items plus moved items
+  update((db) => ({
+    ...db,
+    items: [...filteredItems, movedItem, ...movedChildren]
+  }));
 
   // Update remotely if user is logged in
   if (currentUserId) {
-    const item = getRecordById(itemId);
-    if (item) {
-      const itemName = item.id.split('/').pop() || '';
-      const newId = newParentPath ? `${newParentPath}/${itemName}` : itemName;
-      await serviceUpdateRecord(currentUserId, currentUserPassword || '', { ...item, id: newId });
+    // Delete the original item remotely
+    await serviceDeleteRecord(currentUserId, currentUserPassword || '', itemId);
+    
+    // Add the moved item remotely
+    await serviceAddRecord(currentUserId, currentUserPassword || '', movedItem);
+    
+    // Handle children if any
+    for (const childItem of childItems) {
+      // Delete the original child item remotely
+      await serviceDeleteRecord(currentUserId, currentUserPassword || '', childItem.id);
+      
+      // Find the moved child item in the updated database
+      const currentDb = getState();
+      const movedChildItem = currentDb.items.find(item =>
+        item.id.startsWith(newId) && item.id.endsWith(childItem.id.substring(itemId.length))
+      );
+      
+      if (movedChildItem) {
+        // Add the moved child item remotely
+        await serviceAddRecord(currentUserId, currentUserPassword || '', movedChildItem);
+      }
     }
   }
 };
