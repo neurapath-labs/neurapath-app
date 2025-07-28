@@ -30,7 +30,7 @@
 
     unsubscribeProfile = profile.subscribe(($profile) => {
       apiKey = $profile.openRouterApiKey || '';
-      provider = $profile.openRouterApiKey ? 'openRouter'
+      provider = 'openRouter'
     });
   });
 
