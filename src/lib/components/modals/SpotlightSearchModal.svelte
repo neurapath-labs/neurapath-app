@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as Dialog from '$lib/components/ui/dialog/index.js';
   import { Button } from '$lib/components/ui/button';
   import { database } from '$lib/stores/database.store';
   import { modal } from '$lib/stores/modal.store';
@@ -92,7 +93,7 @@
   }
 
   function selectItem(item: Record) {
-    ('Selected item:', item);
+    console.log('Selected item:', item);
     closeSpotlightSearch();
   }
 

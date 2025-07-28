@@ -22,12 +22,6 @@
 			<span class="whitespace-nowrap">Neurapath</span>
 		</div>
 
-		<!-- intro text -->
-		<div class="mb-2 text-justify text-base">
-			Welcome aboard! Neurapath is specifically tailored for effective studying.
-			<u>New user:</u> enter a username and password then press login to create a new
-			account. <u>Existing user:</u> enter your username and password below.
-		</div>
 
 		<!-- error -->
 		{#if form?.error}
