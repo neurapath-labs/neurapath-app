@@ -20,29 +20,42 @@
   let dueItems: Record[] = $state([]);
   let currentIndex: number = $state(0);
   let sessionStats = $state({ reviewed: 0, total: 0 });
+  let currentDatabase: any = $state(null);
 
   // ------ Subscriptions ------
   $effect(() => {
     const unsub = learning.subscribe(($l) => {
-      currentRecord = $l.currentRecord;
-      if (currentRecord) {
-        updateQuestionDisplay();
-        showAnswer = false;
+      // Only update if the record has actually changed
+      if ($l.currentRecord?.id !== currentRecord?.id) {
+        currentRecord = $l.currentRecord;
+        if (currentRecord) {
+          // Use setTimeout to ensure DOM is updated before trying to access elements
+          setTimeout(() => {
+            updateQuestionDisplay();
+            showAnswer = false;
+          }, 0);
+        }
       }
     });
     return () => unsub();
   });
 
   $effect(() => {
-    const unsub = profile.subscribe(($p) => (profileData = $p));
+    const unsub = profile.subscribe(($p) => {
+      // Only update if profile has actually changed
+      if (JSON.stringify($p) !== JSON.stringify(profileData)) {
+        profileData = $p;
+      }
+    });
     return () => unsub();
   });
 
   $effect(() => {
     const unsub = database.subscribe(($db) => {
+      currentDatabase = $db;
       const today = new Date();
-      dueItems = $db.items
-        .filter((it) => {
+      const newDueItems = $db.items
+        .filter((it: Record) => {
           if (!it.dueDate || it.repetition === undefined) return false;
           if (!profileData) return false;
           if (it.contentType === 'Cloze' && !profileData.showClozesInLearningMode) return false;
@@ -50,29 +63,36 @@
           if (it.contentType === 'Occlusion' && !profileData.showOcclusionsInLearningMode) return false;
           return new Date(it.dueDate) <= today;
         })
-        .sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime());
-      sessionStats.total = dueItems.length;
-      if (!currentRecord && dueItems.length) {
-        learning.setCurrentRecord(dueItems[0]);
-        currentIndex = 0;
+        .sort((a: Record, b: Record) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime());
+      
+      // Only update if due items have actually changed
+      if (JSON.stringify(newDueItems) !== JSON.stringify(dueItems)) {
+        dueItems = newDueItems;
+        sessionStats.total = dueItems.length;
+        if (!currentRecord && dueItems.length > 0) {
+          learning.setCurrentRecord(dueItems[0]);
+          currentIndex = 0;
+        } else if (!dueItems.length) {
+          // No due items, clear current record
+          learning.setCurrentRecord(null);
+        }
       }
     });
     return () => unsub();
   });
 
   // ------ onMount: init Quill ------
-  onMount(() => {
+  onMount(async () => {
     if (browser) {
-      import('quill').then((Q) => {
-        import('quill/dist/quill.bubble.css');
+      try {
+        const Q = await import('quill');
+        await import('quill/dist/quill.bubble.css');
         const Quill = Q.default;
         if (questionEditor) questionQuill = new Quill(questionEditor, { theme: 'bubble', readOnly: true, modules: { toolbar: false } });
         if (answerEditor) answerQuill = new Quill(answerEditor, { theme: 'bubble', readOnly: true, modules: { toolbar: false } });
-      });
-    }
-    if (dueItems.length && !currentRecord) {
-      learning.setCurrentRecord(dueItems[0]);
-      currentIndex = 0;
+      } catch (error) {
+        console.error('Failed to initialize Quill:', error);
+      }
     }
   });
 
@@ -109,7 +129,10 @@
         totalRepetitionCount: (currentRecord.totalRepetitionCount || 0) + 1
       });
       sessionStats.reviewed += 1;
-      moveToNextItem();
+      // Use setTimeout to prevent blocking the UI
+      setTimeout(() => {
+        moveToNextItem();
+      }, 0);
       toast(`Item graded with ${g}/5`);
     } catch {
       toast('Error grading item');
@@ -118,8 +141,12 @@
   function moveToNextItem() {
     if (!dueItems.length) return (learning.setCurrentRecord(null));
     currentIndex = (currentIndex + 1) % dueItems.length;
-    if (currentIndex < dueItems.length) learning.setCurrentRecord(dueItems[currentIndex]);
-    else { learning.setCurrentRecord(null); toast('All items reviewed!'); }
+    if (currentIndex < dueItems.length && dueItems[currentIndex]?.id !== currentRecord?.id) {
+      learning.setCurrentRecord(dueItems[currentIndex]);
+    } else if (currentIndex >= dueItems.length) {
+      learning.setCurrentRecord(null);
+      toast('All items reviewed!');
+    }
     showAnswer = false;
   }
   async function toggleFlag() {
@@ -132,11 +159,18 @@
     if (!questionOcclusionCanvas || !currentRecord?.url) return;
     const img = new Image();
     img.onload = () => {
-      questionOcclusionCanvas!.width = img.naturalWidth; questionOcclusionCanvas!.height = img.naturalHeight;
-      const ctx = questionOcclusionCanvas!.getContext('2d'); if (!ctx) return;
-      ctx.drawImage(img, 0, 0);
-      ctx.fillStyle = 'black';
-      currentRecord!.occlusions?.forEach((o) => ctx.fillRect(o.x, o.y, o.width, o.height));
+      try {
+        questionOcclusionCanvas!.width = img.naturalWidth; questionOcclusionCanvas!.height = img.naturalHeight;
+        const ctx = questionOcclusionCanvas!.getContext('2d'); if (!ctx) return;
+        ctx.drawImage(img, 0, 0);
+        ctx.fillStyle = 'black';
+        currentRecord!.occlusions?.forEach((o) => ctx.fillRect(o.x, o.y, o.width, o.height));
+      } catch (error) {
+        console.error('Error drawing occlusion question:', error);
+      }
+    };
+    img.onerror = (error) => {
+      console.error('Error loading occlusion image:', error);
     };
     img.src = currentRecord.url;
   }
@@ -151,11 +185,18 @@
     if (!answerOcclusionCanvas || !currentRecord?.url) return;
     const img = new Image();
     img.onload = () => {
-      answerOcclusionCanvas!.width = img.naturalWidth; answerOcclusionCanvas!.height = img.naturalHeight;
-      const ctx = answerOcclusionCanvas!.getContext('2d'); if (!ctx) return;
-      ctx.drawImage(img, 0, 0);
-      ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.strokeStyle = 'red'; ctx.lineWidth = 2;
-      currentRecord!.occlusions?.forEach((o) => { ctx.fillRect(o.x, o.y, o.width, o.height); ctx.strokeRect(o.x, o.y, o.width, o.height); });
+      try {
+        answerOcclusionCanvas!.width = img.naturalWidth; answerOcclusionCanvas!.height = img.naturalHeight;
+        const ctx = answerOcclusionCanvas!.getContext('2d'); if (!ctx) return;
+        ctx.drawImage(img, 0, 0);
+        ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.strokeStyle = 'red'; ctx.lineWidth = 2;
+        currentRecord!.occlusions?.forEach((o) => { ctx.fillRect(o.x, o.y, o.width, o.height); ctx.strokeRect(o.x, o.y, o.width, o.height); });
+      } catch (error) {
+        console.error('Error drawing occlusion answer:', error);
+      }
+    };
+    img.onerror = (error) => {
+      console.error('Error loading occlusion image:', error);
     };
     img.src = currentRecord.url;
   }
