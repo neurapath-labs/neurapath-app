@@ -18,7 +18,7 @@
 	import { ui } from "$lib/stores/ui.store";
 	import { createID } from "$lib/utils/helpers";
 	import type { Record } from "$lib/models";
-	import { Trash2Icon, FolderPlusIcon, FilePlusIcon, FlagIcon, CopyIcon } from "@lucide/svelte";
+	import { Trash2Icon, FolderPlusIcon, FilePlusIcon, FlagIcon, CopyIcon, PencilIcon } from "@lucide/svelte";
 
 	/* ------------------------------------------------------------------
 	   LOCAL REACTIVE COPIES (Svelte 5 runes)
@@ -223,6 +223,43 @@
 		}
 		contextmenu.hideContextMenu();
 	}
+	
+	async function renameItem() {
+		if (!ctx.targetId) return;
+		
+		const record = database.getRecordById(ctx.targetId);
+		if (!record) {
+			toast("No record found to rename");
+			return;
+		}
+		
+		try {
+			// Get the current name (last part of the ID)
+			const currentName = record.id.split('/').pop() || record.id;
+			
+			// Prompt user for new name
+			const newName = prompt("Enter new name:", currentName);
+			if (newName === null) return; // User cancelled
+			if (newName === currentName) return; // No change
+			if (!newName.trim()) {
+				toast("Name cannot be empty");
+				return;
+			}
+			
+			// Update the record ID
+			const parentId = record.id.substring(0, record.id.lastIndexOf('/'));
+			const newId = parentId ? `${parentId}/${newName}` : newName;
+			
+			// Update the record remotely
+			await database.updateRecordRemotely(record.id, { id: newId });
+			
+			toast('Item renamed successfully');
+		} catch (error) {
+			console.error('Error renaming item:', error);
+			toast('Error renaming item');
+		}
+		contextmenu.hideContextMenu();
+	}
 </script>
 
 <!-- ------------------------------------------------------------------
@@ -266,6 +303,14 @@
 		>
 			<CopyIcon class="h-4 w-4" />
 			<span>Duplicate item</span>
+		</button>
+		<button
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			onclick={renameItem}
+			disabled={!ctx.targetId}
+		>
+			<PencilIcon class="h-4 w-4" />
+			<span>Rename item</span>
 		</button>
 		<button
 			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer text-red-500"
