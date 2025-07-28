@@ -18,7 +18,7 @@
 	import { ui } from "$lib/stores/ui.store";
 	import { createID } from "$lib/utils/helpers";
 	import type { Record } from "$lib/models";
-	import { Trash2Icon, FolderPlusIcon, FilePlusIcon, FlagIcon, CopyIcon, PencilIcon } from "@lucide/svelte";
+	import { Trash2Icon, FolderPlusIcon, FilePlusIcon, FlagIcon, CopyIcon, PencilIcon, FlagOffIcon, FlagOff, Flag } from "@lucide/svelte";
 
 	/* ------------------------------------------------------------------
 	   LOCAL REACTIVE COPIES (Svelte 5 runes)
@@ -383,8 +383,14 @@
 			onclick={flagItem}
 			disabled={!ctx.targetId}
 		>
-			<FlagIcon class="h-4 w-4" />
-			<span>{targetRecord && targetRecord.isFlagged ? 'Unflag item' : 'Flag item'}</span>
+			
+			{#if targetRecord?.isFlagged}
+				<FlagOff class="h-4 w-4" />
+				<span>Unflag item</span>
+			{:else}
+				<Flag class="h-4 w-4" />
+				<span>Flag item</span>
+			{/if}
 		</button>
 		<button
 			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
