@@ -105,6 +105,7 @@
 	const renderFlagged = () => ui.openFlagged();
 	const renderStatistics = () => ui.openStatistics();
 	const renderDatabases = () => ui.openDatabases();
+	const renderImportExport = () => ui.openTutorial();
 	const toggleTheme = () =>
 		theme.setTheme(currentTheme === "day" ? "homebrew" : "day");
 
@@ -178,13 +179,23 @@
 			</span>
 		</button>
 
-		<button
+		<!-- <button
 			type="button"
 			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
 			onclick={renderDatabases}
 		>
 			<DatabaseIcon class="h-4 w-4" /><span>Shared databases</span>
-		</button>
+		</button> -->
+
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={renderDatabases}
+		>
+			<DatabaseIcon class="h-4 w-4" /><span>Import/export</span>
+					  <!-- <button class="w-full mt-2" onclick={openExportImport} on:pointerdown={() => console.log('[DatabasesModal] Button pointerdown event')}>Export / Import Database</Button> -->
+		</button> 
+
 
 		<button
 			type="button"

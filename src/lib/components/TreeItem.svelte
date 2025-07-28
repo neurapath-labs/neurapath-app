@@ -1,7 +1,14 @@
 <script lang="ts">
+	/* ─────── type definitions ─────── */
+	interface TreeNode {
+		[k: string]: TreeNode | Record | undefined;
+		_item?: Record;
+	}
+
 	/* ─────── stores & types ─────── */
 	import { contextmenu } from '$lib/stores/contextmenu.store';
 	import { ui }          from '$lib/stores/ui.store';
+	import { database }    from '$lib/stores/database.store';
 	import type { Record } from '$lib/models';
 
 	/* ─────── icons ─────── */
@@ -15,12 +22,6 @@
 	/* ─────── self import for recursion ─────── */
 	import TreeItem from './TreeItem.svelte';
 
-	/* ─────── type definitions ─────── */
-	interface TreeNode { 
-		[k: string]: TreeNode | Record | undefined; 
-		_item?: Record;
-	}
-
 	/* ─────── incoming props (runes) ─────── */
 	const {
 		node,
@@ -33,6 +34,9 @@
 		expandedFolders: Set<string>;
 		activeItemId: string | null;
 	}>();
+
+	/* ─────── local state ─────── */
+	let isDragOver = $state(false);
 
 	/* ─────── derived helpers ─────── */
 	let fullPath  = $derived(() => path.join('/'));
@@ -64,6 +68,51 @@
 		e.preventDefault();
 		contextmenu.showContextMenu(e.clientX, e.clientY, fullPath(), 'sidebar-item');
 	}
+
+	/* ─────── drag and drop handlers ─────── */
+	function handleDragStart(e: DragEvent) {
+		if (!e.dataTransfer) return;
+		
+		// Only allow dragging of items, not folders
+		if (isFolder()) {
+			e.preventDefault();
+			return;
+		}
+		
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.setData('text/plain', fullPath());
+	}
+
+	function handleDragOver(e: DragEvent) {
+		if (!isFolder()) return;
+		
+		e.preventDefault();
+		e.dataTransfer!.dropEffect = 'move';
+		isDragOver = true;
+	}
+
+	function handleDragLeave() {
+		isDragOver = false;
+	}
+
+	async function handleDrop(e: DragEvent) {
+		if (!isFolder()) return;
+		
+		e.preventDefault();
+		isDragOver = false;
+		
+		if (!e.dataTransfer) return;
+		
+		const itemId = e.dataTransfer.getData('text/plain');
+		if (!itemId) return;
+		
+		// Don't allow dropping an item into itself or its children
+		if (fullPath() === itemId || fullPath().startsWith(`${itemId}/`)) return;
+		
+		// Move the item to this folder
+		const newParentPath = fullPath();
+		await database.moveItem(itemId, newParentPath);
+	}
 </script>
 
 <div class="pl-2">
@@ -71,9 +120,14 @@
 	<button
 		type="button"
 		data-fullpath={fullPath()}
-		class="flex cursor-pointer items-center gap-1 rounded px-1 py-[2px] text-sm hover:bg-black/5 {activeItemId === fullPath() ? 'bg-black/10' : ''} w-full text-left"
+		class="flex cursor-pointer items-center gap-1 rounded px-1 py-[2px] text-sm hover:bg-black/5 {activeItemId === fullPath() ? 'bg-black/10' : ''} {isDragOver ? 'bg-blue-100' : ''} w-full text-left"
 		onclick={isFolder() ? toggleFolder : selectItem}
 		oncontextmenu={openContext}
+		draggable={!isFolder()}
+		ondragstart={handleDragStart}
+		ondragover={isFolder() ? handleDragOver : undefined}
+		ondragleave={isFolder() ? handleDragLeave : undefined}
+		ondrop={isFolder() ? handleDrop : undefined}
 	>
 		<!-- icon -->
 		{#if isFolder()}

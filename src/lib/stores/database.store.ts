@@ -87,6 +87,39 @@ export const updateRecordLocally = (id: string, changes: Partial<Record>) =>
     items: db.items.map((r) => (r.id === id ? { ...r, ...changes } : r))
   }));
 
+/* ---------- MOVE ---------- */
+export const moveItem = async (itemId: string, newParentPath: string) => {
+  update((db) => {
+    const updatedItems = db.items.map((item) => {
+      if (item.id === itemId) {
+        // Extract the item name from the current ID
+        const itemName = item.id.split('/').pop() || '';
+        // Create new ID with the new parent path
+        const newId = newParentPath ? `${newParentPath}/${itemName}` : itemName;
+        return { ...item, id: newId };
+      } else if (item.id.startsWith(`${itemId}/`)) {
+        // Handle children of the moved item
+        const itemName = itemId.split('/').pop() || '';
+        const relativePath = item.id.substring(itemId.length + 1);
+        const newId = newParentPath ? `${newParentPath}/${itemName}/${relativePath}` : `${itemName}/${relativePath}`;
+        return { ...item, id: newId };
+      }
+      return item;
+    });
+    return { ...db, items: updatedItems };
+  });
+
+  // Update remotely if user is logged in
+  if (currentUserId) {
+    const item = getRecordById(itemId);
+    if (item) {
+      const itemName = item.id.split('/').pop() || '';
+      const newId = newParentPath ? `${newParentPath}/${itemName}` : itemName;
+      await serviceUpdateRecord(currentUserId, currentUserPassword || '', { ...item, id: newId });
+    }
+  }
+};
+
 export const updateRecordRemotely = async (
   id: string,
   changes: Partial<Record>
@@ -171,6 +204,7 @@ export const database = {
   removeRecordById,
   updateRecord: updateRecordLocally,
   updateRecordRemotely,
+  moveItem,
   loadDatabase,
   saveDatabase,
   syncDatabase,
