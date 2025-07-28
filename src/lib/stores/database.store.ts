@@ -132,7 +132,7 @@ export const loadDatabase = async (userId: string) => {
       set(initialState);
       lastSyncTime = Date.now();
       if (currentUserId) {
-        await serviceSaveMyDb(userId, currentUserPassword || '', { items: [] });
+        await serviceSaveMyDb(userId, currentUserPassword || '', { records: [] });
       }
     }
   } catch (err) {
