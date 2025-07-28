@@ -221,7 +221,7 @@ class KeyboardService {
     // Get current selection
     const selectionData = get(selection);
 
-    console.log(selectionData, selectionData.isSelected, selectionData.text);
+    // console.log(selectionData, selectionData.isSelected, selectionData.text);
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
       toast('Please select text to create a cloze');
@@ -236,12 +236,10 @@ class KeyboardService {
     // Find the active record based on the active item ID
     const activeRecord = activeItemId
       ? databaseData.items.find(item => item.id === activeItemId)
-      : databaseData.items.find(item =>
-          item.contentType === 'Extract' || item.contentType === 'Cloze'
-        ) || null;
+      : null;
 
     if (!activeRecord) {
-      toast('No active record to create cloze');
+      toast('Please select an item to create a cloze first');
       return;
     }
 
@@ -296,12 +294,16 @@ class KeyboardService {
 
     // Get active record
     const databaseData = get(database);
-    const activeRecord = databaseData.items.find(item =>
-      item.contentType === 'Extract' || item.contentType === 'Cloze'
-    ) || null;
+    const uiData = get(ui);
+    const activeItemId = uiData.activeItemId;
+    
+    // Find the active record based on the active item ID
+    const activeRecord = activeItemId
+      ? databaseData.items.find(item => item.id === activeItemId)
+      : null;
 
     if (!activeRecord) {
-      toast('No active record to create extract');
+      toast('Please select an item to create an extract first');
       return;
     }
 
