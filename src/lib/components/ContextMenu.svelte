@@ -18,7 +18,7 @@
 	import { ui } from "$lib/stores/ui.store";
 	import { createID } from "$lib/utils/helpers";
 	import type { Record } from "$lib/models";
-	import { Trash2Icon } from "@lucide/svelte";
+	import { Trash2Icon, FolderPlusIcon, FilePlusIcon } from "@lucide/svelte";
 
 	/* ------------------------------------------------------------------
 	   LOCAL REACTIVE COPIES (Svelte 5 runes)
@@ -32,6 +32,7 @@
 			| "sidebar-item"
 			| "sidebar-right-item"
 			| "content-area"
+			| "sidebar-background"
 			| null,
 	});
 	let sel = $state({
@@ -145,25 +146,22 @@
 		? 'block'
 		: 'none'};"
 >
-	{#if ctx.targetType === null}
+	{#if ctx.targetType === null || ctx.targetType === "sidebar-background"}
 		<button
-			class="w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
-			onclick={createRootFolder}>Create folder</button
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			onclick={createRootFolder}
 		>
-		<button
-			class="w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
-			onclick={createRootText}>Create text</button
-		>
-	{:else if ctx.targetType === "sidebar-item"}
-		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer text-red-500"
-			onclick={removeItem}
-			disabled={!ctx.targetId}
-		>
-			<Trash2Icon class="h-4 w-4" />
-			<span>Delete item</span>
+			<FolderPlusIcon class="h-4 w-4" />
+			<span>Create folder</span>
 		</button>
-	{:else if ctx.targetType === "content-area"}
+		<button
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			onclick={createRootText}
+		>
+			<FilePlusIcon class="h-4 w-4" />
+			<span>Create text</span>
+		</button>
+	{:else if ctx.targetType === "sidebar-item" || ctx.targetType === "content-area"}
 		<button
 			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer text-red-500"
 			onclick={removeItem}
