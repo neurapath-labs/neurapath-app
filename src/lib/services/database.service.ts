@@ -4,6 +4,7 @@ import type {
   User
 } from '$lib/models';
 import { BASE } from '$lib/config/config';
+import { lastSaved } from '$lib/stores/lastSaved.store';
 
 /* ---------- helpers ---------- */
 function buildHeaders(username?: string, password?: string): Headers {
@@ -93,13 +94,18 @@ export async function saveMyDatabase(
   password: string,
   data: Record<string, unknown>
 ) {
-  return handle(
+  const result = await handle(
     fetch(`${BASE}/user/data`, {
       method: 'POST',
       headers: buildHeaders(username, password),
       body: JSON.stringify(data)
     })
   );
+  
+  // Update the last saved timestamp
+  lastSaved.setLastSaved(Date.now());
+  
+  return result;
 }
 
 /* ---------- other people’s public databases ---------- */

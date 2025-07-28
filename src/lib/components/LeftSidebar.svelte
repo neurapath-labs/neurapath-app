@@ -1,66 +1,94 @@
 <script lang="ts">
 	/* ────────── stores ────────── */
-	import { auth }        from '$lib/stores/auth.store';
-	import { database }    from '$lib/stores/database.store';
-	import { learning }    from '$lib/stores/learning.store';
-	import { ui }          from '$lib/stores/ui.store';
-	import { modal }       from '$lib/stores/modal.store';
-	import { theme }       from '$lib/stores/theme.store';
-	import { contextmenu } from '$lib/stores/contextmenu.store';
+	import { auth } from "$lib/stores/auth.store";
+	import { database } from "$lib/stores/database.store";
+	import { learning } from "$lib/stores/learning.store";
+	import { ui } from "$lib/stores/ui.store";
+	import { modal } from "$lib/stores/modal.store";
+	import { theme } from "$lib/stores/theme.store";
+	import { contextmenu } from "$lib/stores/contextmenu.store";
+	import { lastSaved } from "$lib/stores/lastSaved.store";
+	import { Badge } from "$lib/components/ui/badge/index.js";
 
-	import { onDestroy }   from 'svelte';
-	import type { Record } from '$lib/models';
+	import { onDestroy } from "svelte";
+	import type { Record } from "$lib/models";
 
 	/* ────────── components / ui ────────── */
-	import { Button }  from '$lib/components/ui/button';
-	import TreeItem    from '$lib/components/TreeItem.svelte';
+	import { Button } from "$lib/components/ui/button";
+	import TreeItem from "$lib/components/TreeItem.svelte";
 
 	/* ────────── icons ────────── */
-	import UserIcon     from '@lucide/svelte/icons/user';
-	import MoonIcon     from '@lucide/svelte/icons/moon';
-	import SunIcon      from '@lucide/svelte/icons/sun';
-	import DatabaseIcon from '@lucide/svelte/icons/database';
-	import SearchIcon   from '@lucide/svelte/icons/search';
-	import FlagIcon     from '@lucide/svelte/icons/flag';
-	import BarChartIcon from '@lucide/svelte/icons/bar-chart';
-	import LogOutIcon   from '@lucide/svelte/icons/log-out';
+	import UserIcon from "@lucide/svelte/icons/user";
+	import MoonIcon from "@lucide/svelte/icons/moon";
+	import SunIcon from "@lucide/svelte/icons/sun";
+	import DatabaseIcon from "@lucide/svelte/icons/database";
+	import SearchIcon from "@lucide/svelte/icons/search";
+	import FlagIcon from "@lucide/svelte/icons/flag";
+	import BarChartIcon from "@lucide/svelte/icons/bar-chart";
+	import LogOutIcon from "@lucide/svelte/icons/log-out";
 
 	/* ────────── local state (runes) ────────── */
-	let learningMode        = $state(false);
-	let expandedFolders     = $state<Set<string>>(new Set());
-	let activeItemId        = $state<string | null>(null);
-	let currentTheme        = $state('day');
+	let learningMode = $state(false);
+	let expandedFolders = $state<Set<string>>(new Set());
+	let activeItemId = $state<string | null>(null);
+	let currentTheme = $state("day");
 
 	/* ────────── store subscriptions ────────── */
-	const unsubLearning = learning.subscribe($l => (learningMode   = $l.isInLearningMode));
-	const unsubUI       = ui.subscribe($u => {
+	const unsubLearning = learning.subscribe(
+		($l) => (learningMode = $l.isInLearningMode),
+	);
+	const unsubUI = ui.subscribe(($u) => {
 		expandedFolders = $u.expandedFolders;
-		activeItemId    = $u.activeItemId;
+		activeItemId = $u.activeItemId;
 	});
-	const unsubTheme    = theme.subscribe($t => (currentTheme = $t.currentTheme));
+	const unsubTheme = theme.subscribe(
+		($t) => (currentTheme = $t.currentTheme),
+	);
+	let lastSavedTime = $state<string>("");
+	const unsubLastSaved = lastSaved.subscribe(($ls) => {
+		if ($ls.lastSaved) {
+			const date = new Date($ls.lastSaved);
+			lastSavedTime = date.toLocaleTimeString([], {
+				hour: "2-digit",
+				minute: "2-digit",
+			});
+		} else {
+			lastSavedTime = "‑";
+		}
+	});
 
-	onDestroy(() => { unsubLearning(); unsubUI(); unsubTheme(); });
+	onDestroy(() => {
+		unsubLearning();
+		unsubUI();
+		unsubTheme();
+		unsubLastSaved();
+	});
 
 	/* ────────── derived values ────────── */
-	let dueCount = $derived(() =>
-		$database.items.filter(
-			i =>
-				['Cloze', 'Extract', 'Occlusion'].includes(i.contentType) &&
-				i.dueDate &&
-				new Date(i.dueDate) <= new Date()
-		).length
+	let dueCount = $derived(
+		() =>
+			$database.items.filter(
+				(i) =>
+					["Cloze", "Extract", "Occlusion"].includes(i.contentType) &&
+					i.dueDate &&
+					new Date(i.dueDate) <= new Date(),
+			).length,
 	);
 
 	/* ────────── helpers ────────── */
-	interface TreeNode { [k: string]: TreeNode | Record | undefined; _item?: Record }
+	interface TreeNode {
+		[k: string]: TreeNode | Record | undefined;
+		_item?: Record;
+	}
 	const renderFolders = (items: Record[]): TreeNode => {
 		const tree: TreeNode = {};
 		for (const item of items) {
-			const parts = item.id.split('/');
+			const parts = item.id.split("/");
 			let cur: TreeNode = tree;
 			parts.forEach((part, i) => {
 				cur[part] ||= {};
-				if (i === parts.length - 1) (cur[part] as TreeNode)._item = item;
+				if (i === parts.length - 1)
+					(cur[part] as TreeNode)._item = item;
 				cur = cur[part] as TreeNode;
 			});
 		}
@@ -69,22 +97,26 @@
 
 	/* ────────── action handlers ────────── */
 	const toggleLearningMode = () => learning.toggleLearningMode();
-	const handleLogout       = async () => { await auth.logout(); window.location.href = '/login'; };
-	const renderExplorer     = () => ui.openExplorer();
-	const renderFlagged      = () => ui.openFlagged();
-	const renderStatistics   = () => ui.openStatistics();
-	const renderDatabases    = () => ui.openDatabases();
-	const toggleTheme        = () => theme.setTheme(currentTheme === 'day' ? 'night' : 'day');
+	const handleLogout = async () => {
+		await auth.logout();
+		window.location.href = "/login";
+	};
+	const renderExplorer = () => ui.openExplorer();
+	const renderFlagged = () => ui.openFlagged();
+	const renderStatistics = () => ui.openStatistics();
+	const renderDatabases = () => ui.openDatabases();
+	const toggleTheme = () =>
+		theme.setTheme(currentTheme === "day" ? "night" : "day");
 
 	function handleSidebarContextMenu(e: MouseEvent) {
 		e.preventDefault();
-		const el       = (e.target as HTMLElement).closest('[data-fullpath]');
-		const fullPath = el?.getAttribute('data-fullpath');
+		const el = (e.target as HTMLElement).closest("[data-fullpath]");
+		const fullPath = el?.getAttribute("data-fullpath");
 		contextmenu.showContextMenu(
 			e.clientX,
 			e.clientY,
 			fullPath ?? null,
-			fullPath ? 'sidebar-item' : 'sidebar-background'
+			fullPath ? "sidebar-item" : "sidebar-background",
 		);
 	}
 </script>
@@ -95,11 +127,13 @@
 >
 	<!-- header -->
 	<header class="flex gap-3">
-		<img src="/img/logo/logo.svg" alt="Neuraa logo" class="h-12 w-12" />
+		<img src="/img/logo/logo.svg" alt="Neurapath logo" class="h-12 w-12" />
 		<div class="space-y-1">
-			<h1 class="m-0 text-xl leading-tight">Neuraa</h1>
+			<h1 class="m-0 text-xl leading-tight">
+				Neurapath <Badge variant="outline">BETA</Badge>
+			</h1>
 			<p class="text-xs">
-				<span>Last saved:</span> <span id="sidebar-last-saved">‑</span>
+				<span>Last saved:</span> <span id="sidebar-last-saved">{lastSavedTime}</span>
 			</p>
 			<!-- <p class="text-xs">
 				<span>Due today:</span> <span id="sidebar-due-items">{dueCount}</span>
@@ -112,43 +146,75 @@
 		id="learning-button"
 		variant="outline"
 		class={`rounded-md px-4 py-2 font-medium transition-colors ${
-			learningMode ? 'bg-red-500/90 text-white hover:bg-red-600' : ''
+			learningMode ? "bg-red-500/90 text-white hover:bg-red-600" : ""
 		}`}
 		onclick={toggleLearningMode}
 	>
-		{learningMode ? 'Stop learning!' : 'Practice mode!'}
+		{learningMode ? "Stop learning!" : "Practice mode!"}
 	</Button>
 
 	<!-- quick actions -->
 	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
-		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={() => modal.openSettingsModal()}>
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={() => modal.openSettingsModal()}
+		>
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
 		</button>
 
-		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={toggleTheme}>
-			{#if currentTheme === 'day'} <MoonIcon  class="h-4 w-4" /> {:else} <SunIcon class="h-4 w-4" /> {/if}
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={toggleTheme}
+		>
+			{#if currentTheme === "day"}
+				<MoonIcon class="h-4 w-4" />
+			{:else}
+				<SunIcon class="h-4 w-4" />
+			{/if}
 			<span id="darkmode-text">
-				{currentTheme === 'day' ? 'Dark mode' : 'Light mode'}
+				{currentTheme === "day" ? "Dark mode" : "Light mode"}
 			</span>
 		</button>
 
-		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderDatabases}>
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={renderDatabases}
+		>
 			<DatabaseIcon class="h-4 w-4" /><span>Shared databases</span>
 		</button>
 
-		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderExplorer}>
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={renderExplorer}
+		>
 			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>
 		</button>
 
-		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderFlagged}>
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={renderFlagged}
+		>
 			<FlagIcon class="h-4 w-4" /><span>Flagged items</span>
 		</button>
 
-		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={renderStatistics}>
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={renderStatistics}
+		>
 			<BarChartIcon class="h-4 w-4" /><span>Statistics</span>
 		</button>
 
-		<button type="button" class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10" onclick={handleLogout}>
+		<button
+			type="button"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			onclick={handleLogout}
+		>
 			<LogOutIcon class="h-4 w-4" /><span>Logout</span>
 		</button>
 	</nav>
@@ -157,7 +223,12 @@
 	<section id="content-structure" class="mt-2 pr-2">
 		{#if $database.items.length}
 			{#each Object.entries(renderFolders($database.items)) as [key, node]}
-				<TreeItem {node} path={[key]} {expandedFolders} {activeItemId} />
+				<TreeItem
+					{node}
+					path={[key]}
+					{expandedFolders}
+					{activeItemId}
+				/>
 			{/each}
 		{:else}
 			<p class="text-sm opacity-60">Quick start</p>
