@@ -76,6 +76,7 @@ const defaultProfile: Profile = {
   statistics: {},
   shortcuts: defaultShortcuts,
   openRouterApiKey: "",
+  openRouterModel: "",
 };
 
 const { subscribe, set, update } = writable(defaultProfile);

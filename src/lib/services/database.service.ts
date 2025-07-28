@@ -134,7 +134,12 @@ export async function addRecord(
   record: DBRecord
 ) {
   const db = await fetchMyDatabase(username, password);
-  db[record.id] = record;
+  // Ensure we have a records array
+  if (!db.records) {
+    db.records = [];
+  }
+  // Add the new record to the records array
+  (db.records as DBRecord[]).push(record);
   return saveMyDatabase(username, password, db);
 }
 
@@ -143,7 +148,21 @@ export async function updateRecord(
   password: string,
   record: DBRecord
 ) {
-  return addRecord(username, password, record); // overwrite
+  const db = await fetchMyDatabase(username, password);
+  // Ensure we have a records array
+  if (!db.records) {
+    db.records = [];
+  }
+  // Find and replace the record in the records array
+  const records = db.records as DBRecord[];
+  const index = records.findIndex(r => r.id === record.id);
+  if (index !== -1) {
+    records[index] = record;
+  } else {
+    // If not found, add it as a new record
+    records.push(record);
+  }
+  return saveMyDatabase(username, password, db);
 }
 
 export async function deleteRecord(
@@ -152,7 +171,12 @@ export async function deleteRecord(
   id: string
 ) {
   const db = await fetchMyDatabase(username, password);
-  delete db[id];
+  // Ensure we have a records array
+  if (!db.records) {
+    db.records = [];
+  }
+  // Remove the record from the records array
+  db.records = (db.records as DBRecord[]).filter(record => record.id !== id);
   return saveMyDatabase(username, password, db);
 }
 

@@ -61,6 +61,7 @@ export interface Profile {
   statistics: { [date: string]: { reviewsCount?: number; newItemsCount?: number } };
   shortcuts: Shortcut[];
   openRouterApiKey?: string;
+  openRouterModel?: string;
 }
 
 export interface Shortcut {

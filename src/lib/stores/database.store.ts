@@ -146,7 +146,7 @@ export const saveDatabase = async (userId: string) => {
   const db = getState();
   // Convert Database object to Record<string, unknown>
   const dbRecord: { [key: string]: unknown } = {
-    items: db.items
+    records: db.items
   };
   await serviceSaveMyDb(userId, currentUserPassword || '', dbRecord);
   lastSyncTime = Date.now();
