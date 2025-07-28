@@ -79,6 +79,18 @@ const setActiveItemId = (itemId: string | null) => {
     ...state,
     activeItemId: itemId
   }));
+  // Close all modals when an item is selected
+  closeExplorer();
+  closeFlagged();
+  closeStatistics();
+  closeDatabases();
+  closeChangelog();
+  closePolicy();
+  closeTutorial();
+  closeSpotlightSearch();
+  closePdfImport();
+  closeExportImport();
+  closeShareModal();
 };
 
 const toggleSpotlightMode = () => {
