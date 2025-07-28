@@ -25,31 +25,12 @@
   let activeOcclusionsList: any[] = [];
   let saveTimeout: any = null;
   let activeItemId: string | null = $state(null);
+  let currentDatabase: any = $state(null);
 
   // Subscribe to database changes
   const unsubscribe = database.subscribe(($database) => {
-    // Find the active record based on the active item ID
-    if (activeItemId) {
-      const record = $database.items.find(item => item.id === activeItemId);
-      if (record) {
-        activeRecord = record;
-        if (quill && record.content) {
-          quill.setContents(record.content);
-        }
-      }
-    } else {
-      // For now, just load the first record with content if no active item
-      const recordWithContent = $database.items.find(item =>
-        item.contentType === 'Extract' || item.contentType === 'Cloze'
-      );
-      
-      if (recordWithContent && recordWithContent.content) {
-        activeRecord = recordWithContent;
-        if (quill) {
-          quill.setContents(recordWithContent.content);
-        }
-      }
-    }
+    currentDatabase = $database;
+    updateActiveRecord($database);
   });
 
   // Subscribe to profile changes
@@ -77,6 +58,9 @@
   // Subscribe to UI changes (active item)
   const unsubscribeUI = ui.subscribe(($ui) => {
     activeItemId = $ui.activeItemId;
+    
+    // Trigger update of active record with current database state
+    updateActiveRecordWithCurrentDatabase();
   });
 
   // Clean up subscriptions
@@ -193,11 +177,64 @@
     handleDocumentImport(e);
   };
 
+  // Function to update active record based on active item ID
+  function updateActiveRecord($database: any) {
+    console.log('[MainContent] updateActiveRecord called with activeItemId:', activeItemId);
+    // Find the active record based on the active item ID
+    if (activeItemId) {
+      const record = $database.items.find((item: Record) => item.id === activeItemId);
+      console.log('[MainContent] Found record:', record);
+      if (record) {
+        activeRecord = record;
+        updateQuillContent(record);
+      }
+    } else {
+      // For now, just load the first record with content if no active item
+      const recordWithContent = $database.items.find((item: Record) =>
+        item.contentType === 'Extract' || item.contentType === 'Cloze'
+      );
+      
+      if (recordWithContent && recordWithContent.content) {
+        activeRecord = recordWithContent;
+        updateQuillContent(recordWithContent);
+      }
+    }
+  }
+  
+  // Function to update active record with current database state
+  function updateActiveRecordWithCurrentDatabase() {
+    // If we have current database state, use it
+    if (currentDatabase) {
+      updateActiveRecord(currentDatabase);
+    } else {
+      // Otherwise, get the current database state directly
+      database.subscribe(($database) => {
+        updateActiveRecord($database);
+      })();
+    }
+  }
+
+
   // Function to handle drop events
   const handleDrop = async (e: DragEvent) => {
     e.preventDefault();
     console.log('Drop event detected');
     handleDocumentImport(e);
+  };
+
+  // Function to update Quill content
+  const updateQuillContent = (record: Record) => {
+    console.log('[MainContent] updateQuillContent called with record:', record);
+    console.log('[MainContent] Quill instance:', quill);
+    if (quill && record.content) {
+      console.log('[MainContent] Setting Quill content');
+      console.log('[MainContent] Content format:', typeof record.content, record.content);
+      // Convert string content to Delta format if needed
+      const content = typeof record.content === 'string'
+        ? { ops: [{ insert: record.content }] }
+        : record.content;
+      quill.setContents(content);
+    }
   };
 
   // Function to handle keydown events on the editor
