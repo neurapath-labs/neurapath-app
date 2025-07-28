@@ -98,11 +98,9 @@ class KeyboardService {
     const isInLearningMode = learningData.isInLearningMode;
 
     switch (event) {
-      // Spotlight search (only when not in learning mode)
+      // Spotlight search
       case 'input-spotlight-toggle':
-        if (!isInLearningMode) {
-          modal.openSpotlightSearchModal();
-        }
+        modal.openSpotlightSearchModal();
         break;
 
       // Create cloze (only when not in learning mode)
