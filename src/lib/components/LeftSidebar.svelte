@@ -131,7 +131,7 @@
 		<img src="/img/logo/logo.svg" alt="Neurapath logo" class="h-12 w-12" />
 		<div class="space-y-1">
 			<h1 class="m-0 text-xl leading-tight">
-				Neurapath <Badge variant="outline">BETA</Badge>
+				Neurapath
 			</h1>
 			<p class="text-xs">
 				<span>Last saved:</span> <span id="sidebar-last-saved">{lastSavedTime}</span>

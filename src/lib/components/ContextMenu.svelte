@@ -223,7 +223,11 @@
 			);
 			
 			// Create new ID for the duplicated item
-			const newRecordId = "Copy of " + record.id;
+			// Extract the parent path and item name correctly
+			const pathParts = record.id.split('/');
+			const itemName = pathParts.pop() || record.id;
+			const parentPath = pathParts.join('/');
+			const newRecordId = parentPath ? `${parentPath}/Copy of ${itemName}` : `Copy of ${itemName}`;
 			
 			// Create new record with duplicated content
 			const newRecord: Record = {
