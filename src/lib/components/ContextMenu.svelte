@@ -246,14 +246,45 @@
 				return;
 			}
 			
-			// Update the record ID
+			// Get all items from the database
+			let allItems: Record[] = [];
+			const unsubscribe = database.subscribe((db) => {
+				allItems = db.items;
+			});
+			unsubscribe();
+			
+			// Find the item and its children
+			const itemToRename = record;
+			const childItems = allItems.filter(item =>
+				item.id.startsWith(`${record.id}/`)
+			);
+			
+			// Create new ID with the new name
 			const parentId = record.id.substring(0, record.id.lastIndexOf('/'));
 			const newId = parentId ? `${parentId}/${newName}` : newName;
 			
-			// Update the record remotely
-			await database.updateRecordRemotely(record.id, { id: newId });
+			// Update the item and its children with new IDs
+			const renamedItem = { ...itemToRename, id: newId };
+			const renamedChildren = childItems.map(childItem => {
+				const relativePath = childItem.id.substring(record.id.length + 1);
+				const childNewId = `${newId}/${relativePath}`;
+				return { ...childItem, id: childNewId };
+			});
 			
-			toast('Item renamed successfully');
+			// Update the database with renamed items
+			// First remove the old items
+			await database.removeRecordById(itemToRename.id);
+			for (const childItem of childItems) {
+				await database.removeRecordById(childItem.id);
+			}
+			
+			// Then add the renamed items
+			await database.addRecord(renamedItem);
+			for (const renamedChild of renamedChildren) {
+				await database.addRecord(renamedChild);
+			}
+			
+			toast('Item and subitems renamed successfully');
 		} catch (error) {
 			console.error('Error renaming item:', error);
 			toast('Error renaming item');
