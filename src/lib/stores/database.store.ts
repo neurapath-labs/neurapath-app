@@ -133,20 +133,13 @@ export const moveItem = async (itemId: string, newParentPath: string) => {
     await serviceAddRecord(currentUserId, currentUserPassword || '', movedItem);
     
     // Handle children if any
-    for (const childItem of childItems) {
+    for (const childItem of movedChildren) {
       // Delete the original child item remotely
-      await serviceDeleteRecord(currentUserId, currentUserPassword || '', childItem.id);
+      await serviceDeleteRecord(currentUserId, currentUserPassword || '',
+        itemId + childItem.id.substring(newId.length));
       
-      // Find the moved child item in the updated database
-      const currentDb = getState();
-      const movedChildItem = currentDb.items.find(item =>
-        item.id.startsWith(newId) && item.id.endsWith(childItem.id.substring(itemId.length))
-      );
-      
-      if (movedChildItem) {
-        // Add the moved child item remotely
-        await serviceAddRecord(currentUserId, currentUserPassword || '', movedChildItem);
-      }
+      // Add the moved child item remotely
+      await serviceAddRecord(currentUserId, currentUserPassword || '', childItem);
     }
   }
 };
