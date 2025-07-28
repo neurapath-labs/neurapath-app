@@ -114,6 +114,35 @@
 		toast("Text created");
 		contextmenu.hideContextMenu();
 	}
+	
+	async function createFolderInFolder() {
+		if (!ctx.targetId) return;
+		
+		const parent = database.getRecordById(ctx.targetId);
+		if (!parent) return;
+		
+		await addRecord({
+			id: `${parent.id}/${createID(6)}`,
+			contentType: "Folder"
+		});
+		toast("Folder created");
+		contextmenu.hideContextMenu();
+	}
+	
+	async function createTextInFolder() {
+		if (!ctx.targetId) return;
+		
+		const parent = database.getRecordById(ctx.targetId);
+		if (!parent) return;
+		
+		await addRecord({
+			id: `${parent.id}/${createID(6)}`,
+			contentType: "Extract",
+			content: { ops: [{ insert: "New text item" }] },
+		});
+		toast("Text created");
+		contextmenu.hideContextMenu();
+	}
 
 	async function removeItem() {
 		if (!ctx.targetId) return;
@@ -309,6 +338,13 @@
 		: 'none'};"
 >
 	{#if ctx.targetType === null || ctx.targetType === "sidebar-background"}
+			<button
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			onclick={createRootText}
+		>
+			<FilePlusIcon class="h-4 w-4" />
+			<span>Create text</span>
+		</button>
 		<button
 			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
 			onclick={createRootFolder}
@@ -316,14 +352,28 @@
 			<FolderPlusIcon class="h-4 w-4" />
 			<span>Create folder</span>
 		</button>
-		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
-			onclick={createRootText}
-		>
-			<FilePlusIcon class="h-4 w-4" />
-			<span>Create text</span>
-		</button>
 	{:else if ctx.targetType === "sidebar-item" || ctx.targetType === "content-area"}
+		<!-- Create folder and text options for folders -->
+		{#if targetRecord && targetRecord.contentType === "Folder"}
+			<button
+				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+				onclick={createFolderInFolder}
+				disabled={!ctx.targetId}
+			>
+				<FolderPlusIcon class="h-4 w-4" />
+				<span>Create folder</span>
+			</button>
+			<button
+				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+				onclick={createTextInFolder}
+				disabled={!ctx.targetId}
+			>
+				<FilePlusIcon class="h-4 w-4" />
+				<span>Create text</span>
+			</button>
+			<div class="h-px bg-border my-1"></div>
+		{/if}
+		
 		<button
 			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
 			onclick={flagItem}
