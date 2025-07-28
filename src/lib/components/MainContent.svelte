@@ -272,7 +272,7 @@
 
 
   // Function to create a cloze deletion
-  const createCloze = () => {
+  const createCloze = async () => {
     (selectionData.isSelected, quill, activeRecord);
     
     if (selectionData.isSelected && quill && activeRecord) {
@@ -299,7 +299,13 @@
           };
           
           // Add to database
-          database.addRecord(newRecord);
+          await database.addRecord(newRecord);
+          
+          // If the parent is an Extract, add this cloze to its clozes array
+          if (activeRecord.contentType === 'Extract' && activeRecord.id) {
+            const updatedClozes = [...(activeRecord.clozes || []), cloze];
+            await database.updateRecordRemotely(activeRecord.id, { clozes: updatedClozes });
+          }
           
           // Expand all parent folders to show the new item
           ui.expandAllParentsToId(newRecordId);
@@ -524,6 +530,17 @@
   {:else}
     <div class="h-full">
       <div bind:this={editor} class="h-full"></div>
+      <!-- Display clozes associated with the active extract -->
+      {#if activeRecord && activeRecord.contentType === 'Extract' && activeRecord.clozes && activeRecord.clozes.length > 0}
+        <div class="mt-4">
+          <h3 class="font-bold mb-2">Clozes in this extract:</h3>
+          <ul class="list-disc pl-5">
+            {#each activeRecord.clozes as cloze}
+              <li class="mb-1">{cloze.cloze}</li>
+            {/each}
+          </ul>
+        </div>
+      {/if}
       {@render children()}
     </div>
   {/if}

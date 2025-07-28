@@ -43,6 +43,11 @@
 		return !n._item || n._item?.contentType === 'Folder';
 	});
 
+	let isExtract  = $derived(() => {
+		const n = node;
+		return n._item && n._item?.contentType === 'Extract';
+	});
+
 	let record = $derived(() => {
 		const n = node;
 		return n._item;
@@ -153,6 +158,17 @@
 			{expandedFolders}
 			{activeItemId}
 			/>
+		{/each}
+	{:else if isExtract() && expandedFolders.has(fullPath())}
+		{#each Object.entries(node).filter(([k]) => k !== '_item') as [childKey, childNode]}
+			{#if (childNode as TreeNode)._item && (childNode as TreeNode)._item!.contentType === 'Cloze'}
+				<TreeItem
+				node={childNode as TreeNode}
+				path={[...path, childKey]}
+				{expandedFolders}
+				{activeItemId}
+				/>
+			{/if}
 		{/each}
 	{/if}
 </div>
