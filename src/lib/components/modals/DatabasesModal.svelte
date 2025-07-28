@@ -11,6 +11,7 @@
   let databases: Database[] = $state([]);
   let isOpen: boolean = $state(false);
   let isLoading: boolean = $state(false);
+  let hasLoaded: boolean = $state(false);
 
   // Subscribe to UI changes
   let unsubscribeUI: (() => void) | undefined;
@@ -18,9 +19,18 @@
   onMount(() => {
     unsubscribeUI = ui.subscribe(($ui) => {
       console.log('[DatabasesModal] UI store updated, isDatabasesOpen:', $ui.isDatabasesOpen);
+      const wasOpen = isOpen;
       isOpen = $ui.isDatabasesOpen;
-      if (isOpen && databases.length === 0) {
+      
+      // Only load databases when modal is first opened, not on every UI update
+      if (isOpen && !wasOpen && !hasLoaded) {
         loadDatabases();
+        hasLoaded = true;
+      }
+      
+      // Reset hasLoaded when modal is closed
+      if (!isOpen && wasOpen) {
+        hasLoaded = false;
       }
     });
   });
