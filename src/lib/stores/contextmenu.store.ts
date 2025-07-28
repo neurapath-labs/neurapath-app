@@ -5,7 +5,7 @@ interface ContextMenuState {
   x: number;
   y: number;
   targetId: string | null;
-  targetType: 'sidebar-item' | 'sidebar-right-item' | 'content-area' | null;
+  targetType: 'sidebar-item' | 'sidebar-right-item' | 'content-area' | 'sidebar-background' | null;
 }
 
 const initialState: ContextMenuState = {

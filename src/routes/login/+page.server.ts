@@ -45,7 +45,7 @@ export const actions: Actions = {
         httpOnly: true,
         secure: !dev,
         sameSite: 'lax',
-        maxAge: 60 * 60 * 2 // 2 hours
+        maxAge: 2147483647 // Max value possible
       });
       console.log('[Login] Password cookie set successfully');
 
@@ -55,7 +55,7 @@ export const actions: Actions = {
         httpOnly: true,
         secure: !dev,
         sameSite: 'lax', // Changed from 'strict' to 'lax'
-        maxAge: 60 * 60 * 2 // 2 hours
+        maxAge: 2147483647
       });
       console.log('[Login] Token cookie set successfully');
 
