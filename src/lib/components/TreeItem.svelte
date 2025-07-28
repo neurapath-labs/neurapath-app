@@ -70,12 +70,7 @@
 	function handleDragStart(e: DragEvent) {
 		if (!e.dataTransfer) return;
 		
-		// Only allow dragging of items, not folders
-		if (isFolder()) {
-			e.preventDefault();
-			return;
-		}
-		
+		// Allow dragging of both items and folders
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/plain', fullPath());
 	}
@@ -120,7 +115,7 @@
 		class="flex cursor-pointer items-center gap-1 rounded px-1 py-[2px] text-sm hover:bg-black/5 {activeItemId === fullPath() ? 'bg-black/10' : ''} {isDragOver ? 'bg-blue-100' : ''} w-full text-left"
 		onclick={isFolder() ? toggleFolder : selectItem}
 		oncontextmenu={openContext}
-		draggable={!isFolder()}
+		draggable={true}
 		ondragstart={handleDragStart}
 		ondragover={isFolder() ? handleDragOver : undefined}
 		ondragleave={isFolder() ? handleDragLeave : undefined}
