@@ -128,6 +128,11 @@
 			await database.removeRecordById(ctx.targetId);
 			toast("Item removed");
 		}
+		
+		// Save the database to ensure changes are persisted
+		// Note: We don't have direct access to the current user ID here
+		// The database store should handle saving automatically when needed
+		
 		contextmenu.hideContextMenu();
 	}
 

@@ -102,6 +102,9 @@ export const removeFolderAndContents = async (folderId: string) => {
     for (const item of itemsToRemove) {
       await serviceDeleteRecord(currentUserId, currentUserPassword || '', item.id);
     }
+    
+    // Save the database to ensure changes are persisted
+    await saveDatabase(currentUserId);
   }
 };
 
