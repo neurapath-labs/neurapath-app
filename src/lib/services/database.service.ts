@@ -18,7 +18,9 @@ function buildHeaders(username?: string, password?: string): Headers {
 
 async function handle<ResponseShape = unknown>(promise: Promise<Response>) {
   const res = await promise;
+  console.log("Response status:", res.status);
   const json = await res.json();
+  console.log("Response json:", json);
   if (!res.ok || (json?.error && json.error !== 200)) {
     throw new Error(json?.message ?? `Request failed with status ${res.status}`);
   }
@@ -36,7 +38,7 @@ export async function register(username: string, password: string) {
 }
 
 export async function login(username: string, password: string) {
-  ('[DatabaseService] Attempting login for user:', username);
+  console.log('[DatabaseService] Attempting login for user:', username);
   // successful response ⇒ credentials are valid
   try {
     const result = await handle<unknown>(
@@ -45,7 +47,7 @@ export async function login(username: string, password: string) {
         headers: buildHeaders(username, password)
       })
     );
-    ('[DatabaseService] Login successful for user:', username);
+    console.log('[DatabaseService] Login successful for user:', username);
     return result;
   } catch (error: any) {
     console.error('[DatabaseService] Login error for user:', username, error);
@@ -81,6 +83,7 @@ export async function setDatabasePublic(
 
 /* ---------- current user’s database ---------- */
 export async function fetchMyDatabase(username: string, password: string) {
+  console.log("Fetching my database for user:", username);
   return handle<Record<string, unknown>>(
     fetch(`${BASE}/user/data`, {
       method: 'GET',
@@ -94,6 +97,7 @@ export async function saveMyDatabase(
   password: string,
   data: Record<string, unknown>
 ) {
+  console.log("Saving database data:", data);
   const result = await handle(
     fetch(`${BASE}/user/data`, {
       method: 'POST',
@@ -101,6 +105,8 @@ export async function saveMyDatabase(
       body: JSON.stringify(data)
     })
   );
+  console.log("Database save result:", result);
+  console.log("Database save result:", result);
   
   // Update the last saved timestamp
   lastSaved.setLastSaved(Date.now());
@@ -119,6 +125,7 @@ export async function getPublicDatabases(): Promise<Database[]> {
 }
 
 export async function fetchPublicDatabaseByUser(username: string) {
+  console.log("Fetching public database for user:", username);
   return handle<Record<string, unknown>>(
     fetch(`${BASE}/user/data/${username}`)
   );

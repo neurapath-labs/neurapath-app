@@ -23,9 +23,10 @@ import {
 ------------------------------------------------- */
 export interface Database {
   items: Record[];
+  profile?: import('$lib/models').Profile;
 }
 
-const initialState: Database = { items: [] };
+const initialState: Database = { items: [], profile: undefined };
 const { subscribe, set, update } = writable<Database>(initialState);
 
 /* -------------------------------------------------
@@ -49,6 +50,10 @@ const getState = (): Database => {
 
 export const setCurrentUserId = (userId: string | null) => {
   currentUserId = userId;
+  // Load the database when the user ID is set
+  if (userId) {
+    loadDatabase(userId);
+  }
 };
 
 export const setCurrentUserPassword = (password: string | null) => {
@@ -192,25 +197,32 @@ export const updateRecordRemotely = async (
 export const loadDatabase = async (userId: string) => {
   try {
     const data = await fetchPublicDatabaseByUser(userId);
-    ("Fetching public database: ", data);
+    console.log("Fetching public database for user:", userId, "data:", data);
 
     // Handle different data formats from backend
     let items: Record[] = [];
+    let profile: import('$lib/models').Profile | undefined = undefined;
     if (data) {
       if ((data as any).items) {
         // Already in correct format
         items = (data as any).items as Record[];
+        profile = (data as any).profile as import('$lib/models').Profile | undefined;
       } else if ((data as any).records) {
         // Backend returns { records: [...] }
         items = (data as any).records as Record[];
       } else if ((data as any).data && (data as any).data.records) {
         // Backend returns { data: { records: [...] } }
         items = (data as any).data.records as Record[];
+        if ((data as any).data.profile) {
+          profile = (data as any).data.profile as import('$lib/models').Profile;
+        }
       }
     }
+    console.log("Loaded items from database:", items);
+    console.log("Loaded profile from database:", profile);
 
     if (items.length > 0) {
-      set({ items });
+      set({ items, profile });
       lastSyncTime = Date.now();
     } else {
       // Initialise empty DB for new users
@@ -229,11 +241,15 @@ export const loadDatabase = async (userId: string) => {
 
 export const saveDatabase = async (userId: string) => {
   const db = getState();
+  console.log("Saving database with profile:", db.profile);
   // Convert Database object to Record<string, unknown>
   const dbRecord: { [key: string]: unknown } = {
-    records: db.items
+    records: db.items,
+    profile: db.profile
   };
-  await serviceSaveMyDb(userId, currentUserPassword || '', dbRecord);
+  console.log("Saving database record:", dbRecord);
+  const result = await serviceSaveMyDb(userId, currentUserPassword || '', dbRecord);
+  console.log("Database save result:", result);
   lastSyncTime = Date.now();
 };
 

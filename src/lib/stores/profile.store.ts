@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import type { Profile, Shortcut } from '$lib/models';
+import { database } from '$lib/stores/database.store';
 
 // Default shortcuts based on the original script
 const defaultShortcuts: Shortcut[] = [
@@ -81,32 +82,100 @@ const defaultProfile: Profile = {
 
 const { subscribe, set, update } = writable(defaultProfile);
 
+// Initialize profile from database when it's loaded
+database.subscribe((db) => {
+  console.log("Database updated, initializing profile:", db);
+  if (db && db.profile) {
+    console.log("Initializing profile from database:", db.profile);
+    set(db.profile);
+  } else {
+    console.log("No profile found in database, using default profile");
+  }
+});
+
 const updateProfile = (updates: Partial<Profile>) => {
-  update(profile => ({
-    ...profile,
-    ...updates
-  }));
+  update(profile => {
+    const updatedProfile = {
+      ...profile,
+      ...updates
+    };
+    console.log("Updating profile:", updatedProfile);
+    
+    // Also update the profile in the database
+    database.update((db) => {
+      const updatedDb = {
+        ...db,
+        profile: updatedProfile
+      };
+      console.log("Updating database with profile:", updatedDb.profile);
+      return updatedDb;
+    });
+    
+    return updatedProfile;
+  });
 };
 
 const setTheme = (theme: string) => {
-  update(profile => ({
-    ...profile,
-    theme
-  }));
+  update(profile => {
+    const updatedProfile = {
+      ...profile,
+      theme
+    };
+    
+    // Also update the profile in the database
+    database.update((db) => {
+      const updatedDb = {
+        ...db,
+        profile: updatedProfile
+      };
+      console.log("Updating database with profile:", updatedDb.profile);
+      return updatedDb;
+    });
+    
+    return updatedProfile;
+  });
 };
 
 const toggleRightSidebar = () => {
-  update(profile => ({
-    ...profile,
-    showRightSidebar: !profile.showRightSidebar
-  }));
+  update(profile => {
+    const updatedProfile = {
+      ...profile,
+      showRightSidebar: !profile.showRightSidebar
+    };
+    
+    // Also update the profile in the database
+    database.update((db) => {
+      const updatedDb = {
+        ...db,
+        profile: updatedProfile
+      };
+      console.log("Updating database with profile:", updatedDb.profile);
+      return updatedDb;
+    });
+    
+    return updatedProfile;
+  });
 };
 
 const toggleImagesInSidebar = () => {
-  update(profile => ({
-    ...profile,
-    showImagesInSidebar: !profile.showImagesInSidebar
-  }));
+  update(profile => {
+    const updatedProfile = {
+      ...profile,
+      showImagesInSidebar: !profile.showImagesInSidebar
+    };
+    
+    // Also update the profile in the database
+    database.update((db) => {
+      const updatedDb = {
+        ...db,
+        profile: updatedProfile
+      };
+      console.log("Updating database with profile:", updatedDb.profile);
+      return updatedDb;
+    });
+    
+    return updatedProfile;
+  });
 };
 
 const updateShortcut = (event: string, shortcut: Shortcut) => {
@@ -114,18 +183,44 @@ const updateShortcut = (event: string, shortcut: Shortcut) => {
     const shortcuts = profile.shortcuts.map(s =>
       s.event === event ? shortcut : s
     );
-    return {
+    const updatedProfile = {
       ...profile,
       shortcuts
     };
+    
+    // Also update the profile in the database
+    database.update((db) => {
+      const updatedDb = {
+        ...db,
+        profile: updatedProfile
+      };
+      console.log("Updating database with profile:", updatedDb.profile);
+      return updatedDb;
+    });
+    
+    return updatedProfile;
   });
 };
 
 const resetShortcutsToDefault = () => {
-  update(profile => ({
-    ...profile,
-    shortcuts: defaultShortcuts
-  }));
+  update(profile => {
+    const updatedProfile = {
+      ...profile,
+      shortcuts: defaultShortcuts
+    };
+    
+    // Also update the profile in the database
+    database.update((db) => {
+      const updatedDb = {
+        ...db,
+        profile: updatedProfile
+      };
+      console.log("Updating database with profile:", updatedDb.profile);
+      return updatedDb;
+    });
+    
+    return updatedProfile;
+  });
 };
 
 export const profile = {

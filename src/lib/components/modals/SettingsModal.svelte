@@ -10,8 +10,6 @@
   import { profile } from "$lib/stores/profile.store";
   import { modal   } from "$lib/stores/modal.store";
   import { toast   } from "svelte-sonner";
-  import { database } from "$lib/stores/database.store";
-  import { auth } from "$lib/stores/auth.store";
 
   import { BrainIcon, KeyboardIcon, SettingsIcon, SaveIcon, Loader2Icon }
           from "@lucide/svelte/icons";
@@ -30,6 +28,12 @@
   let openRouterApiKey = $state('');
   let openRouterModel  = $state('openai/gpt-3.5-turbo');
   let isSaving = $state(false);
+  
+  // Debug: Log when these values change
+  $effect(() => {
+    console.log("openRouterApiKey state:", openRouterApiKey);
+    console.log("openRouterModel state:", openRouterModel);
+  });
 
   /* ─────────────── model options & derived trigger label ──────────── */
   const models = [
@@ -46,9 +50,12 @@
   /* ───────────── subscribe to external stores (profile, modal) ────── */
   $effect(() => {
     const unsubProfile = profile.subscribe(($p) => {
+      console.log("Profile updated in SettingsModal:", $p);
       shortcuts        = [...($p.shortcuts ?? [])];
-      openRouterApiKey = $p.openRouterApiKey ?? '';
-      openRouterModel  = $p.openRouterModel ?? 'openai/gpt-3.5-turbo';
+      openRouterApiKey = $p.openRouterApiKey || '';
+      openRouterModel  = $p.openRouterModel || 'openai/gpt-3.5-turbo';
+      console.log("openRouterApiKey:", openRouterApiKey);
+      console.log("openRouterModel:", openRouterModel);
     });
 
     const unsubModal = modal.subscribe(($m) => {
@@ -108,24 +115,14 @@
   async function saveAiSettings() {
     isSaving = true;
     try {
+      console.log("Saving AI settings:", { openRouterApiKey, openRouterModel });
       // Save AI settings to profile
       profile.updateProfile({ openRouterApiKey, openRouterModel });
       
-      // Save database
-      let currentUser: any = null;
-      const unsubscribe = auth.subscribe((user) => {
-        currentUser = user;
-      });
-      unsubscribe();
-      
-      if (currentUser && currentUser.user) {
-        await database.saveDatabase(currentUser.user.username);
-      }
-      
-      toast('AI settings and database saved');
+      toast('AI settings saved');
     } catch (error) {
-      console.error('Error saving AI settings and database:', error);
-      toast('Error saving AI settings and database');
+      console.error('Error saving AI settings:', error);
+      toast('Error saving AI settings');
     } finally {
       isSaving = false;
     }
@@ -168,7 +165,7 @@
       </div>
 
       <!-- Tabs -->
-      <Tabs defaultValue="ai" class="flex flex-col h-full">
+      <Tabs value="ai" class="flex flex-col h-full">
         <TabsList class="mb-6 w-full">
           <TabsTrigger value="ai"        class="flex-1"><BrainIcon/>AI&nbsp;Settings</TabsTrigger>
           <TabsTrigger value="shortcuts" class="flex-1"><KeyboardIcon/>Keyboard&nbsp;Shortcuts</TabsTrigger>

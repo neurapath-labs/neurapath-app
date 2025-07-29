@@ -21,11 +21,20 @@
 	
 	// Initialize database store with user credentials
 	$effect(() => {
+		console.log("Page data updated:", $page.data);
 		if ($page.data.user) {
 			database.setCurrentUserId($page.data.user.name);
 		}
 		if ($page.data.password) {
 			database.setCurrentUserPassword($page.data.password);
+		}
+	});
+	
+	// Load the database when user data is available
+	$effect(() => {
+		if ($page.data.user) {
+			console.log("Loading database for user:", $page.data.user.name);
+			database.loadDatabase($page.data.user.name);
 		}
 	});
 
