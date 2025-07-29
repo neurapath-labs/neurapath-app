@@ -30,10 +30,10 @@
   // Subscribe to database changes
   const unsubscribe = database.subscribe(($database) => {
     currentDatabase = $database;
-    console.log('[MainContent] Database updated');
+    
     // Use setTimeout to ensure the database update happens after the database state update
     setTimeout(() => {
-      console.log('[MainContent] Triggering updateActiveRecord after database update');
+      
       updateActiveRecord($database);
     }, 0);
   });
@@ -52,7 +52,7 @@
   const unsubscribeLearning = learning.subscribe(($learning) => {
     const wasLearningMode = isLearningMode;
     isLearningMode = $learning.isInLearningMode;
-    console.log('[MainContent] Learning mode changed. Was:', wasLearningMode, 'Now:', isLearningMode);
+    
     if (quill) {
       if (isLearningMode) {
         quill.disable();
@@ -60,19 +60,19 @@
         quill.enable();
         // Update content when exiting learning mode
         if (activeRecord && activeRecord.content) {
-          console.log('[MainContent] Updating Quill content after exiting learning mode');
+          
           updateQuillContent(activeRecord);
         }
       }
     }
     // If we just exited learning mode, trigger UI update
     if (wasLearningMode && !isLearningMode) {
-      console.log('[MainContent] Just exited learning mode, triggering UI update');
+      
       // Use setTimeout to ensure the UI update happens after the learning mode update
       setTimeout(() => {
         if (activeItemId) {
           // Re-trigger the UI update to ensure the active item is properly loaded
-          console.log('[MainContent] Re-triggering UI update after exiting learning mode');
+          
           updateActiveRecordWithCurrentDatabase();
         }
       }, 0);
@@ -83,12 +83,12 @@
   const unsubscribeUI = ui.subscribe(($ui) => {
     const previousActiveItemId = activeItemId;
     activeItemId = $ui.activeItemId;
-    console.log('[MainContent] UI active item changed. Was:', previousActiveItemId, 'Now:', activeItemId);
+    
     
     // Trigger update of active record with current database state
     // Use setTimeout to ensure the UI update happens after the active item ID update
     setTimeout(() => {
-      console.log('[MainContent] Triggering updateActiveRecordWithCurrentDatabase');
+      
       updateActiveRecordWithCurrentDatabase();
     }, 0);
   });
@@ -120,7 +120,7 @@
 
   onMount(async () => {
     if (editor && browser) {
-      console.log('[MainContent] Initializing Quill');
+      
       const { default: Quill } = await import('quill');
       quill = new Quill(editor, {
         theme: 'bubble',
@@ -128,11 +128,11 @@
           toolbar: getToolbarOptions()
         }
       });
-      console.log('[MainContent] Quill initialized:', quill);
+      
 
       // Set initial content
       if (activeRecord && activeRecord.content) {
-        console.log('[MainContent] Setting initial Quill content');
+        
         quill.setContents(activeRecord.content);
       }
 
@@ -182,7 +182,7 @@
   const saveContentToDatabase = async (recordId: string, content: any) => {
     try {
       await database.updateRecordRemotely(recordId, { content });
-      console.log('Content saved to database:', recordId);
+      
     } catch (error) {
       console.error('Error saving content to database:', error);
       toast('Error saving content');
@@ -194,7 +194,7 @@
     if (quill && activeRecord) {
       const content = quill.getContents();
       // TODO: Update the store with the new content
-      console.log('Content updated:', content);
+      
     }
   };
 
@@ -212,20 +212,20 @@
 
   // Function to update active record based on active item ID
   function updateActiveRecord($database: any) {
-    console.log('[MainContent] updateActiveRecord called with activeItemId:', activeItemId);
-    console.log('[MainContent] isLearningMode:', isLearningMode);
+    
+    
     // Find the active record based on the active item ID
     if (activeItemId) {
       const record = $database.items.find((item: Record) => item.id === activeItemId);
-      console.log('[MainContent] Found record:', record);
+      
       if (record) {
         activeRecord = record;
         // Only update Quill content if we're not in learning mode
         if (!isLearningMode) {
-          console.log('[MainContent] Updating Quill content for record:', record);
+          
           updateQuillContent(record);
         } else {
-          console.log('[MainContent] Skipping Quill update because we are in learning mode');
+          
         }
       }
     } else {
@@ -238,10 +238,10 @@
         activeRecord = recordWithContent;
         // Only update Quill content if we're not in learning mode
         if (!isLearningMode) {
-          console.log('[MainContent] Updating Quill content for record with content:', recordWithContent);
+          
           updateQuillContent(recordWithContent);
         } else {
-          console.log('[MainContent] Skipping Quill update because we are in learning mode');
+          
         }
       }
     }
@@ -270,11 +270,11 @@
 
   // Function to update Quill content
   const updateQuillContent = (record: Record) => {
-    console.log('[MainContent] updateQuillContent called with record:', record);
-    console.log('[MainContent] Quill instance:', quill);
+    
+    
     if (quill && record.content) {
-      console.log('[MainContent] Setting Quill content');
-      console.log('[MainContent] Content format:', typeof record.content, record.content);
+      
+      
       // Convert string content to Delta format if needed
       const content = typeof record.content === 'string'
         ? { ops: [{ insert: record.content }] }
@@ -283,9 +283,9 @@
       quill.setContents({ ops: [] });
       // Set new content
       quill.setContents(content);
-      console.log('[MainContent] Quill content updated');
+      
     } else {
-      console.log('[MainContent] Skipping Quill content update. Quill:', quill, 'Record content:', record.content);
+      
     }
   };
 
@@ -487,7 +487,7 @@
       try {
         // This would typically involve creating occlusions from the active image
         // For now, we'll just show a success message
-        console.log('Create occlusion, separate:', separateOcclusions);
+        
         toast('Occlusion created successfully');
       } catch (error) {
         console.error('Error creating occlusion:', error);
@@ -558,7 +558,7 @@
       else if (file.type === 'application/pdf') {
         try {
           // In a real implementation, this would parse the PDF and create records
-          console.log('PDF file detected:', file.name);
+          
           toast('PDF imported successfully');
         } catch (error) {
           console.error('Error importing PDF:', error);

@@ -151,7 +151,7 @@
 	}
 
 	function select(item: Record, i: number) {
-		console.log('Selected item:', item);
+		
 		selectedIndex = i;
 		
 		// Set the active item in the UI store to render content in quill

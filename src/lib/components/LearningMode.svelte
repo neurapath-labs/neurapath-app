@@ -42,11 +42,11 @@
 
   $effect(() => {
     const unsub = profile.subscribe(($p) => {
-      console.log('[LearningMode] Profile updated:', $p);
+      
       // Only update if profile has actually changed
       if (JSON.stringify($p) !== JSON.stringify(profileData)) {
         profileData = $p;
-        console.log('[LearningMode] Profile data updated:', profileData);
+        
       }
     });
     return () => unsub();
@@ -54,51 +54,51 @@
 
   $effect(() => {
     const unsub = database.subscribe(($db) => {
-      console.log('[LearningMode] Database updated with', $db.items.length, 'items');
+      
       currentDatabase = $db;
       const today = new Date();
       const newDueItems = $db.items
         .filter((it: Record) => {
-          console.log('[LearningMode] Checking item:', it.id, it.contentType, it.dueDate, it.repetition);
+          
           if (!it.dueDate || it.repetition === undefined) {
-            console.log('[LearningMode] Skipping item due to missing dueDate or repetition');
+            
             return false;
           }
           if (!profileData) {
-            console.log('[LearningMode] Skipping item due to missing profileData');
+            
             return false;
           }
           if (it.contentType === 'Cloze' && !profileData.showClozesInLearningMode) {
-            console.log('[LearningMode] Skipping cloze due to profile setting');
+            
             return false;
           }
           if (it.contentType === 'Extract' && !profileData.showExtractsInLearningMode) {
-            console.log('[LearningMode] Skipping extract due to profile setting');
+            
             return false;
           }
           if (it.contentType === 'Occlusion' && !profileData.showOcclusionsInLearningMode) {
-            console.log('[LearningMode] Skipping occlusion due to profile setting');
+            
             return false;
           }
           const isDue = new Date(it.dueDate) <= today;
-          console.log('[LearningMode] Item is due:', isDue);
+          
           return isDue;
         })
         .sort((a: Record, b: Record) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime());
       
       // Only update if due items have actually changed
       if (JSON.stringify(newDueItems) !== JSON.stringify(dueItems)) {
-        console.log('[LearningMode] Due items updated. New count:', newDueItems.length);
+        
         dueItems = newDueItems;
         sessionStats.total = dueItems.length;
-        console.log('[LearningMode] Session stats updated. Total:', sessionStats.total);
+        
         if (!currentRecord && dueItems.length > 0) {
-          console.log('[LearningMode] Setting current record to first due item');
+          
           learning.setCurrentRecord(dueItems[0]);
           currentIndex = 0;
         } else if (!dueItems.length) {
           // No due items, clear current record
-          console.log('[LearningMode] No due items, clearing current record');
+          
           learning.setCurrentRecord(null);
         }
       }

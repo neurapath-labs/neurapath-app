@@ -84,12 +84,12 @@ const { subscribe, set, update } = writable(defaultProfile);
 
 // Initialize profile from database when it's loaded
 database.subscribe((db) => {
-  console.log("Database updated, initializing profile:", db);
+
   if (db && db.profile) {
-    console.log("Initializing profile from database:", db.profile);
+
     set(db.profile);
   } else {
-    console.log("No profile found in database, using default profile");
+
   }
 });
 
@@ -99,7 +99,7 @@ const updateProfile = (updates: Partial<Profile>) => {
       ...profile,
       ...updates
     };
-    console.log("Updating profile:", updatedProfile);
+
     
     // Also update the profile in the database
     database.update((db) => {
@@ -107,7 +107,7 @@ const updateProfile = (updates: Partial<Profile>) => {
         ...db,
         profile: updatedProfile
       };
-      console.log("Updating database with profile:", updatedDb.profile);
+
       return updatedDb;
     });
     
@@ -128,7 +128,7 @@ const setTheme = (theme: string) => {
         ...db,
         profile: updatedProfile
       };
-      console.log("Updating database with profile:", updatedDb.profile);
+
       return updatedDb;
     });
     
@@ -149,7 +149,7 @@ const toggleRightSidebar = () => {
         ...db,
         profile: updatedProfile
       };
-      console.log("Updating database with profile:", updatedDb.profile);
+
       return updatedDb;
     });
     
@@ -170,7 +170,7 @@ const toggleImagesInSidebar = () => {
         ...db,
         profile: updatedProfile
       };
-      console.log("Updating database with profile:", updatedDb.profile);
+
       return updatedDb;
     });
     
@@ -194,7 +194,7 @@ const updateShortcut = (event: string, shortcut: Shortcut) => {
         ...db,
         profile: updatedProfile
       };
-      console.log("Updating database with profile:", updatedDb.profile);
+
       return updatedDb;
     });
     
@@ -215,7 +215,7 @@ const resetShortcutsToDefault = () => {
         ...db,
         profile: updatedProfile
       };
-      console.log("Updating database with profile:", updatedDb.profile);
+
       return updatedDb;
     });
     

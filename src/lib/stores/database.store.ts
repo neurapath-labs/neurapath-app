@@ -197,7 +197,7 @@ export const updateRecordRemotely = async (
 export const loadDatabase = async (userId: string) => {
   try {
     const data = await fetchPublicDatabaseByUser(userId);
-    console.log("Fetching public database for user:", userId, "data:", data);
+
 
     // Handle different data formats from backend
     let items: Record[] = [];
@@ -218,8 +218,8 @@ export const loadDatabase = async (userId: string) => {
         }
       }
     }
-    console.log("Loaded items from database:", items);
-    console.log("Loaded profile from database:", profile);
+
+
 
     if (items.length > 0) {
       set({ items, profile });
@@ -241,15 +241,15 @@ export const loadDatabase = async (userId: string) => {
 
 export const saveDatabase = async (userId: string) => {
   const db = getState();
-  console.log("Saving database with profile:", db.profile);
+
   // Convert Database object to Record<string, unknown>
   const dbRecord: { [key: string]: unknown } = {
     records: db.items,
     profile: db.profile
   };
-  console.log("Saving database record:", dbRecord);
+
   const result = await serviceSaveMyDb(userId, currentUserPassword || '', dbRecord);
-  console.log("Database save result:", result);
+
   lastSyncTime = Date.now();
 };
 

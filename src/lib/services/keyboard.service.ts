@@ -33,7 +33,7 @@ class KeyboardService {
     // Get current shortcuts from profile
     const profileData = get(profile);
     this.shortcuts = profileData.shortcuts || [];
-    // console.log('Current shortcuts:', this.shortcuts);
+    // 
 
     // Match the key event with defined shortcuts
     const matchedShortcut = this.shortcuts.find((shortcut) => {
@@ -63,14 +63,14 @@ class KeyboardService {
         return !hasCtrl && !hasMeta;
       }
     });
-    // console.log('Event:', {
+    // 
     //   keyCode: event.keyCode,
     //   altKey: event.altKey,
     //   ctrlKey: event.ctrlKey,
     //   metaKey: event.metaKey,
     //   shiftKey: event.shiftKey
     // });
-    // console.log('Matched shortcut:', matchedShortcut);
+    // 
 
     // If we're in an input field and there's no matched shortcut, return early
     if (isInputField && !matchedShortcut) {
@@ -86,7 +86,7 @@ class KeyboardService {
     }
 
     if (matchedShortcut) {
-      // console.log('Matched shortcut:', matchedShortcut);
+      // 
       event.preventDefault();
       this.executeShortcut(matchedShortcut.event);
     }
@@ -210,7 +210,7 @@ class KeyboardService {
 
       // Default case
       default:
-        console.log('Unhandled shortcut event:', event);
+
         break;
     }
   }
@@ -219,7 +219,7 @@ class KeyboardService {
     // Get current selection
     const selectionData = get(selection);
 
-    // console.log(selectionData, selectionData.isSelected, selectionData.text);
+    // 
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
       toast('Please select text to create a cloze');
@@ -332,19 +332,19 @@ class KeyboardService {
   }
 
   private async flagItem() {
-    // console.log('flagItem called');
+    // 
     // Get active record
     const databaseData = get(database);
     const uiData = get(ui);
     const activeItemId = uiData.activeItemId;
     
-    // console.log('activeItemId:', activeItemId);
+    // 
     // Find the active record based on the active item ID
     const activeRecord = activeItemId
       ? databaseData.items.find(item => item.id === activeItemId)
       : null;
 
-    // console.log('activeRecord:', activeRecord);
+    // 
     if (!activeRecord || !activeRecord.id) {
       toast('Please select an item to flag first');
       return;

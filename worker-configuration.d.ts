@@ -114,7 +114,7 @@ interface Console {
     groupEnd(): void;
     /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/info_static) */
     info(...data: any[]): void;
-    /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/log_static) */
+    /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/
     log(...data: any[]): void;
     /* [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/table_static) */
     table(tabularData?: any, properties?: string[]): void;

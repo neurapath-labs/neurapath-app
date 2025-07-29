@@ -31,8 +31,8 @@
   
   // Debug: Log when these values change
   $effect(() => {
-    console.log("openRouterApiKey state:", openRouterApiKey);
-    console.log("openRouterModel state:", openRouterModel);
+    
+    
   });
 
   /* ─────────────── model options & derived trigger label ──────────── */
@@ -50,12 +50,12 @@
   /* ───────────── subscribe to external stores (profile, modal) ────── */
   $effect(() => {
     const unsubProfile = profile.subscribe(($p) => {
-      console.log("Profile updated in SettingsModal:", $p);
+      
       shortcuts        = [...($p.shortcuts ?? [])];
       openRouterApiKey = $p.openRouterApiKey || '';
       openRouterModel  = $p.openRouterModel || 'openai/gpt-3.5-turbo';
-      console.log("openRouterApiKey:", openRouterApiKey);
-      console.log("openRouterModel:", openRouterModel);
+      
+      
     });
 
     const unsubModal = modal.subscribe(($m) => {
@@ -115,7 +115,7 @@
   async function saveAiSettings() {
     isSaving = true;
     try {
-      console.log("Saving AI settings:", { openRouterApiKey, openRouterModel });
+      
       // Save AI settings to profile
       profile.updateProfile({ openRouterApiKey, openRouterModel });
       
