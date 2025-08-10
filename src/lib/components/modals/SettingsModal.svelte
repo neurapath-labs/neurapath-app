@@ -35,12 +35,12 @@
 
   // AI settings
   let openRouterApiKey = $state("");
-  let openRouterModel = $state("openai/gpt-3.5-turbo");
+  let openRouterModel = $state("openai/gpt-5-mini");
   let isSaving = $state(false);
 
   // Initialize AI settings with default values
   openRouterApiKey = "";
-  openRouterModel = "openai/gpt-3.5-turbo";
+  openRouterModel = "openai/gpt-5-mini";
 
   /* ─────────────── model options & derived trigger label ──────────── */
   const models = [
