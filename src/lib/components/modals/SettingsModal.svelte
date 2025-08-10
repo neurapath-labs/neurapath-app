@@ -14,7 +14,7 @@
   import { BrainIcon, KeyboardIcon, SettingsIcon, SaveIcon, Loader2Icon }
           from "@lucide/svelte/icons";
 
-  import type { Shortcut } from "$lib/models";
+  import type { Shortcut, Profile } from "$lib/models";
 
   /* ──────────────────────────── state ─────────────────────────────── */
   let shortcuts:       Shortcut[] = $state([]);
@@ -29,11 +29,9 @@
   let openRouterModel  = $state('openai/gpt-3.5-turbo');
   let isSaving = $state(false);
   
-  // Debug: Log when these values change
-  $effect(() => {
-    
-    
-  });
+  // Initialize AI settings with default values
+  openRouterApiKey = '';
+  openRouterModel = 'openai/gpt-3.5-turbo';
 
   /* ─────────────── model options & derived trigger label ──────────── */
   const models = [
@@ -49,16 +47,14 @@
 
   /* ───────────── subscribe to external stores (profile, modal) ────── */
   $effect(() => {
-    const unsubProfile = profile.subscribe(($p) => {
-      
+    const unsubProfile = profile.subscribe(($p: Profile) => {
+      // Update local state with profile values
       shortcuts        = [...($p.shortcuts ?? [])];
       openRouterApiKey = $p.openRouterApiKey || '';
       openRouterModel  = $p.openRouterModel || 'openai/gpt-3.5-turbo';
-      
-      
     });
 
-    const unsubModal = modal.subscribe(($m) => {
+    const unsubModal = modal.subscribe(($m: { isSettingsModalOpen: boolean }) => {
       isSettingsModalOpen = $m.isSettingsModalOpen;
     });
 

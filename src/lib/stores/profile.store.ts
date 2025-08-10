@@ -84,12 +84,27 @@ const { subscribe, set, update } = writable(defaultProfile);
 
 // Initialize profile from database when it's loaded
 database.subscribe((db) => {
-
   if (db && db.profile) {
-
-    set(db.profile);
+    // Merge the database profile with default profile to ensure all fields are present
+    const mergedProfile = {
+      ...defaultProfile,
+      ...db.profile,
+      // Ensure AI settings have proper defaults if not set
+      openRouterApiKey: db.profile.openRouterApiKey || defaultProfile.openRouterApiKey,
+      openRouterModel: db.profile.openRouterModel || defaultProfile.openRouterModel,
+    };
+    set(mergedProfile);
   } else {
-
+    // Initialize with default profile if no profile exists in database
+    set(defaultProfile);
+    // Also update the database with the default profile
+    database.update((db) => {
+      const updatedDb = {
+        ...db,
+        profile: defaultProfile
+      };
+      return updatedDb;
+    });
   }
 });
 
