@@ -59,7 +59,7 @@
       // Update local state with profile values
       shortcuts = [...($p.shortcuts ?? [])];
       openRouterApiKey = $p.openRouterApiKey || "";
-      openRouterModel = $p.openRouterModel || "openai/gpt-3.5-turbo";
+      openRouterModel = $p.openRouterModel || "openai/gpt-5-mini";
     });
 
     const unsubModal = modal.subscribe(
