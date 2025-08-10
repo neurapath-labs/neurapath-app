@@ -157,7 +157,7 @@
       <div class="flex items-center gap-3 mb-6">
         <SettingsIcon class="w-10 h-10" />
         <h1 class="text-2xl font-semibold">Settings</h1>
-        <div class="ml-auto" />
+        <div class="ml-auto"></div>
       </div>
 
       <!-- Tabs -->

@@ -74,7 +74,7 @@
             {#each items as item}
               <tr
                 class="border-b border-[rgb(var(--background-color))] even:bg-[rgba(var(--background-color),0.1)] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer"
-                on:click={() => handleItemClick(item.id)}
+                onclick={() => handleItemClick(item.id)}
               >
                 <td class="p-3">{item.id}</td>
                 <td class="p-3">{item.totalRepetitionCount ?? 0}</td>

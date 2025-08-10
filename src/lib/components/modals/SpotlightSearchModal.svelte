@@ -219,7 +219,7 @@
 							{#each nameMatches as item, i (item.id)}
 								<tr
 									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {i === selectedIndex ? 'bg-[rgba(var(--background-color),0.2)]' : ''}"
-									on:click={() => select(item, i)}
+									onclick={() => select(item, i)}
 								>
 									<td class="p-3">
 										<div class="flex items-center">
@@ -239,7 +239,7 @@
 							{#each contentMatches as item, j (item.id)}
 								<tr
 									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {j + nameMatches.length === selectedIndex ? 'bg-[rgba(var(--background-color),0.2)]' : ''}"
-									on:click={() => select(item, j + nameMatches.length)}
+									onclick={() => select(item, j + nameMatches.length)}
 								>
 									<td class="p-3">
 										<div class="flex flex-col">
