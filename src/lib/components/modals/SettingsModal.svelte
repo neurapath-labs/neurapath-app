@@ -1,77 +1,111 @@
 <script lang="ts">
   /* ───────────────────────────── imports ───────────────────────────── */
   import * as Dialog from "$lib/components/ui/dialog/index.js";
-  import { Button }  from "$lib/components/ui/button";
-  import { Input }   from "$lib/components/ui/input";
+  import { Button } from "$lib/components/ui/button";
+  import { Input } from "$lib/components/ui/input";
   import * as Select from "$lib/components/ui/select/index.js";
-  import { Tabs, TabsContent, TabsList, TabsTrigger }
-          from "$lib/components/ui/tabs";
+  import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+  } from "$lib/components/ui/tabs";
 
   import { profile } from "$lib/stores/profile.store";
-  import { modal   } from "$lib/stores/modal.store";
-  import { toast   } from "svelte-sonner";
+  import { modal } from "$lib/stores/modal.store";
+  import { toast } from "svelte-sonner";
 
-  import { BrainIcon, KeyboardIcon, SettingsIcon, SaveIcon, Loader2Icon }
-          from "@lucide/svelte/icons";
+  import {
+    BrainIcon,
+    KeyboardIcon,
+    SettingsIcon,
+    SaveIcon,
+    Loader2Icon,
+  } from "@lucide/svelte/icons";
 
   import type { Shortcut, Profile } from "$lib/models";
 
   /* ──────────────────────────── state ─────────────────────────────── */
-  let shortcuts:       Shortcut[] = $state([]);
-  let isRecording:     boolean    = $state(false);
-  let recordingEvent:  string | null = $state(null);
+  let shortcuts: Shortcut[] = $state([]);
+  let isRecording: boolean = $state(false);
+  let recordingEvent: string | null = $state(null);
 
-  let filterText:      string     = $state('');
-  let isSettingsModalOpen         = $state(false);
+  let filterText: string = $state("");
+  let isSettingsModalOpen = $state(false);
 
   // AI settings
-  let openRouterApiKey = $state('');
-  let openRouterModel  = $state('openai/gpt-3.5-turbo');
+  let openRouterApiKey = $state("");
+  let openRouterModel = $state("openai/gpt-3.5-turbo");
   let isSaving = $state(false);
-  
+
   // Initialize AI settings with default values
-  openRouterApiKey = '';
-  openRouterModel = 'openai/gpt-3.5-turbo';
+  openRouterApiKey = "";
+  openRouterModel = "openai/gpt-3.5-turbo";
 
   /* ─────────────── model options & derived trigger label ──────────── */
   const models = [
-    { value: "openai/gpt-3.5-turbo",        label: "GPT-3.5 Turbo" },
-    { value: "openai/gpt-4o",               label: "GPT-4o" },
-    { value: "mistral/mistral-large-latest",label: "Mistral Large" },
-    { value: "anthropic/claude-3-sonnet",   label: "Claude 3 Sonnet" },
+    { value: "mistral/gpt-5", label: "GPT-5" },
+    { value: "openai/gpt-5-mini", label: "GPT-5 Mini" },
+    { value: "openai/gpt-5-nano", label: "GPT-5 Nano" }
   ];
 
   const modelTriggerContent = $derived(
-    models.find((m) => m.value === openRouterModel)?.label ?? "Select a model"
+    models.find((m) => m.value === openRouterModel)?.label ?? "Select a model",
   );
 
   /* ───────────── subscribe to external stores (profile, modal) ────── */
   $effect(() => {
     const unsubProfile = profile.subscribe(($p: Profile) => {
       // Update local state with profile values
-      shortcuts        = [...($p.shortcuts ?? [])];
-      openRouterApiKey = $p.openRouterApiKey || '';
-      openRouterModel  = $p.openRouterModel || 'openai/gpt-3.5-turbo';
+      shortcuts = [...($p.shortcuts ?? [])];
+      openRouterApiKey = $p.openRouterApiKey || "";
+      openRouterModel = $p.openRouterModel || "openai/gpt-3.5-turbo";
     });
 
-    const unsubModal = modal.subscribe(($m: { isSettingsModalOpen: boolean }) => {
-      isSettingsModalOpen = $m.isSettingsModalOpen;
-    });
+    const unsubModal = modal.subscribe(
+      ($m: { isSettingsModalOpen: boolean }) => {
+        isSettingsModalOpen = $m.isSettingsModalOpen;
+      },
+    );
 
-    return () => { unsubProfile(); unsubModal(); };
+    return () => {
+      unsubProfile();
+      unsubModal();
+    };
   });
 
   /* ──────────────────────── utility / handlers ────────────────────── */
   function formatKeyCombination(s: Shortcut): string {
-    let combo = '';
-    if (s.ctrlKey || s.metaKey) combo += 'Ctrl/Cmd + ';
-    if (s.shift)                combo += 'Shift + ';
-    if (s.altKey)               combo += 'Alt + ';
+    let combo = "";
+    if (s.ctrlKey || s.metaKey) combo += "Ctrl/Cmd + ";
+    if (s.shift) combo += "Shift + ";
+    if (s.altKey) combo += "Alt + ";
 
-    const keyMap: Record<number,string> = {
-      8:'Backspace',9:'Tab',13:'Enter',16:'Shift',17:'Ctrl',18:'Alt',27:'Escape',32:'Space',
-      37:'Left',38:'Up',39:'Right',40:'Down',46:'Delete',113:'F2',114:'F3',115:'F4',
-      116:'F5',117:'F6',118:'F7',119:'F8',120:'F9',121:'F10',122:'F11',123:'F12'
+    const keyMap: Record<number, string> = {
+      8: "Backspace",
+      9: "Tab",
+      13: "Enter",
+      16: "Shift",
+      17: "Ctrl",
+      18: "Alt",
+      27: "Escape",
+      32: "Space",
+      37: "Left",
+      38: "Up",
+      39: "Right",
+      40: "Down",
+      46: "Delete",
+      113: "F2",
+      114: "F3",
+      115: "F4",
+      116: "F5",
+      117: "F6",
+      118: "F7",
+      119: "F8",
+      120: "F9",
+      121: "F10",
+      122: "F11",
+      123: "F12",
     };
     const keyName = keyMap[s.keyCode] ?? String.fromCharCode(s.keyCode);
     return combo + keyName;
@@ -85,40 +119,39 @@
       e.preventDefault();
       const newShortcut: Shortcut = {
         event,
-        keyCode:  e.keyCode,
-        altKey:   e.altKey,
-        ctrlKey:  e.ctrlKey,
-        metaKey:  e.metaKey,
-        shift:    e.shiftKey,
-        combination: ''
+        keyCode: e.keyCode,
+        altKey: e.altKey,
+        ctrlKey: e.ctrlKey,
+        metaKey: e.metaKey,
+        shift: e.shiftKey,
+        combination: "",
       };
       newShortcut.combination = formatKeyCombination(newShortcut);
 
-      shortcuts      = shortcuts.map(s => s.event === event ? newShortcut : s);
-      isRecording    = false;
+      shortcuts = shortcuts.map((s) => (s.event === event ? newShortcut : s));
+      isRecording = false;
       recordingEvent = null;
-      window.removeEventListener('keydown', handle);
+      window.removeEventListener("keydown", handle);
     };
 
-    window.addEventListener('keydown', handle);
+    window.addEventListener("keydown", handle);
   }
 
   function saveShortcutChanges() {
-    shortcuts.forEach(s => profile.updateShortcut(s.event, s));
-    toast('Keyboard shortcuts saved');
+    shortcuts.forEach((s) => profile.updateShortcut(s.event, s));
+    toast("Keyboard shortcuts saved");
   }
 
   async function saveAiSettings() {
     isSaving = true;
     try {
-      
       // Save AI settings to profile
       profile.updateProfile({ openRouterApiKey, openRouterModel });
-      
-      toast('AI settings saved');
+
+      toast("AI settings saved");
     } catch (error) {
-      console.error('Error saving AI settings:', error);
-      toast('Error saving AI settings');
+      console.error("Error saving AI settings:", error);
+      toast("Error saving AI settings");
     } finally {
       isSaving = false;
     }
@@ -126,18 +159,18 @@
 
   function resetToDefaults() {
     profile.resetShortcutsToDefault();
-    toast('Shortcuts reset to defaults');
+    toast("Shortcuts reset to defaults");
   }
 
   function filterShortcuts() {
     if (!filterText) return shortcuts;
     const lower = filterText.toLowerCase();
-    return shortcuts.filter(s =>
-      s.event.toLowerCase().includes(lower) ||
-      s.combination.toLowerCase().includes(lower)
+    return shortcuts.filter(
+      (s) =>
+        s.event.toLowerCase().includes(lower) ||
+        s.combination.toLowerCase().includes(lower),
     );
   }
-
 </script>
 
 <!-- ───────────────────────────── dialog ───────────────────────────── -->
@@ -163,8 +196,12 @@
       <!-- Tabs -->
       <Tabs value="ai" class="flex flex-col h-full">
         <TabsList class="mb-6 w-full">
-          <TabsTrigger value="ai"        class="flex-1"><BrainIcon/>AI&nbsp;Settings</TabsTrigger>
-          <TabsTrigger value="shortcuts" class="flex-1"><KeyboardIcon/>Keyboard&nbsp;Shortcuts</TabsTrigger>
+          <TabsTrigger value="ai" class="flex-1"
+            ><BrainIcon />AI&nbsp;Settings</TabsTrigger
+          >
+          <TabsTrigger value="shortcuts" class="flex-1"
+            ><KeyboardIcon />Keyboard&nbsp;Shortcuts</TabsTrigger
+          >
         </TabsList>
 
         <!-- AI SETTINGS TAB -->
@@ -172,7 +209,10 @@
           <div class="grid gap-6 md:grid-cols-2">
             <!-- API Key -->
             <div>
-              <label for="openrouter-api-key" class="block text-sm font-medium mb-1">
+              <label
+                for="openrouter-api-key"
+                class="block text-sm font-medium mb-1"
+              >
                 OpenRouter&nbsp;API&nbsp;Key
               </label>
               <Input
@@ -190,7 +230,10 @@
 
             <!-- Model Select -->
             <div>
-              <label for="openrouter-model" class="block text-sm font-medium mb-1">
+              <label
+                for="openrouter-model"
+                class="block text-sm font-medium mb-1"
+              >
                 Model
               </label>
               <!-- Shadcn Select, matches the fruit example -->
@@ -235,7 +278,10 @@
         </TabsContent>
 
         <!-- KEYBOARD SHORTCUTS TAB -->
-        <TabsContent value="shortcuts" class="flex-1 flex flex-col overflow-hidden">
+        <TabsContent
+          value="shortcuts"
+          class="flex-1 flex flex-col overflow-hidden"
+        >
           <!-- Toolbar -->
           <header class="flex items-center mb-4 gap-4 flex-wrap">
             <Input
@@ -245,14 +291,21 @@
               class="px-3 py-2 rounded border border-[rgb(var(--background-color))]
                      bg-[rgb(var(--background-color_input))] text-sm flex-1 min-w-[200px]"
             />
-            <Button variant="ghost" size="sm" onclick={resetToDefaults}>Reset to Defaults</Button>
-            <Button size="sm" onclick={saveShortcutChanges}>Save Changes</Button>
+            <Button variant="ghost" size="sm" onclick={resetToDefaults}
+              >Reset to Defaults</Button
+            >
+            <Button size="sm" onclick={saveShortcutChanges}>Save Changes</Button
+            >
           </header>
 
           <!-- Shortcuts table -->
-          <div class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]">
+          <div
+            class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]"
+          >
             <table class="w-full text-sm">
-              <thead class="sticky top-0 bg-[rgb(var(--background-color_modalbox))]">
+              <thead
+                class="sticky top-0 bg-[rgb(var(--background-color_modalbox))]"
+              >
                 <tr class="border-b border-[rgb(var(--background-color))]">
                   <th class="p-3 text-left font-semibold">Action</th>
                   <th class="p-3 text-left font-semibold">Shortcut</th>
@@ -261,15 +314,19 @@
               </thead>
               <tbody>
                 {#each filterShortcuts() as shortcut}
-                  <tr class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)]">
+                  <tr
+                    class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)]"
+                  >
                     <td class="p-3 capitalize">
                       {shortcut.event
-                        .replace(/-/g, ' ')
+                        .replace(/-/g, " ")
                         .replace(/\b\w/g, (l) => l.toUpperCase())}
                     </td>
                     <td class="p-3">
                       {#if isRecording && recordingEvent === shortcut.event}
-                        <span class="text-green-600 font-medium">Press keys…</span>
+                        <span class="text-green-600 font-medium"
+                          >Press keys…</span
+                        >
                       {:else}
                         {shortcut.combination}
                       {/if}
@@ -278,7 +335,8 @@
                       <Button
                         size="sm"
                         variant="outline"
-                        disabled={isRecording && recordingEvent !== shortcut.event}
+                        disabled={isRecording &&
+                          recordingEvent !== shortcut.event}
                         onclick={() => startRecording(shortcut.event)}
                       >
                         {#if isRecording && recordingEvent === shortcut.event}
