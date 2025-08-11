@@ -10,7 +10,7 @@
   ogDescription="Terms and conditions for using Neurapath's evidence-based learning platform and services."
   twitterTitle="Terms of Service - Neurapath Learning Platform"
   twitterDescription="Terms and conditions for using Neurapath's evidence-based learning platform and services."
-  canonicalUrl="https://neurapath.io/terms"
+  canonicalUrl="https://neurapath.shop/terms"
 />
 
 <div class="terms-page">
@@ -102,8 +102,8 @@
       <h2>Contact Us</h2>
       <p>If you have any questions about these Terms, please contact us:</p>
       <ul>
-        <li>Email: legal@neurapath.io</li>
-        <li>Website: https://neurapath.io</li>
+        <li>Email: legal@neurapath.shop</li>
+        <li>Website: https://neurapath.shop</li>
       </ul>
     </section>
   </main>

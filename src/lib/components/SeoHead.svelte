@@ -33,11 +33,11 @@
 	/* ─────────────── derived URLs ─────────────── */
 	/* ✅ one‑argument form */
 	let canonicalUrlFinal = $derived(() =>
-		canonicalUrl || `https://neurapath.io${$page.url.pathname}`
+		canonicalUrl || `https://neurapath.shop${$page.url.pathname}`
 	);
 
 	let ogUrlFinal = $derived(() =>
-		ogUrl || `https://neurapath.io${$page.url.pathname}`
+		ogUrl || `https://neurapath.shop${$page.url.pathname}`
 	);
 </script>
 
@@ -82,7 +82,7 @@
 			"@context": "https://schema.org",
 			"@type": "WebSite",
 			"name": "Neurapath",
-			"url": "https://neurapath.io",
+			"url": "https://neurapath.shop",
 			"description":
 				"Evidence-based learning platform implementing spaced repetition and incremental reading"
 		}, null, 2)}

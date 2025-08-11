@@ -10,7 +10,7 @@
   ogDescription="Discover Neurapath's powerful evidence-based learning features including spaced repetition, incremental reading, and active recall techniques."
   twitterTitle="Neurapath Features - Evidence-Based Learning Tools"
   twitterDescription="Discover Neurapath's powerful evidence-based learning features including spaced repetition, incremental reading, and active recall techniques."
-  canonicalUrl="https://neurapath.io/features"
+  canonicalUrl="https://neurapath.shop/features"
   schema={[{
     "@context": "https://schema.org",
     "@type": "Course",

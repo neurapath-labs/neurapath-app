@@ -131,7 +131,7 @@ This project is licensed under the Apache-2.0 license.
 
 For support, feature requests, or general questions:
 
-- Email: hi@neurapath.io
+- Email: hi@neurapath.shop
 - Discord: [Join our channel](https://discord.gg/2xkMPmcGZh)
 - Report bugs in the bugs channel on Discord
 

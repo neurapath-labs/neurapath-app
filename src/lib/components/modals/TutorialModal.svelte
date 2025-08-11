@@ -114,7 +114,7 @@
           </Step>
         {:else if currentStep === 14}
           <Step title={`Quick start (14/${totalSteps})`} img="/img/trophy.svg">
-            <p><u>Well done!</u> Join our Discord: <a href="https://discord.gg/QKVf38QfCc" class="underline" target="_blank" rel="noopener noreferrer">discord.gg/QKVf38QfCc</a> or email <a href="mailto:hi@neurapath.io" class="underline">hi@neurapath.io</a>.</p>
+            <p><u>Well done!</u> Join our Discord: <a href="https://discord.gg/QKVf38QfCc" class="underline" target="_blank" rel="noopener noreferrer">discord.gg/QKVf38QfCc</a> or email <a href="mailto:hi@neurapath.shop" class="underline">hi@neurapath.shop</a>.</p>
           </Step>
         {/if}
       </div>

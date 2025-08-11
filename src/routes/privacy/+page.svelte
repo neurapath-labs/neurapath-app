@@ -10,7 +10,7 @@
   ogDescription="Learn how Neurapath protects your privacy and handles your personal data in our evidence-based learning platform."
   twitterTitle="Privacy Policy - Neurapath Learning Platform"
   twitterDescription="Learn how Neurapath protects your privacy and handles your personal data in our evidence-based learning platform."
-  canonicalUrl="https://neurapath.io/privacy"
+  canonicalUrl="https://neurapath.shop/privacy"
 />
 
 <div class="privacy-page">
@@ -109,8 +109,8 @@
       <h2>Contact Us</h2>
       <p>If you have any questions about this Privacy Policy, please contact us:</p>
       <ul>
-        <li>Email: privacy@neurapath.io</li>
-        <li>Website: https://neurapath.io</li>
+        <li>Email: privacy@neurapath.shop</li>
+        <li>Website: https://neurapath.shop</li>
       </ul>
     </section>
   </main>

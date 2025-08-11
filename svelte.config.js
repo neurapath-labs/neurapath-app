@@ -28,8 +28,8 @@ export default {
 			//   exclude: ['<all>']
 			// }
 		}),
-		// alias: {
-		// "@/*": "./src/lib/*",
-		// },
+		alias: {
+			"@/*": "./src/lib/*",
+		},
 	},
 };

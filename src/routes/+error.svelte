@@ -11,7 +11,7 @@
   ogDescription="The page you're looking for doesn't exist on Neurapath's evidence-based learning platform."
   twitterTitle="Page Not Found - Neurapath Learning Platform"
   twitterDescription="The page you're looking for doesn't exist on Neurapath's evidence-based learning platform."
-  canonicalUrl="https://neurapath.io/404"
+  canonicalUrl="https://neurapath.shop/404"
 />
 
 <div class="error-page">
@@ -30,7 +30,7 @@
     </div>
     
     <p class="error-help">
-      If you believe this is an error, please <a href="mailto:support@neurapath.io">contact our support team</a>.
+      If you believe this is an error, please <a href="mailto:support@neurapath.shop">contact our support team</a>.
     </p>
   </div>
 </div>
