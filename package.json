@@ -1,17 +1,21 @@
 {
   "name": "neurapath-app",
-  "private": true,
   "version": "0.0.1",
+    "private": true,
   "type": "module",
+  "license": "MIT",
+  "packageManager": "bun@1.2",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "clean": "rm -rf node_modules && rm -rf .svelte-kit && rm -f bun.lock && rm -f package-lock.json && bun i",
-    "typegen": "wrangler types",
-    "deploy": "bun run build && wrangler pages deploy .svelte-kit/cloudflare",
-    "deploy:prod": "bun run build && wrangler pages deploy .svelte-kit/cloudflare --env production"
+    "cf-typegen": "wrangler types ./src/worker-configuration.d.ts",
+    "deploy": "bun run build && bun run cf-typegen && wrangler deploy --minify",
+    "clean": "rm -rf .svelte-kit && rm -rf node_modules && rm -rf .wrangler && rm -rf .svelte-kit && rm -f bun.lock && rm -f package-lock.json && bun i"
   },
   "devDependencies": {
     "@internationalized/date": "^3.8.2",
@@ -43,8 +47,5 @@
     "bits-ui": "^2.9.2",
     "pdfjs-dist": "^5.4.54",
     "quill": "^2.0.3"
-  },
-  "engines": {
-    "node": ">=24.0.0"
   }
 }

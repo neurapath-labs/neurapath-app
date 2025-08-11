@@ -12,6 +12,9 @@ routes = [
 directory = ".svelte-kit/cloudflare"
 binding = "ASSETS"
 
+[observability.logs]
+enabled = true
+
 [placement]
 mode = "smart"
 
