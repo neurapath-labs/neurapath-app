@@ -27,3 +27,5 @@ package-lock.json
 
 *.md
 !README.md
+
+src/worker-configuration.d.ts
