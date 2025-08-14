@@ -42,6 +42,7 @@
     "vite": "npm:rolldown-vite@^7.1.2"
   },
   "dependencies": {
+    "@svelte-put/cloudflare-turnstile": "^1.2.0",
     "@tsndr/cloudflare-worker-jwt": "^3.2.0",
     "bcrypt-ts": "^7.1.0",
     "bits-ui": "^2.9.3",

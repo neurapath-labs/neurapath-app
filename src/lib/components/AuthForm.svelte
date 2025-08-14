@@ -1,52 +1,58 @@
-<svelte:options runes />
-
 <script lang="ts">
 	/* ── UI primitives ─────────────────────────────── */
-	import * as Card   from "$lib/components/ui/card/index.js";
+	import * as Card from "$lib/components/ui/card/index.js";
 	import { Button } from "$lib/components/ui/button/index.js";
-	import { Input }  from "$lib/components/ui/input/index.js";
-	import { Label }  from "$lib/components/ui/label/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import { Label } from "$lib/components/ui/label/index.js";
 	import { Loader2 } from "@lucide/svelte";
+	import { turnstile } from "@svelte-put/cloudflare-turnstile";
+
+	import { PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY } from "$env/static/public";
+
+	let token = $state("");
+	$inspect(token);
 
 	/* ── props ─────────────────────────────────────── */
 	const {
 		form,
-		id,                                // () => string  (SSR‑safe uid)
-		mode = 'login'                     // 'login' | 'register'
+		id, // () => string  (SSR‑safe uid)
+		mode = "login", // 'login' | 'register'
 	} = $props<{
 		form?: { error?: string };
-		id:   () => string;
-		mode?: 'login' | 'register';
+		id: () => string;
+		mode?: "login" | "register";
 	}>();
 
 	/* ── reactive state ───────────────────────────── */
-	let username      = $state('');
-	let password      = $state('');
-	let isRegistering = $state(mode === 'register');
-	let isLoading     = $state(false);
-  let turnstileToken = $state('');
-  import Turnstile from '$lib/components/Turnstile.svelte';
+	let username = $state("");
+	let password = $state("");
+	let isRegistering = $state(mode === "register");
+	let isLoading = $state(false);
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm">
 	<form
 		method="POST"
-		action={isRegistering ? '/register' : '/login'}
+		action={isRegistering ? "/register" : "/login"}
 		class="contents"
 		onsubmit={() => (isLoading = true)}
 	>
 		<!-- header ------------------------------------ -->
 		<Card.Header class="flex flex-col items-center gap-4 text-center">
-			<img src="/img/logo/logo.svg" alt="Neurapath logo" class="h-12 w-auto" />
+			<img
+				src="/img/logo/logo.svg"
+				alt="Neurapath logo"
+				class="h-12 w-auto"
+			/>
 
 			<Card.Title class="text-2xl">
-				{isRegistering ? 'Register' : 'Login'}
+				{isRegistering ? "Register" : "Login"}
 			</Card.Title>
 
 			<Card.Description>
 				{isRegistering
-					? 'Create a new account'
-					: 'Enter your username to log in'}
+					? "Create a new account"
+					: "Enter your username to log in"}
 			</Card.Description>
 		</Card.Header>
 
@@ -54,7 +60,9 @@
 		<Card.Content>
 			<div class="grid gap-4">
 				{#if form?.error}
-					<p role="alert" class="text-sm text-red-500">{form.error}</p>
+					<p role="alert" class="text-sm text-red-500">
+						{form.error}
+					</p>
 				{/if}
 
 				<!-- username -->
@@ -88,19 +96,37 @@
 						type="password"
 						bind:value={password}
 						required
-						autocomplete={isRegistering ? 'new-password' : 'current-password'}
+						autocomplete={isRegistering
+							? "new-password"
+							: "current-password"}
 					/>
 				</div>
 
-        <!-- Turnstile token holder -->
-        <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
+				<!-- Cloudflare Turnstile (above submit) -->
+				<div class="mb-3 flex justify-center w-full max-w-sm mx-auto">
+					<div
+						use:turnstile
+						turnstile-sitekey={PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
+						turnstile-theme="auto"
+						turnstile-size="normal"
+						turnstile-language="en"
+						turnstile-response-field-name="turnstile"
+						turnstile-response-field
+						onturnstile={(e) => (token = e.detail.token)}
+					></div>
+				</div>
 
-        <!-- submit -->
-				<Button type="submit" class="w-full" disabled={isLoading} aria-busy={isLoading}>
+				<!-- submit -->
+				<Button
+					type="submit"
+					class="w-full"
+					disabled={isLoading}
+					aria-busy={isLoading}
+				>
 					{#if isLoading}
 						<Loader2 class="animate-spin" aria-hidden="true" />
 					{/if}
-					{isRegistering ? 'Register' : 'Login'}
+					{isRegistering ? "Register" : "Login"}
 				</Button>
 			</div>
 
@@ -111,7 +137,9 @@
 					<button
 						type="button"
 						class="ml-1 underline"
-						onclick={() => (isRegistering = false)}
+						onclick={() => {
+							isRegistering = false;
+						}}
 					>
 						Login
 					</button>
@@ -120,7 +148,9 @@
 					<button
 						type="button"
 						class="ml-1 underline"
-						onclick={() => (isRegistering = true)}
+						onclick={() => {
+							isRegistering = true;
+						}}
 					>
 						Register
 					</button>
@@ -129,14 +159,3 @@
 		</Card.Content>
 	</form>
 </Card.Root>
-
-<!-- Cloudflare Turnstile -->
-<div class="mt-4 flex justify-center">
-  <Turnstile
-    sitekey={(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string) || ''}
-    theme="auto"
-    size="normal"
-    action={isRegistering ? 'register' : 'login'}
-    callback={(token) => (turnstileToken = token)}
-  />
-</div>
