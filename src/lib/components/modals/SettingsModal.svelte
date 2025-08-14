@@ -19,7 +19,6 @@
     BrainIcon,
     KeyboardIcon,
     SettingsIcon,
-    SaveIcon,
     Loader2Icon,
     LoaderIcon
   } from "@lucide/svelte/icons";
@@ -297,17 +296,9 @@
             </div>
           </div>
 
-          <div class="flex justify-end">
-            <Button size="sm" onclick={() => saveAiSettings()} disabled={isSaving} class="cursor-pointer">
-              {#if isSaving}
-                <LoaderIcon class="w-4 h-4 mr-2 animate-spin" />
-                Saving...
-              {:else}
-                <SaveIcon class="w-4 h-4 mr-2" />
-                Save&nbsp;AI&nbsp;Settings
-              {/if}
-            </Button>
-          </div>
+          <p class="mt-2 text-xs text-[rgb(var(--font-color-secondary))]">
+            Changes are saved automatically as you type and when you select a model.
+          </p>
         </TabsContent>
 
         <!-- KEYBOARD SHORTCUTS TAB -->
