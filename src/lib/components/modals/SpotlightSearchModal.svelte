@@ -6,6 +6,7 @@
 	import { database }          from '$lib/stores/database.store';
 	import { modal }             from '$lib/stores/modal.store';
 	import { ui }                from '$lib/stores/ui.store';
+	import { learning }          from '$lib/stores/learning.store';
 	import type { Record }       from '$lib/models';
 
 	import FileTextIcon          from '@lucide/svelte/icons/file-text';
@@ -38,6 +39,7 @@
 		{ id: 'open-tutorial',      label: 'Open Tutorial',        run: () => ui.openTutorial() },
 		{ id: 'open-pdf-import',    label: 'Open PDF Import',      run: () => ui.openPdfImport() },
 		{ id: 'open-export-import', label: 'Open Export/Import',   run: () => ui.openExportImport() },
+		{ id: 'toggle-practice',    label: 'Toggle Practice Mode', run: () => learning.toggleLearningMode() },
 		{ id: 'close-spotlight',    label: 'Close Spotlight',      run: () => modal.closeSpotlightSearchModal() },
 	];
 	let filteredCommands    = $state<CommandItem[]>([]);
@@ -168,6 +170,24 @@
 		query = q;
 		selectedIndex = -1;
 
+		// Detect command-mode when first character is '>'
+		if (q.startsWith('>')) {
+			isCommandMode = true;
+			const cmd = q.slice(1).trim().toLowerCase();
+			if (cmd.length === 0) {
+				filteredCommands = allCommands;
+			} else {
+				filteredCommands = allCommands.filter((c) =>
+					c.label.toLowerCase().includes(cmd) || c.id.toLowerCase().includes(cmd)
+				);
+			}
+			if (filteredCommands.length > 0) selectedIndex = 0;
+			return;
+		} else {
+			isCommandMode = false;
+			filteredCommands = [];
+		}
+
 		if (!q.trim()) {
 			nameMatches = [];
 			contentMatches = [];
@@ -204,6 +224,16 @@
 		// Set the first result as selected if there are any results
 		if (names.length > 0 || contents.length > 0) {
 			selectedIndex = 0;
+		}
+	}
+
+	function selectCommand(i: number) {
+		if (i < 0 || i >= filteredCommands.length) return;
+		const cmd = filteredCommands[i];
+		try {
+			cmd.run();
+		} finally {
+			closeSpotlight();
 		}
 	}
 
@@ -306,7 +336,30 @@
             <div class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]">
 				<table class="w-full text-sm">
 					<tbody>
-						{#if !query}
+						{#if isCommandMode}
+							{#if filteredCommands.length === 0}
+								<tr>
+									<td class="p-3">No matching commands.</td>
+								</tr>
+							{:else}
+								<tr class="border-b border-[rgb(var(--background-color))]">
+									<th class="p-3 text-left font-semibold">Commands</th>
+								</tr>
+								{#each filteredCommands as cmd, k (cmd.id)}
+									<tr
+										class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {k === selectedIndex ? 'bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500' : ''}"
+										onclick={() => selectCommand(k)}
+									>
+										<td class="p-3">
+											<span class="font-medium">{cmd.label}</span>
+											{#if cmd.description}
+												<div class="text-xs opacity-70">{cmd.description}</div>
+											{/if}
+										</td>
+									</tr>
+								{/each}
+							{/if}
+						{:else if !query}
 							<tr>
 								<td class="p-3">Start typing to search items.</td>
 							</tr>

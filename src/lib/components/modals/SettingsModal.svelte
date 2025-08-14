@@ -75,6 +75,12 @@
   });
 
   /* ──────────────────────── utility / handlers ────────────────────── */
+  function humanizeShortcutEvent(e: string): string {
+    return e
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase());
+  }
+
   function formatKeyCombination(s: Shortcut): string {
     let combo = "";
     if (s.ctrlKey || s.metaKey) combo += "Ctrl/Cmd + ";
@@ -129,6 +135,9 @@
       newShortcut.combination = formatKeyCombination(newShortcut);
 
       shortcuts = shortcuts.map((s) => (s.event === event ? newShortcut : s));
+      // Toast and autosave after capture
+      toast(`Shortcut updated: ${humanizeShortcutEvent(event)} → ${newShortcut.combination}`);
+      queueShortcutAutosave();
       isRecording = false;
       recordingEvent = null;
       window.removeEventListener("keydown", handle);
