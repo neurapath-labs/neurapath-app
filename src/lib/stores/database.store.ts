@@ -77,7 +77,10 @@ export const addRecord = async (record: Record) => {
 };
 
 /* ---------- DELETE ---------- */
-export const removeRecordById = async (id: string) => {
+export const removeRecordById = async (
+  id: string,
+  options?: { skipParentClozeUpdate?: boolean }
+) => {
   // Capture current state and the record to remove
   const dbBefore = getState();
   const recordToRemove = dbBefore.items.find((r) => r.id === id);
@@ -86,7 +89,7 @@ export const removeRecordById = async (id: string) => {
   let parentIdToPersist: string | null = null;
   let parentUpdated: Record | null = null;
 
-  if (recordToRemove && recordToRemove.contentType === 'Cloze') {
+  if (!options?.skipParentClozeUpdate && recordToRemove && recordToRemove.contentType === 'Cloze') {
     const slashIndex = id.lastIndexOf('/');
     if (slashIndex > 0) {
       const parentId = id.substring(0, slashIndex);

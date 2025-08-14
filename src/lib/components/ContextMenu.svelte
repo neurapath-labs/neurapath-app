@@ -334,14 +334,13 @@
 				return { ...childItem, id: childNewId };
 			});
 			
-			// Update the database with renamed items
-			// First remove the old items
-			await database.removeRecordById(itemToRename.id);
+			// Update the database with renamed items atomically to preserve metadata
+			// Remove old items locally without triggering parent cloze updates for cloze children
+			await database.removeRecordById(itemToRename.id, { skipParentClozeUpdate: true });
 			for (const childItem of childItems) {
-				await database.removeRecordById(childItem.id);
+				await database.removeRecordById(childItem.id, { skipParentClozeUpdate: true });
 			}
-			
-			// Then add the renamed items
+			// Add the renamed items
 			await database.addRecord(renamedItem);
 			for (const renamedChild of renamedChildren) {
 				await database.addRecord(renamedChild);

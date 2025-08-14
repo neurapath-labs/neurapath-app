@@ -13,13 +13,24 @@ class KeyboardService {
   private shortcuts: Shortcut[] = [];
 
   constructor() {
+    this.init = this.init.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.executeShortcut = this.executeShortcut.bind(this);
+    this.createCloze = this.createCloze.bind(this);
+    this.createExtract = this.createExtract.bind(this);
+    this.flagItem = this.flagItem.bind(this);
+    this.removeItem = this.removeItem.bind(this);
+    this.duplicateItem = this.duplicateItem.bind(this);
+    this.createFolder = this.createFolder.bind(this);
+    this.createTextDocument = this.createTextDocument.bind(this);
+    this.destroy = this.destroy.bind(this);
     this.init();
   }
 
   private init() {
     // Add global keydown listener
     if (typeof window !== 'undefined') {
-      window.addEventListener('keydown', this.handleKeyDown.bind(this));
+      window.addEventListener('keydown', this.handleKeyDown);
     }
   }
 
@@ -248,6 +259,15 @@ class KeyboardService {
         return;
       }
 
+      // Capture current content to ensure parent is saved before creating subitem
+      const contentDelta = {
+        ops: [
+          {
+            insert: selectionData.text
+          }
+        ]
+      };
+
       // Create new record for the cloze
       let newRecordId: string;
       
@@ -262,15 +282,13 @@ class KeyboardService {
       const newRecord: Record = {
         id: newRecordId,
         contentType: "Cloze",
-        content: {
-          "ops": [
-            {
-              "insert": selectionData.text
-            }
-          ]
-        }
+        content: contentDelta
       };
 
+      // Force save parent content before adding the cloze subitem
+      if (activeRecord.id) {
+        await database.updateRecordRemotely(activeRecord.id, { content: activeRecord.content || contentDelta });
+      }
       // Add to database
       await database.addRecord(newRecord);
 
@@ -474,7 +492,7 @@ class KeyboardService {
   // Cleanup method
   public destroy() {
     if (typeof window !== 'undefined') {
-      window.removeEventListener('keydown', this.handleKeyDown.bind(this));
+      window.removeEventListener('keydown', this.handleKeyDown);
     }
   }
 }

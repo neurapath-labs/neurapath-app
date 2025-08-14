@@ -385,7 +385,11 @@
             totalRepetitionCount: 0
           };
           
-          // Add to database
+          // Ensure parent content is saved immediately before adding the cloze
+          if (activeRecord.id) {
+            await database.updateRecordRemotely(activeRecord.id, { content: contentDelta });
+          }
+          // Add cloze as sub-item
           await database.addRecord(newRecord);
           
           // If the parent is an Extract, add this cloze to its clozes array
