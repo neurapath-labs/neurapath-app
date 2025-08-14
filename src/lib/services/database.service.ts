@@ -29,12 +29,18 @@ async function handle<ResponseShape = unknown>(promise: Promise<Response>) {
 
 /* ---------- auth / user ---------- */
 export async function register(username: string, password: string) {
-  return handle(
+  const attempt = () =>
     fetch(`${BASE}/user/register`, {
       method: 'POST',
       headers: buildHeaders(username, password)
-    })
-  );
+    });
+
+  try {
+    return await handle(attempt());
+  } catch (_err) {
+    await new Promise((r) => setTimeout(r, 200));
+    return await handle(attempt());
+  }
 }
 
 export async function login(username: string, password: string) {
