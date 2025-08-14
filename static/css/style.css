@@ -443,6 +443,13 @@ h5 {
 
 .ql-container {
   font-size: var(--font-size);
+  background-color: rgb(var(--background-color_modalbox));
+    color: rgb(var(--font-color));
+  }
+  
+  .ql-editor {
+    background-color: transparent;
+    color: inherit;
 }
 
 

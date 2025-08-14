@@ -252,7 +252,61 @@ export const updateRecordRemotely = async (
   if (currentUserId) {
     const record = getRecordById(id);
     if (record) {
+      // Persist parent update remotely first
       await serviceUpdateRecord(currentUserId, currentUserPassword || '', { ...record, ...changes });
+
+      // If the content of an Extract parent changed, sync content to its Cloze subitems
+      const isContentChange = Object.prototype.hasOwnProperty.call(changes, 'content');
+      if (isContentChange && record.contentType === 'Extract') {
+        const newContent = (changes as any).content;
+
+        // Normalize content to a stable Delta structure to avoid op-order drift
+        const normalizeDelta = (d: any) => {
+          if (!d || !Array.isArray(d.ops)) return d;
+          // Merge adjacent string inserts and drop no-op attributes
+          const merged: any[] = [];
+          for (const op of d.ops) {
+            if (typeof op.insert === 'string') {
+              const attrs = op.attributes && Object.keys(op.attributes).length ? op.attributes : undefined;
+              if (
+                merged.length &&
+                typeof merged[merged.length - 1].insert === 'string' &&
+                JSON.stringify((merged[merged.length - 1] as any).attributes || undefined) === JSON.stringify(attrs)
+              ) {
+                merged[merged.length - 1].insert += op.insert;
+              } else {
+                merged.push(attrs ? { insert: op.insert, attributes: attrs } : { insert: op.insert });
+              }
+            } else {
+              merged.push(op);
+            }
+          }
+          return { ops: merged };
+        };
+
+        const stableContent = normalizeDelta(newContent);
+
+        // Update children locally
+        update((db) => ({
+          ...db,
+          items: db.items.map((r) =>
+            r.contentType === 'Cloze' && r.id.startsWith(`${id}/`)
+              ? ({ ...r, content: stableContent } as Record)
+              : r
+          ),
+        }));
+
+        // Update children remotely
+        const children = getState().items.filter(
+          (r) => r.contentType === 'Cloze' && r.id.startsWith(`${id}/`)
+        );
+        for (const child of children) {
+          await serviceUpdateRecord(currentUserId, currentUserPassword || '', {
+            ...child,
+            content: stableContent,
+          });
+        }
+      }
     }
   }
 };

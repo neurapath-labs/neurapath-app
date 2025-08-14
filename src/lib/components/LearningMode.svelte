@@ -112,6 +112,8 @@
         await import('quill/dist/quill.bubble.css');
         const Quill = Q.default;
         if (questionEditor) questionQuill = new Quill(questionEditor, { theme: 'bubble', readOnly: true, modules: { toolbar: false } });
+        // Attach learning-mode hotkeys
+        window.addEventListener('keydown', handleLearningKeydown);
       } catch (error) {
         console.error('Failed to initialize Quill:', error);
       }
@@ -232,7 +234,60 @@
   function exitLearningMode() { learning.toggleLearningMode(); }
   onDestroy(() => {
     clearQuestionOverlays();
+    if (browser) {
+      window.removeEventListener('keydown', handleLearningKeydown);
+    }
   });
+
+  // ------ Keyboard shortcuts (learning mode) ------
+  function isTypingTarget(target: EventTarget | null): boolean {
+    const el = target as HTMLElement | null;
+    if (!el) return false;
+    const tag = el.tagName;
+    if (!tag) return false;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return true;
+    if ((el as HTMLElement).isContentEditable) return true;
+    return false;
+  }
+
+  function handleLearningKeydown(e: KeyboardEvent) {
+    // Avoid interfering with typing in inputs
+    if (isTypingTarget(e.target)) return;
+
+    // Show answer on Space
+    if (e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault();
+      if (!showAnswer) handleShowAnswer();
+      return;
+    }
+
+    // Grade 1-5
+    if (e.key >= '1' && e.key <= '5') {
+      e.preventDefault();
+      const grade = Number(e.key);
+      if (!showAnswer) {
+        // First reveal the answer, then allow immediate grading on next keypress
+        handleShowAnswer();
+        return;
+      }
+      handleGrade(grade);
+      return;
+    }
+
+    // Flag toggle (F)
+    if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      toggleFlag();
+      return;
+    }
+
+    // Skip (S)
+    if (e.key === 's' || e.key === 'S') {
+      e.preventDefault();
+      moveToNextItem();
+      return;
+    }
+  }
 
   function clearQuestionOverlays() {
     try {
@@ -329,7 +384,7 @@
             <canvas bind:this={questionOcclusionCanvas} class="absolute inset-0 pointer-events-none"></canvas>
           </div>
         {:else}
-          <div bind:this={questionEditor} class="flex-1 overflow-auto border rounded p-2 {showAnswer ? 'bg-blue-50' : 'bg-gray-100'} relative"></div>
+          <div bind:this={questionEditor} class="flex-1 overflow-auto border rounded p-2 bg-card relative"></div>
         {/if}
       </div>
 
@@ -347,7 +402,13 @@
         </div>
       {:else}
         <div class="flex justify-center mt-5">
-          <Button class="px-6 py-3 bg-green-600 text-white rounded text-base hover:bg-green-700" onclick={handleShowAnswer} size="lg">Show Answer (Space)</Button>
+          <Button
+            onclick={handleShowAnswer}
+            size="lg"
+            class="px-6 py-3 rounded text-base border bg-[rgb(var(--background-color_sidebar))] text-[rgb(var(--font-color))] border-[rgb(var(--background-color))]"
+          >
+            Show Answer (Space)
+          </Button>
         </div>
       {/if}
     </div>

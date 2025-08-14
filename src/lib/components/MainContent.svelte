@@ -88,6 +88,27 @@
     // Trigger update of active record with current database state
     // Use setTimeout to ensure the UI update happens after the active item ID update
     setTimeout(() => {
+      // If the active item changed, immediately persist current editor content to avoid data loss
+      if (previousActiveItemId && previousActiveItemId !== activeItemId) {
+        try {
+          if (saveTimeout) {
+            clearTimeout(saveTimeout);
+            saveTimeout = null;
+          }
+          // Fire-and-forget save of current editor content
+          if (quill && activeRecord && activeRecord.id) {
+            const currentContent = quill.getContents();
+            // Avoid unnecessary writes when content is identical
+            const prevContent = activeRecord.content;
+            const same = JSON.stringify(currentContent) === JSON.stringify(prevContent);
+            if (!same) {
+              saveContentToDatabase(activeRecord.id, currentContent);
+            }
+          }
+        } catch (e) {
+          console.error('Immediate save before switching item failed:', e);
+        }
+      }
       
       updateActiveRecordWithCurrentDatabase();
     }, 0);
@@ -139,8 +160,9 @@
       applyHighlightsForRecord(activeRecord);
     }
 
-    // Handle text changes with debounced saving
-    quill.on('text-change', () => {
+      // Handle text changes with debounced saving (only on user edits)
+    quill.on('text-change', (_delta: any, _old: any, source: string) => {
+      if (source !== 'user') return;
       if (quill && activeRecord) {
         if (saveTimeout) {
           clearTimeout(saveTimeout);
@@ -299,6 +321,12 @@
     if (!quill) return;
     const YELLOW = '#f9ff24';
     try {
+      // Clear any previous background highlights before applying fresh ones
+      const totalLength = quill.getLength();
+      if (totalLength > 0) {
+        quill.formatText(0, totalLength, 'background', false);
+      }
+
       if (record.contentType === 'Extract' && record.clozes && record.clozes.length > 0) {
         record.clozes.forEach((c) => {
           const start = c.startindex;
@@ -306,6 +334,7 @@
           if (len > 0) quill!.formatText(start, len, { background: YELLOW });
         });
       } else if (record.contentType === 'Cloze' && record.clozes && record.clozes.length > 0) {
+        // Only highlight the specific cloze of this subitem
         const c = record.clozes[0];
         const start = c.startindex;
         const len = Math.max(0, c.stopindex - c.startindex);
@@ -362,6 +391,55 @@
           const contentDelta = quill.getContents();
           const selectedText = selectionData.text;
           
+          // Toggle behavior: if selection matches an existing cloze range on the parent Extract, remove it
+          if (activeRecord.contentType === 'Extract' && Array.isArray(activeRecord.clozes)) {
+            const start = range.index;
+            const stop = range.index + range.length;
+            const existing = activeRecord.clozes.find(
+              (c) => c.startindex === start && c.stopindex === stop
+            );
+            if (existing) {
+              // 1) Update parent clozes (remove the range)
+              const updatedClozes = activeRecord.clozes.filter(
+                (c) => !(c.startindex === start && c.stopindex === stop)
+              );
+              await database.updateRecordRemotely(activeRecord.id, { clozes: updatedClozes });
+
+              // 2) Find and remove the matching Cloze subitem (if any)
+              let childId: string | null = null;
+              try {
+                const parentIdPrefix = `${activeRecord.id}/`;
+                const children = (currentDatabase?.items || []).filter(
+                  (r: Record) => r.contentType === 'Cloze' && r.id.startsWith(parentIdPrefix)
+                );
+                const match = children.find(
+                  (r: Record) => Array.isArray(r.clozes) && r.clozes.length > 0 && r.clozes[0].startindex === start && r.clozes[0].stopindex === stop
+                );
+                if (match) childId = match.id;
+              } catch {}
+
+              if (childId) {
+                await database.removeRecordById(childId, { skipParentClozeUpdate: true });
+              }
+
+              // 2.5) Remove visual highlight in the editor immediately
+              try {
+                if (quill) {
+                  const len = stop - start;
+                  if (len > 0) {
+                    // Remove background highlight for this range
+                    quill.formatText(start, len, 'background', false);
+                  }
+                }
+              } catch {}
+
+              // 3) Clear selection and notify
+              quill.setSelection(null);
+              toast('Cloze removed');
+              return;
+            }
+          }
+
           // Create new record for the cloze
           const parentId = activeRecord.id || "record";
           const newRecordId = parentId + "/" + createID(6);

@@ -72,13 +72,13 @@
 				<div class="grid gap-2">
 					<div class="flex items-center">
 						<Label for="password-{id()}">Password</Label>
-						<button
+						<!-- <button
 							type="button"
 							class="ml-auto inline-block text-sm underline"
 							onclick={() => /* forgot‑password flow */ void 0}
 						>
 							Forgot your password?
-						</button>
+						</button> -->
 					</div>
 					<Input
 						id="password-{id()}"

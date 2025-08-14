@@ -126,12 +126,17 @@
 		return '';
 	}
 	
-	function highlightText(text: string, searchTerm: string): string {
-		if (!searchTerm) return text;
-		
-		const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-		return text.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800">$1</mark>');
-	}
+    function highlightText(text: string, searchTerm: string): string {
+        if (!searchTerm) return text;
+        // Escape HTML first to avoid injecting markup from content
+        const escapeHtml = (s: string) => s
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        const safe = escapeHtml(text);
+        const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return safe.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800">$1</mark>');
+    }
 	
 	function highlightItemText(item: Record, searchTerm: string): string {
 		let text = item.id || '';
@@ -173,13 +178,13 @@
 <!-- ——————————————————— UI ——————————————————— -->
 <Dialog.Root bind:open={open} onOpenChange={handleOpenChange}>
 	<Dialog.Portal>
-		<Dialog.Overlay class="fixed inset-0 bg-transparent z-50" />
+        <Dialog.Overlay class="fixed inset-0 bg-transparent z-50" />
 		
 		<Dialog.Content
-			class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[500px] max-h-[90vh]
-						 grid grid-rows-[auto_1fr_auto] overflow-hidden rounded-lg border
-						 border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))]
-						 text-[rgb(var(--font-color))] p-6 shadow-lg focus:outline-none z-50"
+            class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[500px] max-h-[90vh]
+                         grid grid-rows-[auto_1fr_auto] overflow-hidden rounded-lg border
+                         border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))]
+                         text-[rgb(var(--font-color))] p-6 shadow-lg focus:outline-none z-50"
 		>
 			<!-- Header -->
 			<div class="flex items-center gap-3 mb-4">
@@ -188,17 +193,16 @@
 			</div>
 			
 			<!-- Search field — live two‑way binding triggers performSearch each keystroke -->
-			<Input
+            <Input
 				id="spotlight-input"
-				placeholder="Search files…"
+				placeholder="Search files or content…"
 				bind:value={query}
 				oninput={() => performSearch(query)}
-				class="px-3 py-2 rounded border border-[rgb(var(--background-color))]
-							 bg-[rgb(var(--background-color_input))] text-sm mb-4"
+                class="px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))] text-sm mb-4 dark:text-[rgb(var(--night-font-color))] dark:border-[rgb(var(--background-color))]"
 			/>
 			
 			<!-- Result list -->
-			<div class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]">
+            <div class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]">
 				<table class="w-full text-sm">
 					<tbody>
 						{#if !query}
@@ -216,7 +220,7 @@
 							<tr class="border-b border-[rgb(var(--background-color))]">
 								<th class="p-3 text-left font-semibold">File names</th>
 							</tr>
-							{#each nameMatches as item, i (item.id)}
+                            {#each nameMatches as item, i (item.id)}
 								<tr
 									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {i === selectedIndex ? 'bg-[rgba(var(--background-color),0.2)]' : ''}"
 									onclick={() => select(item, i)}
@@ -224,7 +228,7 @@
 									<td class="p-3">
 										<div class="flex items-center">
 											<FileTextIcon class="mr-2 size-4" />
-											<span>{item.id}</span>
+                                            <span>{@html highlightText(item.id, query)}</span>
 										</div>
 									</td>
 								</tr>
@@ -236,15 +240,15 @@
 							<tr class="border-b border-[rgb(var(--background-color))]">
 								<th class="p-3 text-left font-semibold">File contents</th>
 							</tr>
-							{#each contentMatches as item, j (item.id)}
+                            {#each contentMatches as item, j (item.id)}
 								<tr
 									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {j + nameMatches.length === selectedIndex ? 'bg-[rgba(var(--background-color),0.2)]' : ''}"
 									onclick={() => select(item, j + nameMatches.length)}
 								>
 									<td class="p-3">
 										<div class="flex flex-col">
-											<span class="font-medium">{item.id}</span>
-											<span class="text-xs opacity-70">{preview(item)}</span>
+                                            <span class="font-medium">{@html highlightText(item.id, query)}</span>
+                                            <span class="text-xs opacity-70">{@html highlightText(preview(item), query)}</span>
 										</div>
 									</td>
 								</tr>
