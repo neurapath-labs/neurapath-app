@@ -167,7 +167,7 @@
 	<Button
 		id="learning-button"
 		variant="outline"
-		class={`rounded-md px-4 py-2 font-medium transition-colors ${
+		class={`rounded-md px-4 py-2 font-medium transition-colors cursor-pointer ${
 			learningMode ? "bg-red-500/90 text-white hover:bg-red-600" : ""
 		}`}
 		onclick={toggleLearningMode}
@@ -179,7 +179,7 @@
 	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
 			onclick={() => modal.openSpotlightSearchModal()}
 		>
 			<SearchIcon class="h-4 w-4" /><span>Search</span>
@@ -188,7 +188,7 @@
 		
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
 			onclick={() => modal.openSettingsModal()}
 		>
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
@@ -196,7 +196,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
 			onclick={toggleTheme}
 		>
 			{#if currentTheme === "day"}
@@ -219,7 +219,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
 			onclick={renderImportExport}
 		>
 			<DatabaseIcon class="h-4 w-4" /><span>Import/export</span>
@@ -229,7 +229,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
 			onclick={renderExplorer}
 		>
 			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>
@@ -237,7 +237,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
 			onclick={renderFlagged}
 		>
 			<FlagIcon class="h-4 w-4" /><span>Flagged items</span>
@@ -245,7 +245,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
 			onclick={renderStatistics}
 		>
 			<BarChartIcon class="h-4 w-4" /><span>Statistics</span>
@@ -253,7 +253,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
 			onclick={handleLogout}
 		>
 			<LogOutIcon class="h-4 w-4" /><span>Logout</span>
@@ -265,7 +265,7 @@
 		{#if $database.items.length}
 			{#each Object.entries(renderFolders($database.items)) as [key, node]}
 				<TreeItem
-					{node}
+					node={node as TreeNode}
 					path={[key]}
 					{expandedFolders}
 					{activeItemId}

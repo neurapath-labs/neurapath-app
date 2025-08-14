@@ -21,8 +21,30 @@
 	let selectedIndex   = $state(-1);
 	let open            = $state(false);
 
+	// Command mode state
+	interface CommandItem {
+		id: string;
+		label: string;
+		description?: string;
+		run: () => void | Promise<void>;
+	}
+	let isCommandMode       = $state(false);
+	let allCommands: CommandItem[] = [
+		{ id: 'open-explorer',      label: 'Open Explorer',        run: () => ui.openExplorer() },
+		{ id: 'open-flagged',       label: 'Open Flagged',         run: () => ui.openFlagged() },
+		{ id: 'open-statistics',    label: 'Open Statistics',      run: () => ui.openStatistics() },
+		{ id: 'open-databases',     label: 'Open Databases',       run: () => ui.openDatabases() },
+		{ id: 'open-settings',      label: 'Open Settings',        run: () => modal.openSettingsModal() },
+		{ id: 'open-tutorial',      label: 'Open Tutorial',        run: () => ui.openTutorial() },
+		{ id: 'open-pdf-import',    label: 'Open PDF Import',      run: () => ui.openPdfImport() },
+		{ id: 'open-export-import', label: 'Open Export/Import',   run: () => ui.openExportImport() },
+		{ id: 'close-spotlight',    label: 'Close Spotlight',      run: () => modal.closeSpotlightSearchModal() },
+	];
+	let filteredCommands    = $state<CommandItem[]>([]);
+
 	let unsubDB  : () => void;
 	let unsubMod : () => void;
+	let unsubUI  : () => void;
 
 	/* ——————————————————— Lifecycle ——————————————————— */
 	onMount(() => {
@@ -37,9 +59,23 @@
 			open = $m.isSpotlightSearchModalOpen;
 			if (open) {
 				reset();
-				tick().then(() =>
-					document.getElementById('spotlight-input')?.focus()
-				);
+				tick().then(() => {
+					// Check if there's a pre-filled search term from global typing
+					const currentUI = get(ui);
+					if (currentUI.searchTerm) {
+						query = currentUI.searchTerm;
+						performSearch(query);
+					}
+					document.getElementById('spotlight-input')?.focus();
+				});
+			}
+		});
+
+		/* 3. UI store subscription for search term updates */
+		unsubUI = ui.subscribe(($ui) => {
+			if (open && $ui.searchTerm && $ui.searchTerm !== query) {
+				query = $ui.searchTerm;
+				performSearch(query);
 			}
 		});
 	});
@@ -47,6 +83,7 @@
 	onDestroy(() => {
 		unsubDB?.();
 		unsubMod?.();
+		unsubUI?.();
 	});
 
 	/* ——————————————————— Hot‑key (⌘/Ctrl + J) ——————————————————— */
@@ -61,7 +98,9 @@
 
 	/* ——————————————————— Keyboard navigation ——————————————————— */
 	function handleInputKeydown(e: KeyboardEvent) {
-		const totalResults = nameMatches.length + contentMatches.length;
+		const totalResults = isCommandMode
+			? filteredCommands.length
+			: nameMatches.length + contentMatches.length;
 		
 		if (totalResults === 0) return;
 
@@ -90,10 +129,14 @@
 			case 'Enter':
 				e.preventDefault();
 				if (selectedIndex >= 0 && selectedIndex < totalResults) {
-					const item = selectedIndex < nameMatches.length 
-						? nameMatches[selectedIndex] 
-						: contentMatches[selectedIndex - nameMatches.length];
-					select(item, selectedIndex);
+					if (isCommandMode) {
+						selectCommand(selectedIndex);
+					} else {
+						const item = selectedIndex < nameMatches.length 
+							? nameMatches[selectedIndex] 
+							: contentMatches[selectedIndex - nameMatches.length];
+						select(item, selectedIndex);
+					}
 				}
 				break;
 				
@@ -114,6 +157,8 @@
 
 	function closeSpotlight() {
 		modal.closeSpotlightSearchModal();
+		// Clear any search term when closing
+		ui.setSearchTerm(null);
 	}
 
 	function performSearch(

@@ -118,7 +118,19 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
+        /* Make common clickable elements show hand cursor by default */
+        a,
+        button,
+        [role="button"],
+        input[type="checkbox"],
+        input[type="radio"],
+        label[for],
+        select,
+        summary,
+        .cursor-pointer {
+          cursor: pointer;
+        }
   /* Skip link for accessibility */
   .skip-link {
     position: absolute;

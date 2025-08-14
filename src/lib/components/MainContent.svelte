@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import { get } from 'svelte/store';
   import { browser } from '$app/environment';
   import { database } from '$lib/stores/database.store';
   import { learning } from '$lib/stores/learning.store';
@@ -8,6 +9,7 @@
   import { occlusion } from '$lib/stores/occlusion.store';
   import { profile } from '$lib/stores/profile.store';
   import { ui } from '$lib/stores/ui.store';
+  import { modal } from '$lib/stores/modal.store';
   import { toast } from "svelte-sonner";
   import type { Record, Cloze } from '$lib/models';
   import { createID, mobileCheck } from '$lib/utils/helpers';
@@ -27,6 +29,10 @@
   let cleanupClozeTimeout: any = null;
   let activeItemId: string | null = $state(null);
   let currentDatabase: any = $state(null);
+  
+  // Global keyboard listener for spotlight search
+  let globalKeyBuffer = $state('');
+  let globalKeyTimeout: any = null;
 
   // Subscribe to database changes
   const unsubscribe = database.subscribe(($database) => {
@@ -80,11 +86,13 @@
     }
   });
 
-  // Subscribe to UI changes (active item)
+  // Subscribe to UI changes (active item and search term)
   const unsubscribeUI = ui.subscribe(($ui) => {
     const previousActiveItemId = activeItemId;
     activeItemId = $ui.activeItemId;
     
+    // Store search term for later processing after content is loaded
+    const searchTermToProcess = $ui.searchTerm;
     
     // Trigger update of active record with current database state
     // Use setTimeout to ensure the UI update happens after the active item ID update
@@ -112,6 +120,17 @@
       }
       
       updateActiveRecordWithCurrentDatabase();
+      
+      // Process search term after content is loaded
+      if (searchTermToProcess) {
+        setTimeout(() => {
+          if (quill && activeRecord) {
+            positionCursorAtSearchTerm(searchTermToProcess);
+            // Clear the search term after positioning
+            ui.setSearchTerm(null);
+          }
+        }, 200); // Increased delay to ensure content is fully loaded
+      }
     }, 0);
   });
 
@@ -446,7 +465,19 @@
       quill.setContents(content);
       // Apply visual highlights depending on record type
       // Use a microtask to ensure Quill applies contents before formatting
-      queueMicrotask(() => applyHighlightsForRecord(record));
+      queueMicrotask(() => {
+        applyHighlightsForRecord(record);
+        
+        // Check if there's a search term to position cursor at
+        const currentUI = get(ui);
+        if (currentUI.searchTerm) {
+          setTimeout(() => {
+            positionCursorAtSearchTerm(currentUI.searchTerm!);
+            // Clear the search term after positioning
+            ui.setSearchTerm(null);
+          }, 100);
+        }
+      });
       
     } else {
       
@@ -479,6 +510,31 @@
     } catch (e) {
       // Non-fatal: highlighting is best-effort
       console.error('Failed to apply highlights for record:', e);
+    }
+  }
+
+  function positionCursorAtSearchTerm(searchTerm: string) {
+    if (!quill) return;
+    
+    try {
+      const text = quill.getText();
+      const searchIndex = text.toLowerCase().indexOf(searchTerm.toLowerCase());
+      
+      if (searchIndex !== -1) {
+        // Position cursor at the start of the search term
+        quill.setSelection(searchIndex, searchTerm.length);
+        
+        // Scroll to the position
+        const bounds = quill.getBounds(searchIndex);
+        if (bounds) {
+          const editorElement = quill.root;
+          if (editorElement) {
+            editorElement.scrollTop = bounds.top - 100; // Offset to show some context above
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Failed to position cursor at search term:', e);
     }
   }
 
@@ -837,6 +893,82 @@
     e.preventDefault();
     contextmenu.showContextMenu(e.clientX, e.clientY, null, 'content-area');
   };
+
+  // Global keyboard handler for spotlight search
+  const handleGlobalKeydown = (e: KeyboardEvent) => {
+    // If Settings modal is open (e.g., recording a shortcut), don't trigger spotlight
+    const modals = get(modal);
+    if (modals.isSettingsModalOpen) return;
+    // Don't trigger if user is typing in an input field, textarea, or contenteditable
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'INPUT' || 
+        target.tagName === 'TEXTAREA' || 
+        target.contentEditable === 'true' ||
+        target.closest('[contenteditable]') ||
+        target.closest('input') ||
+        target.closest('textarea')) {
+      return;
+    }
+
+    // Don't trigger on modifier keys or special keys
+    if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+      return;
+    }
+
+    // Don't trigger on function keys, arrow keys, etc.
+    if (e.key.length > 1) {
+      return;
+    }
+
+    // Only trigger on printable characters
+    if (e.key.length === 1 && e.key.match(/[a-zA-Z0-9\s\-_.,!?;:'"()[\]{}@#$%^&*+=<>/\\|`~]/)) {
+      // Clear any existing timeout
+      if (globalKeyTimeout) {
+        clearTimeout(globalKeyTimeout);
+      }
+
+      // Add character to buffer
+      globalKeyBuffer += e.key;
+
+      // Check if spotlight search is already open
+      const currentModal = get(modal);
+      if (!currentModal.isSpotlightSearchModalOpen) {
+        // Open spotlight search with the typed characters
+        modal.openSpotlightSearchModal();
+        
+        // Set the search term in the UI store
+        ui.setSearchTerm(globalKeyBuffer);
+      } else {
+        // If already open, just update the search term
+        ui.setSearchTerm(globalKeyBuffer);
+      }
+
+      // Clear buffer after a delay
+      globalKeyTimeout = setTimeout(() => {
+        globalKeyBuffer = '';
+      }, 1000);
+
+      // Prevent default behavior
+      e.preventDefault();
+    }
+  };
+
+  // Set up global keyboard listener
+  onMount(() => {
+    if (browser) {
+      document.addEventListener('keydown', handleGlobalKeydown);
+    }
+  });
+
+  // Clean up global keyboard listener
+  onDestroy(() => {
+    if (browser) {
+      document.removeEventListener('keydown', handleGlobalKeydown);
+    }
+    if (globalKeyTimeout) {
+      clearTimeout(globalKeyTimeout);
+    }
+  });
 </script>
 
 <main

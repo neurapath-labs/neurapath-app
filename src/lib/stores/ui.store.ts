@@ -4,6 +4,7 @@ import { modal } from './modal.store';
 interface UIState {
   expandedFolders: Set<string>;
   activeItemId: string | null;
+  searchTerm: string | null;
   isSpotlightMode: boolean;
   isExplorerOpen: boolean;
   isFlaggedOpen: boolean;
@@ -22,6 +23,7 @@ interface UIState {
 const initialState: UIState = {
   expandedFolders: new Set<string>(),
   activeItemId: null,
+  searchTerm: null,
   isSpotlightMode: false,
   isExplorerOpen: false,
   isFlaggedOpen: false,
@@ -91,6 +93,13 @@ const setActiveItemId = (itemId: string | null) => {
   closePdfImport();
   closeExportImport();
   closeShareModal();
+};
+
+const setSearchTerm = (searchTerm: string | null) => {
+  update(state => ({
+    ...state,
+    searchTerm: searchTerm
+  }));
 };
 
 const toggleSpotlightMode = () => {
@@ -474,6 +483,7 @@ export const ui = {
   toggleFolderExpanded,
   expandAllParentsToId,
   setActiveItemId,
+  setSearchTerm,
   toggleSpotlightMode,
   openExplorer,
   closeExplorer,

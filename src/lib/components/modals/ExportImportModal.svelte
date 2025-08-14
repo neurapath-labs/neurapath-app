@@ -159,7 +159,7 @@
 						disabled={isExporting || !databaseItems.length}
 						variant="outline"
 						size="sm"
-						class="flex-1"
+						class="flex-1 cursor-pointer"
 					>
 						{#if !isExporting}<DownloadIcon class="mr-2 h-4 w-4" />{/if}
 						{isExporting ? 'Exporting…' : 'Export to JSON'}
@@ -169,7 +169,7 @@
 						disabled={isExporting || !databaseItems.length}
 						variant="outline"
 						size="sm"
-						class="flex-1"
+						class="flex-1 cursor-pointer"
 					>
 						{#if !isExporting}<DownloadIcon class="mr-2 h-4 w-4" />{/if}
 						{isExporting ? 'Exporting…' : 'Export to CSV'}
@@ -247,7 +247,7 @@
 					onclick={importDatabase}
 					disabled={isImporting || !selectedFile}
 					variant="outline"
-					class="w-full"
+					class="w-full cursor-pointer"
 				>
 					{#if !isImporting}<UploadIcon class="mr-2 h-4 w-4" />{/if}
 					{isImporting ? 'Importing…' : 'Import Database'}

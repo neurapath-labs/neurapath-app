@@ -21,6 +21,7 @@
     SettingsIcon,
     SaveIcon,
     Loader2Icon,
+    LoaderIcon
   } from "@lucide/svelte/icons";
 
   import type { Shortcut, Profile } from "$lib/models";
@@ -32,6 +33,7 @@
 
   let filterText: string = $state("");
   let isSettingsModalOpen = $state(false);
+  let isSavingShortcuts: boolean = $state(false);
 
   // AI settings
   let openRouterApiKey = $state("");
@@ -137,9 +139,20 @@
     window.addEventListener("keydown", handle);
   }
 
-  function saveShortcutChanges() {
-    shortcuts.forEach((s) => profile.updateShortcut(s.event, s));
-    toast("Keyboard shortcuts saved");
+  async function saveShortcutChanges() {
+    try {
+      isSavingShortcuts = true;
+      // Persist all shortcut updates
+      for (const s of shortcuts) {
+        await profile.updateShortcut(s.event, s);
+      }
+      toast("Keyboard shortcuts saved");
+    } catch (e) {
+      console.error("Error saving shortcuts:", e);
+      toast("Error saving keyboard shortcuts");
+    } finally {
+      isSavingShortcuts = false;
+    }
   }
 
   async function saveAiSettings() {
@@ -196,10 +209,10 @@
       <!-- Tabs -->
       <Tabs value="ai" class="flex flex-col h-full">
         <TabsList class="mb-6 w-full">
-          <TabsTrigger value="ai" class="flex-1"
+          <TabsTrigger value="ai" class="flex-1 cursor-pointer hover:bg-black/5"
             ><BrainIcon />AI&nbsp;Settings</TabsTrigger
           >
-          <TabsTrigger value="shortcuts" class="flex-1"
+          <TabsTrigger value="shortcuts" class="flex-1 cursor-pointer hover:bg-black/5"
             ><KeyboardIcon />Keyboard&nbsp;Shortcuts</TabsTrigger
           >
         </TabsList>
@@ -265,9 +278,9 @@
           </div>
 
           <div class="flex justify-end">
-            <Button size="sm" onclick={saveAiSettings} disabled={isSaving}>
+            <Button size="sm" onclick={saveAiSettings} disabled={isSaving} class="cursor-pointer">
               {#if isSaving}
-                <Loader2Icon class="w-4 h-4 mr-2 animate-spin" />
+                <LoaderIcon class="w-4 h-4 mr-2 animate-spin" />
                 Saving...
               {:else}
                 <SaveIcon class="w-4 h-4 mr-2" />
@@ -291,11 +304,17 @@
               class="px-3 py-2 rounded border border-[rgb(var(--background-color))]
                      bg-[rgb(var(--background-color_input))] text-sm flex-1 min-w-[200px]"
             />
-            <Button variant="ghost" size="sm" onclick={resetToDefaults}
+            <Button variant="ghost" size="sm" onclick={resetToDefaults} class="cursor-pointer hover:bg-black/5"
               >Reset to Defaults</Button
             >
-            <Button size="sm" onclick={saveShortcutChanges}>Save Changes</Button
-            >
+            <Button size="sm" onclick={saveShortcutChanges} class="cursor-pointer" disabled={isSavingShortcuts}>
+              {#if isSavingShortcuts}
+                <LoaderIcon class="w-4 h-4 mr-2 animate-spin" />
+                Saving...
+              {:else}
+                Save Changes
+              {/if}
+            </Button>
           </header>
 
           <!-- Shortcuts table -->
@@ -338,6 +357,7 @@
                         disabled={isRecording &&
                           recordingEvent !== shortcut.event}
                         onclick={() => startRecording(shortcut.event)}
+                        class="cursor-pointer"
                       >
                         {#if isRecording && recordingEvent === shortcut.event}
                           Recording…
