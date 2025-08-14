@@ -24,6 +24,7 @@
   let lastActiveImageURL: string | null = null;
   let activeOcclusionsList: any[] = [];
   let saveTimeout: any = null;
+  let cleanupClozeTimeout: any = null;
   let activeItemId: string | null = $state(null);
   let currentDatabase: any = $state(null);
 
@@ -173,6 +174,50 @@
             saveContentToDatabase(activeRecord.id, content);
           }
         }, 5000);
+
+        // After a short delay, verify cloze ranges still have content; if a cloze's text was deleted,
+        // remove the cloze from parent and delete the cloze subitem.
+        if (cleanupClozeTimeout) clearTimeout(cleanupClozeTimeout);
+        cleanupClozeTimeout = setTimeout(async () => {
+          try {
+            if (!quill || !activeRecord) return;
+            if (activeRecord.contentType !== 'Extract' || !Array.isArray(activeRecord.clozes) || activeRecord.clozes.length === 0) return;
+            const docLen = quill.getLength();
+            const toRemove: { start: number; stop: number }[] = [];
+            for (const c of activeRecord.clozes) {
+              const start = c.startindex;
+              const stop = c.stopindex;
+              const len = Math.max(0, stop - start);
+              if (len <= 0 || start >= docLen || stop > docLen) {
+                toRemove.push({ start, stop });
+                continue;
+              }
+              const segment = quill.getText(start, len);
+              if ((segment || '').trim().length === 0) toRemove.push({ start, stop });
+            }
+            if (toRemove.length > 0 && activeRecord.id) {
+              const newClozes = (activeRecord.clozes || []).filter(
+                (c) => !toRemove.some((r) => r.start === c.startindex && r.stop === c.stopindex)
+              );
+              await database.updateRecordRemotely(activeRecord.id, { clozes: newClozes });
+              try {
+                const parentPrefix = `${activeRecord.id}/`;
+                const children = (currentDatabase?.items || []).filter((r: Record) => r.contentType === 'Cloze' && r.id.startsWith(parentPrefix));
+                for (const r of toRemove) {
+                  const match = children.find((child: Record) => Array.isArray(child.clozes) && child.clozes.length > 0 && child.clozes[0].startindex === r.start && child.clozes[0].stopindex === r.stop);
+                  if (match) await database.removeRecordById(match.id, { skipParentClozeUpdate: true });
+                }
+              } catch (e) {
+                console.error('Failed to remove cloze subitems after text deletion', e);
+              }
+              // Update local activeRecord and re-apply highlights
+              activeRecord = { ...activeRecord, clozes: newClozes };
+              queueMicrotask(() => applyHighlightsForRecord(activeRecord!));
+            }
+          } catch (e) {
+            console.error('Cloze cleanup after edit failed:', e);
+          }
+        }, 600);
       }
     });
 

@@ -1,31 +1,67 @@
-<script lang="ts" module>
-  const script = document.createElement("script");
-  script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-  script.async = true;
-  document.body.appendChild(script);
-
-  await new Promise<unknown>((resolve, reject) => {
-    script.addEventListener("load", resolve, { once: true });
-    script.addEventListener("error", reject, { once: true });
-  });
-
-  const turnstile = window.turnstile;
-</script>
-
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import type { RenderParameters } from "turnstile-types";
+  import { browser } from "$app/environment";
 
-  let element: HTMLDivElement;
+  let element: HTMLDivElement | null = null;
+  
+  type TurnstileProps = {
+    sitekey: string;
+    theme?: 'light' | 'dark' | 'auto';
+    size?: 'normal' | 'compact' | 'invisible';
+    action?: string;
+    cData?: string;
+    callback?: (token: string) => void;
+    'retry-interval'?: number;
+    retry?: 'auto' | 'never';
+  };
 
-  const props: RenderParameters = $props();
+  const props: TurnstileProps = $props();
+  let widgetId: any = null;
+
+  function loadTurnstileScript(): Promise<void> {
+    if (!browser) return Promise.resolve();
+    const w = window as unknown as { turnstile?: any; __turnstileLoadingPromise?: Promise<void> };
+    if (w.turnstile) return Promise.resolve();
+    if (w.__turnstileLoadingPromise) return w.__turnstileLoadingPromise;
+    w.__turnstileLoadingPromise = new Promise<void>((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load Turnstile'));
+      document.head.appendChild(script);
+    });
+    return w.__turnstileLoadingPromise;
+  }
 
   onMount(() => {
-    turnstile.render(element, props);
+    loadTurnstileScript()
+      .then(() => {
+        const w = window as unknown as { turnstile?: any };
+        if (!w.turnstile || !element) return;
+        widgetId = w.turnstile.render(element, {
+          sitekey: props.sitekey,
+          theme: props.theme ?? 'auto',
+          size: props.size ?? 'normal',
+          action: props.action,
+          cData: props.cData,
+          callback: (token: string) => props.callback?.(token),
+          'retry-interval': props['retry-interval'],
+          retry: props.retry ?? 'auto'
+        });
+      })
+      .catch(() => {
+        // ignore load errors here
+      });
   });
 
   onDestroy(() => {
-    turnstile.remove(element);
+    try {
+      const w = window as unknown as { turnstile?: any };
+      if (widgetId && w.turnstile && element) {
+        w.turnstile.remove(element);
+      }
+    } catch {}
   });
 </script>
 

@@ -24,6 +24,8 @@
 	let password      = $state('');
 	let isRegistering = $state(mode === 'register');
 	let isLoading     = $state(false);
+  let turnstileToken = $state('');
+  import Turnstile from '$lib/components/Turnstile.svelte';
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm">
@@ -90,7 +92,10 @@
 					/>
 				</div>
 
-				<!-- submit -->
+        <!-- Turnstile token holder -->
+        <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
+
+        <!-- submit -->
 				<Button type="submit" class="w-full" disabled={isLoading} aria-busy={isLoading}>
 					{#if isLoading}
 						<Loader2 class="animate-spin" aria-hidden="true" />
@@ -124,3 +129,14 @@
 		</Card.Content>
 	</form>
 </Card.Root>
+
+<!-- Cloudflare Turnstile -->
+<div class="mt-4 flex justify-center">
+  <Turnstile
+    sitekey={(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string) || ''}
+    theme="auto"
+    size="normal"
+    action={isRegistering ? 'register' : 'login'}
+    callback={(token) => (turnstileToken = token)}
+  />
+</div>
