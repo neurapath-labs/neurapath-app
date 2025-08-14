@@ -296,10 +296,30 @@
 			const childItems = allItems.filter(item =>
 				item.id.startsWith(`${record.id}/`)
 			);
-			
+
 			// Create new ID with the new name
-			const parentId = record.id.substring(0, record.id.lastIndexOf('/'));
+			const parentId = record.id.includes('/')
+				? record.id.substring(0, record.id.lastIndexOf('/'))
+				: '';
 			const newId = parentId ? `${parentId}/${newName}` : newName;
+
+			// Prevent duplicate names within the same parent for ANY content type
+			// Also ensure no child path collisions will occur after rename
+			const currentSubtreeIds = new Set([record.id, ...childItems.map((c) => c.id)]);
+			const existingIdsExcludingSubtree = new Set(
+				allItems.filter((i) => !currentSubtreeIds.has(i.id)).map((i) => i.id)
+			);
+			const prospectiveIds = new Set<string>([newId]);
+			for (const childItem of childItems) {
+				const relativePath = childItem.id.substring(record.id.length + 1);
+				prospectiveIds.add(`${newId}/${relativePath}`);
+			}
+			for (const id of prospectiveIds) {
+				if (existingIdsExcludingSubtree.has(id)) {
+					alert("An item with that name already exists in this location.");
+					return;
+				}
+			}
 			
 			// Update the item and its children with new IDs
 			const renamedItem = { ...itemToRename, id: newId };
