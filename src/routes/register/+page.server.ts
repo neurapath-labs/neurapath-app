@@ -22,39 +22,34 @@ export const actions: Actions = {
         if (!username || !password) {
             return fail(400, { error: 'Invalid input' });
         }
-
-        try {
-            // 1 · does the user already exist?
-            if (await authenticateUser(username, password)) {
-                return fail(409, { error: 'Username already taken' });
-            }
-
-            // 2 · create user
-            const user = await createUser(username, password);
-
-            // 3 · issue JWT
-            const token = await generateToken(user);
-
-            // 4 · cookies
-            cookies.set('password', password, {
-                path: '/',
-                httpOnly: true,
-                secure: !dev,
-                sameSite: 'lax',
-                maxAge: 2147483647
-            });
-            cookies.set('token', token, {
-                path: '/',
-                httpOnly: true,
-                secure: !dev,
-                sameSite: 'lax',
-                maxAge: 2147483647
-            });
-
-            throw redirect(303, '/');
-        } catch (error: any) {
-            console.error('[Register] ', error);
-            return fail(500, { error: error?.message ?? 'Registration failed' });
+        
+        // 1 · does the user already exist?
+        if (await authenticateUser(username, password)) {
+            return fail(409, { error: 'Username already taken' });
         }
+
+        // 2 · create user
+        const user = await createUser(username, password);
+
+        // 3 · issue JWT
+        const token = await generateToken(user);
+
+        // 4 · cookies
+        cookies.set('password', password, {
+            path: '/',
+            httpOnly: true,
+            secure: !dev,
+            sameSite: 'lax',
+            maxAge: 2147483647
+        });
+        cookies.set('token', token, {
+            path: '/',
+            httpOnly: true,
+            secure: !dev,
+            sameSite: 'lax',
+            maxAge: 2147483647
+        });
+
+        throw redirect(303, '/');
     }
 };
