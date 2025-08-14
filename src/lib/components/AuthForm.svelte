@@ -6,6 +6,7 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Input }  from "$lib/components/ui/input/index.js";
 	import { Label }  from "$lib/components/ui/label/index.js";
+	import { Loader2 } from "@lucide/svelte";
 
 	/* ── props ─────────────────────────────────────── */
 	const {
@@ -22,6 +23,7 @@
 	let username      = $state('');
 	let password      = $state('');
 	let isRegistering = $state(mode === 'register');
+	let isLoading     = $state(false);
 </script>
 
 <Card.Root class="mx-auto w-full max-w-sm">
@@ -29,6 +31,7 @@
 		method="POST"
 		action={isRegistering ? '/register' : '/login'}
 		class="contents"
+		onsubmit={() => (isLoading = true)}
 	>
 		<!-- header ------------------------------------ -->
 		<Card.Header class="flex flex-col items-center gap-4 text-center">
@@ -88,7 +91,10 @@
 				</div>
 
 				<!-- submit -->
-				<Button type="submit" class="w-full">
+				<Button type="submit" class="w-full" disabled={isLoading} aria-busy={isLoading}>
+					{#if isLoading}
+						<Loader2 class="animate-spin" aria-hidden="true" />
+					{/if}
 					{isRegistering ? 'Register' : 'Login'}
 				</Button>
 			</div>
