@@ -155,20 +155,39 @@
     }
   }
 
-  async function saveAiSettings() {
+  async function saveAiSettings(silent: boolean = false) {
     isSaving = true;
     try {
       // Save AI settings to profile
-      profile.updateProfile({ openRouterApiKey, openRouterModel });
-
-      toast("AI settings saved");
+      await profile.updateProfile({ openRouterApiKey, openRouterModel });
+      if (!silent) toast("AI settings saved");
     } catch (error) {
       console.error("Error saving AI settings:", error);
-      toast("Error saving AI settings");
+      if (!silent) toast("Error saving AI settings");
     } finally {
       isSaving = false;
     }
   }
+
+  function handleApiKeyInput() {
+    // Save on every keypress
+    saveAiSettings(true);
+    toast("Saved OpenRouter API key");
+  }
+
+  // Autosave when model selection changes
+  let prevModel: string = "";
+  $effect(() => {
+    const currentModel = openRouterModel;
+    if (currentModel !== prevModel) {
+      prevModel = currentModel;
+      if (isSettingsModalOpen) {
+        saveAiSettings(true);
+        const modelLabel = models.find((m) => m.value === currentModel)?.label || currentModel;
+        toast(`Saved AI model: ${modelLabel}`);
+      }
+    }
+  });
 
   function resetToDefaults() {
     profile.resetShortcutsToDefault();
@@ -235,6 +254,7 @@
                 placeholder="sk-..."
                 class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))]
                        bg-[rgb(var(--background-color_input))] text-sm"
+                oninput={handleApiKeyInput}
               />
               <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">
                 Used for text summarization
@@ -278,7 +298,7 @@
           </div>
 
           <div class="flex justify-end">
-            <Button size="sm" onclick={saveAiSettings} disabled={isSaving} class="cursor-pointer">
+            <Button size="sm" onclick={() => saveAiSettings()} disabled={isSaving} class="cursor-pointer">
               {#if isSaving}
                 <LoaderIcon class="w-4 h-4 mr-2 animate-spin" />
                 Saving...
@@ -307,7 +327,7 @@
             <Button variant="ghost" size="sm" onclick={resetToDefaults} class="cursor-pointer hover:bg-black/5"
               >Reset to Defaults</Button
             >
-            <Button size="sm" onclick={saveShortcutChanges} class="cursor-pointer" disabled={isSavingShortcuts}>
+            <Button size="sm" onclick={() => saveShortcutChanges()} class="cursor-pointer" disabled={isSavingShortcuts}>
               {#if isSavingShortcuts}
                 <LoaderIcon class="w-4 h-4 mr-2 animate-spin" />
                 Saving...
