@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { learning } from '$lib/stores/learning.store';
   import { database } from '$lib/stores/database.store';
@@ -9,11 +9,8 @@
   import { browser } from '$app/environment';
 
   let questionEditor: HTMLDivElement | null = $state(null);
-  let answerEditor: HTMLDivElement | null = $state(null);
   let questionQuill: any | null = $state(null);
-  let answerQuill: any | null = $state(null);
   let questionOcclusionCanvas: HTMLCanvasElement | null = $state(null);
-  let answerOcclusionCanvas: HTMLCanvasElement | null = $state(null);
   let currentRecord: Record | null = $state(null);
   let showAnswer: boolean = $state(false);
   let profileData: Profile | null = $state(null);
@@ -21,6 +18,7 @@
   let currentIndex: number = $state(0);
   let sessionStats = $state({ reviewed: 0, total: 0 });
   let currentDatabase: any = $state(null);
+  let questionOverlays: HTMLDivElement[] = $state([]);
 
   // ------ Subscriptions ------
   $effect(() => {
@@ -114,7 +112,6 @@
         await import('quill/dist/quill.bubble.css');
         const Quill = Q.default;
         if (questionEditor) questionQuill = new Quill(questionEditor, { theme: 'bubble', readOnly: true, modules: { toolbar: false } });
-        if (answerEditor) answerQuill = new Quill(answerEditor, { theme: 'bubble', readOnly: true, modules: { toolbar: false } });
       } catch (error) {
         console.error('Failed to initialize Quill:', error);
       }
@@ -126,20 +123,27 @@
     if (!currentRecord) return;
     if (currentRecord.contentType === 'Occlusion' && currentRecord.url) drawOcclusionQuestion();
     else if (currentRecord.contentType === 'Cloze' && currentRecord.content && questionQuill) {
+      // Reset contents and overlays
       questionQuill.setContents(currentRecord.content);
+      clearQuestionOverlays();
       currentRecord.clozes?.forEach((c) => questionQuill!.formatText(c.startindex, c.stopindex - c.startindex, { background: '#000', color: '#000' }));
+      // Create interactive overlays for hidden words
+      createClozeOverlays();
     } else if (currentRecord.content && questionQuill) questionQuill.setContents(currentRecord.content);
   }
   function updateAnswerDisplay() {
     if (!currentRecord) return;
     if (currentRecord.contentType === 'Occlusion' && currentRecord.url) drawOcclusionAnswer();
-    else if (currentRecord.content && answerQuill) {
-      answerQuill.setContents(currentRecord.content);
-      if (currentRecord.contentType === 'Cloze') currentRecord.clozes?.forEach((c) => answerQuill!.formatText(c.startindex, c.stopindex - c.startindex, { background: '#73b9ff', color: '#000' }));
+    else if (currentRecord.content && questionQuill) {
+      // Reuse the same Quill editor for showing the answer (revealed cloze)
+      questionQuill.setContents(currentRecord.content);
+      if (currentRecord.contentType === 'Cloze') currentRecord.clozes?.forEach((c) => questionQuill!.formatText(c.startindex, c.stopindex - c.startindex, { background: '#73b9ff', color: '#000' }));
     }
   }
   function handleShowAnswer() {
     showAnswer = true;
+    // Remove question overlays when revealing the answer
+    clearQuestionOverlays();
     updateAnswerDisplay();
   }
   async function handleGrade(g: number) {
@@ -207,12 +211,12 @@
     }
   }
   function drawOcclusionAnswer() {
-    if (!answerOcclusionCanvas || !currentRecord?.url) return;
+    if (!questionOcclusionCanvas || !currentRecord?.url) return;
     const img = new Image();
     img.onload = () => {
       try {
-        answerOcclusionCanvas!.width = img.naturalWidth; answerOcclusionCanvas!.height = img.naturalHeight;
-        const ctx = answerOcclusionCanvas!.getContext('2d'); if (!ctx) return;
+        questionOcclusionCanvas!.width = img.naturalWidth; questionOcclusionCanvas!.height = img.naturalHeight;
+        const ctx = questionOcclusionCanvas!.getContext('2d'); if (!ctx) return;
         ctx.drawImage(img, 0, 0);
         ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.strokeStyle = 'red'; ctx.lineWidth = 2;
         currentRecord!.occlusions?.forEach((o) => { ctx.fillRect(o.x, o.y, o.width, o.height); ctx.strokeRect(o.x, o.y, o.width, o.height); });
@@ -226,6 +230,79 @@
     img.src = currentRecord.url;
   }
   function exitLearningMode() { learning.toggleLearningMode(); }
+  onDestroy(() => {
+    clearQuestionOverlays();
+  });
+
+  function clearQuestionOverlays() {
+    try {
+      questionOverlays.forEach((el) => el.remove());
+    } catch {}
+    questionOverlays = [];
+  }
+
+  function createClozeOverlays() {
+    if (!questionQuill || !currentRecord?.clozes?.length) return;
+    const editorRoot = (questionEditor?.querySelector('.ql-editor') as HTMLElement) || questionEditor;
+    if (!editorRoot) return;
+    // Ensure positioning context
+    try { (editorRoot as HTMLElement).style.position = (getComputedStyle(editorRoot).position === 'static') ? 'relative' : getComputedStyle(editorRoot).position; } catch {}
+
+    currentRecord.clozes!.forEach((c) => {
+      const length = Math.max(0, (c.stopindex || 0) - (c.startindex || 0));
+      if (length <= 0) return;
+      let bounds: any;
+      try {
+        bounds = questionQuill!.getBounds(c.startindex, length);
+      } catch {
+        return;
+      }
+      if (!bounds) return;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'cloze-overlay';
+      overlay.style.position = 'absolute';
+      overlay.style.left = `${bounds.left}px`;
+      overlay.style.top = `${bounds.top}px`;
+      overlay.style.width = `${bounds.width}px`;
+      overlay.style.height = `${bounds.height}px`;
+      overlay.style.cursor = 'help';
+      overlay.style.background = 'transparent';
+      overlay.style.zIndex = '5';
+
+      // Tooltip element
+      const tooltip = document.createElement('div');
+      tooltip.textContent = c.cloze || '';
+      tooltip.style.position = 'absolute';
+      tooltip.style.left = '0px';
+      tooltip.style.top = `${bounds.height + 6}px`;
+      tooltip.style.maxWidth = '320px';
+      tooltip.style.padding = '6px 8px';
+      tooltip.style.borderRadius = '6px';
+      tooltip.style.background = 'rgba(17,17,17,0.95)';
+      tooltip.style.color = '#fff';
+      tooltip.style.fontSize = '12px';
+      tooltip.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)';
+      tooltip.style.pointerEvents = 'none';
+      tooltip.style.whiteSpace = 'pre-wrap';
+      tooltip.style.opacity = '0';
+      tooltip.style.visibility = 'hidden';
+      tooltip.style.transition = 'opacity 120ms ease';
+
+      const show = () => { tooltip.style.opacity = '1'; tooltip.style.visibility = 'visible'; };
+      const hide = () => { tooltip.style.opacity = '0'; tooltip.style.visibility = 'hidden'; };
+      overlay.addEventListener('mouseenter', show);
+      overlay.addEventListener('mouseleave', hide);
+      overlay.addEventListener('click', () => {
+        // Toggle on click (useful on touch devices)
+        if (tooltip.style.visibility === 'visible') hide(); else show();
+      });
+
+      overlay.appendChild(tooltip);
+      editorRoot.appendChild(overlay);
+      questionOverlays.push(overlay);
+    });
+  }
 </script>
 
 <div class="flex flex-col h-full p-5">
@@ -243,33 +320,20 @@
         {#if currentRecord.isFlagged}<span class="bg-yellow-300 text-black px-2 rounded text-xs font-bold">FLAGGED</span>{/if}
       </div>
 
-      <!-- Question -->
+      <!-- Question / Answer (single box) -->
       <div class="mb-5 flex flex-col flex-1 overflow-hidden">
-        <h3 class="text-lg mb-2">Question</h3>
+        <h3 class="text-lg mb-2">{showAnswer ? 'Answer' : 'Question'}</h3>
         {#if currentRecord.contentType === 'Occlusion' && currentRecord.url}
           <div class="relative inline-block max-w-full">
             <img src={currentRecord.url} alt="Occlusion" class="block max-w-full" onload={handleOcclusionImageLoad} />
             <canvas bind:this={questionOcclusionCanvas} class="absolute inset-0 pointer-events-none"></canvas>
           </div>
         {:else}
-          <div bind:this={questionEditor} class="flex-1 overflow-auto border rounded p-2 bg-gray-100"></div>
+          <div bind:this={questionEditor} class="flex-1 overflow-auto border rounded p-2 {showAnswer ? 'bg-blue-50' : 'bg-gray-100'} relative"></div>
         {/if}
       </div>
 
       {#if showAnswer}
-        <!-- Answer -->
-        <div class="mb-5 flex flex-col flex-1 overflow-hidden">
-          <h3 class="text-lg mb-2">Answer</h3>
-          {#if currentRecord.contentType === 'Occlusion' && currentRecord.url}
-            <div class="relative inline-block max-w-full">
-              <img src={currentRecord.url} alt="Occlusion" class="block max-w-full" />
-              <canvas bind:this={answerOcclusionCanvas} class="absolute inset-0 pointer-events-none"></canvas>
-            </div>
-          {:else}
-            <div bind:this={answerEditor} class="flex-1 overflow-auto border rounded p-2 bg-blue-50"></div>
-          {/if}
-        </div>
-
         <!-- Grading -->
         <div class="mt-5">
           <h3 class="text-lg text-center mb-4">How well did you know this?</h3>
