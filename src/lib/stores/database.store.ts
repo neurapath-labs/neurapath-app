@@ -137,7 +137,31 @@ export const moveItem = async (itemId: string, newParentPath: string) => {
   
   // If item doesn't exist, return
   if (!itemToMove) return;
-  
+
+  // No-op: moving to same parent location
+  if (newId === itemId) return;
+
+  // Prevent duplicate name conflicts at destination and across subtree
+  // Build sets of existing and prospective IDs to detect collisions
+  const currentSubtreeIds = new Set([itemId, ...childItems.map((c) => c.id)]);
+  const existingIdsExcludingSubtree = new Set(
+    db.items.filter((i) => !currentSubtreeIds.has(i.id)).map((i) => i.id)
+  );
+  const prospectiveIds = new Set<string>([newId]);
+  for (const childItem of childItems) {
+    const relativePath = childItem.id.substring(itemId.length + 1);
+    prospectiveIds.add(`${newId}/${relativePath}`);
+  }
+  for (const id of prospectiveIds) {
+    if (existingIdsExcludingSubtree.has(id)) {
+      // UI-level feedback here to match rename behavior
+      if (typeof alert !== 'undefined') {
+        alert('An item with that name already exists in the destination.');
+      }
+      return;
+    }
+  }
+
   // Filter out the item and its children from the current items
   const filteredItems = db.items.filter(item =>
     item.id !== itemId && !item.id.startsWith(`${itemId}/`)

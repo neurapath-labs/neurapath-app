@@ -278,9 +278,14 @@
 			// Prompt user for new name
 			const newName = prompt("Enter new name:", currentName);
 			if (newName === null) return; // User cancelled
-			if (newName === currentName) return; // No change
-			if (!newName.trim()) {
+			const sanitizedName = newName.trim();
+			if (sanitizedName === currentName) return; // No change
+			if (!sanitizedName) {
 				toast("Name cannot be empty");
+				return;
+			}
+			if (sanitizedName.includes('/')) {
+				alert("Name cannot contain '/' characters.");
 				return;
 			}
 			
@@ -301,7 +306,7 @@
 			const parentId = record.id.includes('/')
 				? record.id.substring(0, record.id.lastIndexOf('/'))
 				: '';
-			const newId = parentId ? `${parentId}/${newName}` : newName;
+			const newId = parentId ? `${parentId}/${sanitizedName}` : sanitizedName;
 
 			// Prevent duplicate names within the same parent for ANY content type
 			// Also ensure no child path collisions will occur after rename
