@@ -5,7 +5,7 @@
 
 import { writable } from 'svelte/store';
 import type { Record } from '$lib/models';
-import { lastSaved } from '$lib/stores/lastSaved.store';
+// import { lastSaved } from '$lib/stores/lastSaved.store';
 
 import {
   /* READ public or private DB */
@@ -78,10 +78,49 @@ export const addRecord = async (record: Record) => {
 
 /* ---------- DELETE ---------- */
 export const removeRecordById = async (id: string) => {
-  update((db) => ({ ...db, items: db.items.filter((r) => r.id !== id) }));
+  // Capture current state and the record to remove
+  const dbBefore = getState();
+  const recordToRemove = dbBefore.items.find((r) => r.id === id);
 
+  // Compute optional parent update if removing a Cloze subitem
+  let parentIdToPersist: string | null = null;
+  let parentUpdated: Record | null = null;
+
+  if (recordToRemove && recordToRemove.contentType === 'Cloze') {
+    const slashIndex = id.lastIndexOf('/');
+    if (slashIndex > 0) {
+      const parentId = id.substring(0, slashIndex);
+      const parent = dbBefore.items.find((r) => r.id === parentId);
+      const childCloze = (recordToRemove.clozes && recordToRemove.clozes[0]) || null;
+      if (parent && parent.contentType === 'Extract' && parent.clozes && childCloze) {
+        const nextClozes = parent.clozes.filter(
+          (c) => !(c.startindex === childCloze.startindex && c.stopindex === childCloze.stopindex)
+        );
+        parentUpdated = { ...parent, clozes: nextClozes } as Record;
+        parentIdToPersist = parent.id;
+      }
+    }
+  }
+
+  // Apply local state update: remove the record, and update parent clozes if needed
+  update((db) => ({
+    ...db,
+    items: db.items
+      .map((r) => (parentUpdated && r.id === parentUpdated.id ? parentUpdated : r))
+      .filter((r) => r.id !== id)
+  }));
+
+  // Persist remote changes
   if (currentUserId) {
+    // Delete the record remotely
     await serviceDeleteRecord(currentUserId, currentUserPassword || '', id);
+    // Update the parent remotely if we modified its clozes
+    if (parentIdToPersist) {
+      const parentNow = getRecordById(parentIdToPersist);
+      if (parentNow) {
+        await serviceUpdateRecord(currentUserId, currentUserPassword || '', parentNow);
+      }
+    }
   }
 };
 
@@ -272,7 +311,7 @@ export const saveDatabase = async (userId: string) => {
     profile: db.profile
   };
 
-  const result = await serviceSaveMyDb(userId, currentUserPassword || '', dbRecord);
+  await serviceSaveMyDb(userId, currentUserPassword || '', dbRecord);
 
   lastSyncTime = Date.now();
 };

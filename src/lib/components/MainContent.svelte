@@ -118,63 +118,76 @@
     ];
   };
 
-  onMount(async () => {
-    if (editor && browser) {
-      
-      const { default: Quill } = await import('quill');
-      quill = new Quill(editor, {
-        theme: 'bubble',
-        modules: {
-          toolbar: getToolbarOptions()
-        }
-      });
-      
-
-      // Set initial content
-      if (activeRecord && activeRecord.content) {
-        
-        quill.setContents(activeRecord.content);
+  async function initQuill() {
+    if (!browser) return;
+    if (!editor) return;
+    // If an existing instance is still attached to DOM, reuse it
+    if (quill && quill.root && document.contains(quill.root)) {
+      return;
+    }
+    const { default: Quill } = await import('quill');
+    quill = new Quill(editor, {
+      theme: 'bubble',
+      modules: {
+        toolbar: getToolbarOptions()
       }
+    });
 
-      // Handle text changes with debounced saving
-      quill.on('text-change', () => {
-        if (quill && activeRecord) {
-          // Debounce saving to avoid too frequent updates
-          if (saveTimeout) {
-            clearTimeout(saveTimeout);
-          }
-          
-          saveTimeout = setTimeout(() => {
-            if (quill && activeRecord && activeRecord.id) {
-              const content = quill.getContents();
-              saveContentToDatabase(activeRecord.id, content);
-            }
-          }, 5000);
-        }
-      });
-
-      // Handle selection changes
-      quill.on('selection-change', (range: any) => {
-        if (range && range.length > 0 && quill) {
-          const text = quill.getText(range.index, range.length) || '';
-          selection.setSelection(text, range);
-        } else {
-          selection.clearSelection();
-        }
-      });
-
-      // Handle paste events
-      quill.root.addEventListener('paste', handlePaste);
-
-      // Handle drop events
-      quill.root.addEventListener('drop', handleDrop);
-
-      // Handle keydown events
-      quill.root.addEventListener('keydown', handleKeyDown);
+    // Set initial content for the currently active record
+    if (activeRecord && activeRecord.content) {
+      quill.setContents(activeRecord.content);
+      applyHighlightsForRecord(activeRecord);
     }
 
+    // Handle text changes with debounced saving
+    quill.on('text-change', () => {
+      if (quill && activeRecord) {
+        if (saveTimeout) {
+          clearTimeout(saveTimeout);
+        }
+        saveTimeout = setTimeout(() => {
+          if (quill && activeRecord && activeRecord.id) {
+            const content = quill.getContents();
+            saveContentToDatabase(activeRecord.id, content);
+          }
+        }, 5000);
+      }
+    });
+
+    // Handle selection changes
+    quill.on('selection-change', (range: any) => {
+      if (range && range.length > 0 && quill) {
+        const text = quill.getText(range.index, range.length) || '';
+        selection.setSelection(text, range);
+      } else {
+        selection.clearSelection();
+      }
+    });
+
+    // Handle paste, drop and keydown events
+    quill.root.addEventListener('paste', handlePaste);
+    quill.root.addEventListener('drop', handleDrop);
+    quill.root.addEventListener('keydown', handleKeyDown);
+  }
+
+  onMount(async () => {
+    if (editor) {
+      await initQuill();
+    }
     // Add global keydown listener
     // window.addEventListener('keydown', handleGlobalKeyDown); // Handled by keyboard.service.ts
+  });
+
+  // Re-initialize Quill when returning from learning mode and the editor is re-mounted
+  $effect(() => {
+    if (!isLearningMode && editor) {
+      // Fire and forget; we don't need the disposer to be async
+      initQuill().then(() => {
+        if (quill && activeRecord && activeRecord.content) {
+          updateQuillContent(activeRecord);
+        }
+      });
+    }
   });
 
 
@@ -220,12 +233,10 @@
       
       if (record) {
         activeRecord = record;
-        // Only update Quill content if we're not in learning mode
-        if (!isLearningMode) {
-          
+        // Update Quill content when not in learning mode.
+        // If we just exited learning mode, Quill may not be initialized yet, so guard and retry via init effect.
+        if (!isLearningMode && quill) {
           updateQuillContent(record);
-        } else {
-          
         }
       }
     } else {
@@ -236,12 +247,8 @@
       
       if (recordWithContent && recordWithContent.content) {
         activeRecord = recordWithContent;
-        // Only update Quill content if we're not in learning mode
-        if (!isLearningMode) {
-          
+        if (!isLearningMode && quill) {
           updateQuillContent(recordWithContent);
-        } else {
-          
         }
       }
     }
@@ -270,11 +277,7 @@
 
   // Function to update Quill content
   const updateQuillContent = (record: Record) => {
-    
-    
     if (quill && record.content) {
-      
-      
       // Convert string content to Delta format if needed
       const content = typeof record.content === 'string'
         ? { ops: [{ insert: record.content }] }
@@ -283,11 +286,36 @@
       quill.setContents({ ops: [] });
       // Set new content
       quill.setContents(content);
+      // Apply visual highlights depending on record type
+      // Use a microtask to ensure Quill applies contents before formatting
+      queueMicrotask(() => applyHighlightsForRecord(record));
       
     } else {
       
     }
   };
+
+  function applyHighlightsForRecord(record: Record) {
+    if (!quill) return;
+    const YELLOW = '#f9ff24';
+    try {
+      if (record.contentType === 'Extract' && record.clozes && record.clozes.length > 0) {
+        record.clozes.forEach((c) => {
+          const start = c.startindex;
+          const len = Math.max(0, c.stopindex - c.startindex);
+          if (len > 0) quill!.formatText(start, len, { background: YELLOW });
+        });
+      } else if (record.contentType === 'Cloze' && record.clozes && record.clozes.length > 0) {
+        const c = record.clozes[0];
+        const start = c.startindex;
+        const len = Math.max(0, c.stopindex - c.startindex);
+        if (len > 0) quill!.formatText(start, len, { background: YELLOW });
+      }
+    } catch (e) {
+      // Non-fatal: highlighting is best-effort
+      console.error('Failed to apply highlights for record:', e);
+    }
+  }
 
   // Function to handle keydown events on the editor
   const handleKeyDown = (e: KeyboardEvent) => {
