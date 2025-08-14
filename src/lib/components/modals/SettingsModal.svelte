@@ -18,9 +18,7 @@
   import {
     BrainIcon,
     KeyboardIcon,
-    SettingsIcon,
-    Loader2Icon,
-    LoaderIcon
+    SettingsIcon
   } from "@lucide/svelte/icons";
 
   import type { Shortcut, Profile } from "$lib/models";
@@ -33,6 +31,7 @@
   let filterText: string = $state("");
   let isSettingsModalOpen = $state(false);
   let isSavingShortcuts: boolean = $state(false);
+  let autosaveTimer: any = $state(null);
 
   // AI settings
   let openRouterApiKey = $state("");
@@ -152,6 +151,14 @@
     } finally {
       isSavingShortcuts = false;
     }
+  }
+
+  // Autosave shortcuts when they change (debounced to avoid saving on every keyframe)
+  function queueShortcutAutosave() {
+    if (autosaveTimer) clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(() => {
+      saveShortcutChanges();
+    }, 400);
   }
 
   async function saveAiSettings(silent: boolean = false) {
@@ -314,18 +321,12 @@
               bind:value={filterText}
               class="px-3 py-2 rounded border border-[rgb(var(--background-color))]
                      bg-[rgb(var(--background-color_input))] text-sm flex-1 min-w-[200px]"
+              oninput={() => queueShortcutAutosave()}
             />
             <Button variant="ghost" size="sm" onclick={resetToDefaults} class="cursor-pointer hover:bg-black/5"
               >Reset to Defaults</Button
             >
-            <Button size="sm" onclick={() => saveShortcutChanges()} class="cursor-pointer" disabled={isSavingShortcuts}>
-              {#if isSavingShortcuts}
-                <LoaderIcon class="w-4 h-4 mr-2 animate-spin" />
-                Saving...
-              {:else}
-                Save Changes
-              {/if}
-            </Button>
+            <span class="text-xs text-[rgb(var(--font-color-secondary))]">Changes are saved automatically.</span>
           </header>
 
           <!-- Shortcuts table -->
@@ -367,7 +368,7 @@
                         variant="outline"
                         disabled={isRecording &&
                           recordingEvent !== shortcut.event}
-                        onclick={() => startRecording(shortcut.event)}
+                        onclick={() => { startRecording(shortcut.event); queueShortcutAutosave(); }}
                         class="cursor-pointer"
                       >
                         {#if isRecording && recordingEvent === shortcut.event}
