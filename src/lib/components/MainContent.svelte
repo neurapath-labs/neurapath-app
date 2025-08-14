@@ -196,10 +196,92 @@
               if ((segment || '').trim().length === 0) toRemove.push({ start, stop });
             }
             if (toRemove.length > 0 && activeRecord.id) {
+              // Get the current content from the editor
+              const currentContent = quill.getContents();
+              
+              // Get current cursor position
+              const currentSelection = quill.getSelection();
+              const cursorIndex = currentSelection ? currentSelection.index : 0;
+              
+              // Remove the deleted text from the content by creating a new Delta
+              // that excludes the ranges where text was deleted
+              const newOps: any[] = [];
+              let currentIndex = 0;
+              let newCursorIndex = cursorIndex;
+              
+              // Sort toRemove by start index to process in order
+              const sortedToRemove = [...toRemove].sort((a, b) => a.start - b.start);
+              
+              // Calculate cursor position adjustment
+              for (const removeRange of sortedToRemove) {
+                if (cursorIndex > removeRange.start) {
+                  if (cursorIndex >= removeRange.stop) {
+                    // Cursor is after the removed range, adjust by the length of removed text
+                    newCursorIndex -= (removeRange.stop - removeRange.start);
+                  } else {
+                    // Cursor is within the removed range, move it to the start of the range
+                    newCursorIndex = removeRange.start;
+                  }
+                }
+              }
+              
+              for (const op of currentContent.ops || []) {
+                if (typeof op.insert === 'string') {
+                  const opLength = op.insert.length;
+                  const opStart = currentIndex;
+                  const opEnd = currentIndex + opLength;
+                  
+                  // Check if this op overlaps with any removed range
+                  let shouldInclude = true;
+                  let adjustedInsert = op.insert;
+                  
+                  for (const removeRange of sortedToRemove) {
+                    if (opEnd <= removeRange.start || opStart >= removeRange.stop) {
+                      // No overlap, keep as is
+                      continue;
+                    } else {
+                      // There's overlap, we need to remove the overlapping part
+                      const overlapStart = Math.max(opStart, removeRange.start);
+                      const overlapEnd = Math.min(opEnd, removeRange.stop);
+                      const overlapLength = overlapEnd - overlapStart;
+                      
+                      if (overlapStart === opStart && overlapEnd === opEnd) {
+                        // This op is completely within a removed range
+                        shouldInclude = false;
+                        break;
+                      } else {
+                        // Partial overlap, remove the overlapping part
+                        const beforeOverlap = overlapStart - opStart;
+                        const afterOverlap = opEnd - overlapEnd;
+                        adjustedInsert = op.insert.substring(0, beforeOverlap) + op.insert.substring(opLength - afterOverlap);
+                      }
+                    }
+                  }
+                  
+                  if (shouldInclude && adjustedInsert.length > 0) {
+                    newOps.push({ ...op, insert: adjustedInsert });
+                  }
+                  
+                  currentIndex += opLength;
+                } else {
+                  // Non-string ops (like formatting) - keep as is
+                  newOps.push(op);
+                }
+              }
+              
+              const cleanedContent = { ops: newOps };
+              
+              // Update the clozes array to remove the deleted ranges
               const newClozes = (activeRecord.clozes || []).filter(
                 (c) => !toRemove.some((r) => r.start === c.startindex && r.stop === c.stopindex)
               );
-              await database.updateRecordRemotely(activeRecord.id, { clozes: newClozes });
+              
+              // Update both content and clozes in a single operation
+              await database.updateRecordRemotely(activeRecord.id, { 
+                content: cleanedContent,
+                clozes: newClozes 
+              });
+              
               try {
                 const parentPrefix = `${activeRecord.id}/`;
                 const children = (currentDatabase?.items || []).filter((r: Record) => r.contentType === 'Cloze' && r.id.startsWith(parentPrefix));
@@ -210,9 +292,18 @@
               } catch (e) {
                 console.error('Failed to remove cloze subitems after text deletion', e);
               }
+              
               // Update local activeRecord and re-apply highlights
-              activeRecord = { ...activeRecord, clozes: newClozes };
-              queueMicrotask(() => applyHighlightsForRecord(activeRecord!));
+              activeRecord = { ...activeRecord, clozes: newClozes, content: cleanedContent };
+              queueMicrotask(() => {
+                applyHighlightsForRecord(activeRecord!);
+                // Restore cursor position after content update
+                if (quill && newCursorIndex >= 0) {
+                  const maxLength = quill.getLength();
+                  const safeIndex = Math.min(newCursorIndex, maxLength - 1);
+                  quill.setSelection(safeIndex, 0);
+                }
+              });
             }
           } catch (e) {
             console.error('Cloze cleanup after edit failed:', e);

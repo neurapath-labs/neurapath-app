@@ -59,6 +59,51 @@
 		}
 	}
 
+	/* ——————————————————— Keyboard navigation ——————————————————— */
+	function handleInputKeydown(e: KeyboardEvent) {
+		const totalResults = nameMatches.length + contentMatches.length;
+		
+		if (totalResults === 0) return;
+
+		switch (e.key) {
+			case 'Tab':
+				e.preventDefault();
+				if (e.shiftKey) {
+					// Shift+Tab: move up
+					selectedIndex = selectedIndex <= 0 ? totalResults - 1 : selectedIndex - 1;
+				} else {
+					// Tab: move down
+					selectedIndex = selectedIndex >= totalResults - 1 ? 0 : selectedIndex + 1;
+				}
+				break;
+				
+			case 'ArrowDown':
+				e.preventDefault();
+				selectedIndex = selectedIndex >= totalResults - 1 ? 0 : selectedIndex + 1;
+				break;
+				
+			case 'ArrowUp':
+				e.preventDefault();
+				selectedIndex = selectedIndex <= 0 ? totalResults - 1 : selectedIndex - 1;
+				break;
+				
+			case 'Enter':
+				e.preventDefault();
+				if (selectedIndex >= 0 && selectedIndex < totalResults) {
+					const item = selectedIndex < nameMatches.length 
+						? nameMatches[selectedIndex] 
+						: contentMatches[selectedIndex - nameMatches.length];
+					select(item, selectedIndex);
+				}
+				break;
+				
+			case 'Escape':
+				e.preventDefault();
+				closeSpotlight();
+				break;
+		}
+	}
+
 	/* ——————————————————— Helpers ——————————————————— */
 	function reset() {
 		query = '';
@@ -110,6 +155,11 @@
 		/* re‑assign so Svelte reacts */
 		nameMatches    = names;
 		contentMatches = contents;
+		
+		// Set the first result as selected if there are any results
+		if (names.length > 0 || contents.length > 0) {
+			selectedIndex = 0;
+		}
 	}
 
 	function preview(item: Record) {
@@ -162,6 +212,11 @@
 		// Set the active item in the UI store to render content in quill
 		ui.setActiveItemId(item.id);
 		
+		// Pass the search term to the UI store for cursor positioning
+		if (query.trim()) {
+			ui.setSearchTerm(query.trim());
+		}
+		
 		closeSpotlight();
 	}
 	
@@ -198,6 +253,7 @@
 				placeholder="Search files or content…"
 				bind:value={query}
 				oninput={() => performSearch(query)}
+				onkeydown={handleInputKeydown}
                 class="px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))] text-sm mb-4 dark:text-[rgb(var(--night-font-color))] dark:border-[rgb(var(--background-color))]"
 			/>
 			
@@ -222,7 +278,7 @@
 							</tr>
                             {#each nameMatches as item, i (item.id)}
 								<tr
-									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {i === selectedIndex ? 'bg-[rgba(var(--background-color),0.2)]' : ''}"
+									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {i === selectedIndex ? 'bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500' : ''}"
 									onclick={() => select(item, i)}
 								>
 									<td class="p-3">
@@ -242,7 +298,7 @@
 							</tr>
                             {#each contentMatches as item, j (item.id)}
 								<tr
-									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {j + nameMatches.length === selectedIndex ? 'bg-[rgba(var(--background-color),0.2)]' : ''}"
+									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {j + nameMatches.length === selectedIndex ? 'bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500' : ''}"
 									onclick={() => select(item, j + nameMatches.length)}
 								>
 									<td class="p-3">

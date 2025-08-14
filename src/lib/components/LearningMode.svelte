@@ -23,8 +23,9 @@
   // ------ Subscriptions ------
   $effect(() => {
     const unsub = learning.subscribe(($l) => {
-      // Only update if the record has actually changed
-      if ($l.currentRecord?.id !== currentRecord?.id) {
+      // Update if the record ID has changed or if the record content has changed
+      if ($l.currentRecord?.id !== currentRecord?.id || 
+          JSON.stringify($l.currentRecord) !== JSON.stringify(currentRecord)) {
         currentRecord = $l.currentRecord;
         if (currentRecord) {
           // Use setTimeout to ensure DOM is updated before trying to access elements
@@ -98,6 +99,15 @@
           // No due items, clear current record
           
           learning.setCurrentRecord(null);
+        }
+      }
+      
+      // Update current record if it exists in the database and has changed
+      if (currentRecord && currentRecord.id) {
+        const recordId = currentRecord.id;
+        const updatedRecord = $db.items.find(item => item.id === recordId);
+        if (updatedRecord && JSON.stringify(updatedRecord) !== JSON.stringify(currentRecord)) {
+          learning.setCurrentRecord(updatedRecord);
         }
       }
     });
@@ -183,7 +193,17 @@
   async function toggleFlag() {
     if (!currentRecord) return;
     const isFlagged = !(currentRecord.isFlagged || false);
+    
     await database.updateRecordRemotely(currentRecord.id, { isFlagged });
+    
+    // Get the updated record from the database to ensure UI reflects the change
+    const updatedRecord = database.getRecordById(currentRecord.id);
+    
+    if (updatedRecord) {
+      // Update the current record in the learning store to reflect the change
+      learning.setCurrentRecord(updatedRecord);
+    }
+    
     toast(`Item ${isFlagged ? 'flagged' : 'unflagged'}`);
   }
   function drawOcclusionQuestion() {

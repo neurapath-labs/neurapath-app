@@ -350,19 +350,18 @@ class KeyboardService {
   }
 
   private async flagItem() {
-    // 
     // Get active record
-    const databaseData = get(database);
     const uiData = get(ui);
     const activeItemId = uiData.activeItemId;
     
-    // 
-    // Find the active record based on the active item ID
-    const activeRecord = activeItemId
-      ? databaseData.items.find(item => item.id === activeItemId)
-      : null;
+    if (!activeItemId) {
+      toast('Please select an item to flag first');
+      return;
+    }
 
-    // 
+    // Find the active record based on the active item ID
+    const activeRecord = database.getRecordById(activeItemId);
+
     if (!activeRecord || !activeRecord.id) {
       toast('Please select an item to flag first');
       return;
