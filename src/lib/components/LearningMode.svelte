@@ -380,17 +380,17 @@
   }
 </script>
 
-<div class="flex flex-col h-full p-5">
+<div class="flex flex-col h-full p-5 bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))]">
   {#if currentRecord}
     <!-- Header -->
     <div class="flex justify-between items-center mb-5">
       <div class="text-base font-bold">Reviewed: {sessionStats.reviewed}/{sessionStats.total}</div>
-      <Button class="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700" onclick={exitLearningMode} variant="destructive" size="sm">Exit</Button>
+      <Button class="px-4 py-2 rounded text-sm bg-red-600 text-white hover:bg-red-700 border border-[rgb(var(--background-color))]" onclick={exitLearningMode} variant="destructive" size="sm">Exit</Button>
     </div>
 
     <!-- Item Container -->
     <div class="flex flex-col flex-1 overflow-hidden">
-      <div class="text-sm text-gray-500 mb-2 flex items-center gap-2">
+      <div class="text-sm mb-2 flex items-center gap-2 opacity-80">
         {currentRecord.contentType}
         {#if currentRecord.isFlagged}<span class="bg-yellow-300 text-black px-2 rounded text-xs font-bold">FLAGGED</span>{/if}
       </div>
@@ -425,7 +425,7 @@
           <Button
             onclick={handleShowAnswer}
             size="lg"
-            class="px-6 py-3 rounded text-base border bg-[rgb(var(--background-color_sidebar))] text-[rgb(var(--font-color))] border-[rgb(var(--background-color))]"
+            class="px-6 py-3 rounded text-base border bg-[rgb(var(--background-color_sidebar))] text-[rgb(var(--font-color))] border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color_button),0.12)] hover:text-[rgb(var(--font-color))] transition-colors"
           >
             Show Answer (Space)
           </Button>
@@ -436,7 +436,7 @@
     <!-- Footer actions -->
     <div class="flex justify-center gap-5 mt-5">
       <Button class="px-4 py-2 rounded text-sm bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] border border-[rgb(var(--background-color))]" onclick={toggleFlag}>{currentRecord.isFlagged ? 'Unflag Item (F)' : 'Flag Item (F)'}</Button>
-      <Button class="px-4 py-2 rounded text-sm bg-[rgba(var(--background-color),0.2)] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.3)] border border-[rgb(var(--background-color))]" onclick={moveToNextItem}" variant="secondary">Skip (S)</Button>
+      <Button class="px-4 py-2 rounded text-sm bg-[rgba(var(--background-color),0.2)] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.3)] border border-[rgb(var(--background-color))]" onclick={moveToNextItem} variant="secondary">Skip (S)</Button>
     </div>
   {:else}
     <!-- No items message -->

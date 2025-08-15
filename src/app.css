@@ -178,6 +178,13 @@
   color: rgb(var(--font-color));
 }
 
+/* Remove default margins/paddings around Quill content */
+.ql-container.ql-bubble,
+.ql-bubble .ql-editor {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
 /* Learning mode question Quill container */
 .ql-bubble .ql-editor.ql-disabled,
 .ql-bubble .ql-editor[contenteditable="false"] {

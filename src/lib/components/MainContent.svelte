@@ -974,7 +974,7 @@
 
 <main
   id="content-input"
-  class="[grid-area:body] overflow-auto relative min-h-full w-full h-full box-border pt-2 pb-2 pl-[var(--mainWindow-padding)] pr-[var(--mainWindow-padding)]"
+  class="[grid-area:body] overflow-auto relative min-h-full w-full h-full box-border pt-2 pb-2 pl-[var(--mainWindow-padding)] pr-[var(--mainWindow-padding)] bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))]"
   oncontextmenu={handleContextMenu}
 >
   {#if isLearningMode}
