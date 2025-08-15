@@ -296,7 +296,11 @@
             <!-- Section header on the right -->
             <div class="shrink-0 mb-2 pb-2">
               <div class="flex items-center gap-2">
-                <SettingsIcon class="w-6 h-6" />
+                {#if settingsTab === 'ai'}
+                  <BrainIcon class="w-6 h-6" />
+                {:else if settingsTab === 'shortcuts'}
+                  <KeyboardIcon class="w-6 h-6" />
+                {/if}
                 <h1 class="text-lg font-semibold">{settingsTab === 'ai' ? 'AI Settings' : 'Keyboard Shortcuts'}</h1>
               </div>
             </div>
