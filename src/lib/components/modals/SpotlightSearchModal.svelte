@@ -334,7 +334,7 @@
 				bind:value={query}
 				oninput={() => performSearch(query)}
 				onkeydown={handleInputKeydown}
-                class="px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))] text-sm mb-4 text-[rgb(var(--font-color))] dark:border-[rgb(var(--background-color))]"
+                class="px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_modalbox))] text-sm mb-4 text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] dark:border-[rgb(var(--background-color))]"
 			/>
 			
 			<!-- Result list -->
