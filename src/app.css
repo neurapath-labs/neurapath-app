@@ -170,3 +170,14 @@
     top: 6px;
   }
 }
+/* Quill editor theming to match app theme (light/dark via mode-watcher) */
+.ql-bubble .ql-editor,
+.ql-container,
+.ql-editor {
+  background-color: rgb(var(--background-color_modalbox));
+  color: rgb(var(--font-color));
+}
+
+.ql-editor.ql-blank::before {
+  color: rgba(var(--font-color), 0.5);
+}

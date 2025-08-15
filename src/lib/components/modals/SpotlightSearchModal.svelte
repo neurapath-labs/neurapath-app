@@ -347,7 +347,7 @@
 								</tr>
 								{#each filteredCommands as cmd, k (cmd.id)}
 									<tr
-										class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {k === selectedIndex ? 'bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500' : ''}"
+										class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {k === selectedIndex ? 'bg-[rgba(var(--background-color_button),0.18)] border-l-4 border-[rgb(var(--background-color_button))]' : ''}"
 										onclick={() => selectCommand(k)}
 									>
 										<td class="p-3">
@@ -376,8 +376,8 @@
 							</tr>
                             {#each nameMatches as item, i (item.id)}
 								<tr
-									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {i === selectedIndex ? 'bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500' : ''}"
-									onclick={() => select(item, i)}
+									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {i === selectedIndex ? 'bg-[rgba(var(--background-color_button),0.18)] border-l-4 border-[rgb(var(--background-color_button))]' : ''}"
+								onclick={() => select(item, i)}
 								>
 									<td class="p-3">
 										<div class="flex items-center">
@@ -396,8 +396,8 @@
 							</tr>
                             {#each contentMatches as item, j (item.id)}
 								<tr
-									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {j + nameMatches.length === selectedIndex ? 'bg-blue-100 dark:bg-blue-900 border-l-4 border-blue-500' : ''}"
-									onclick={() => select(item, j + nameMatches.length)}
+									class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)] cursor-pointer {j + nameMatches.length === selectedIndex ? 'bg-[rgba(var(--background-color_button),0.18)] border-l-4 border-[rgb(var(--background-color_button))]' : ''}"
+								onclick={() => select(item, j + nameMatches.length)}
 								>
 									<td class="p-3">
 										<div class="flex flex-col">
