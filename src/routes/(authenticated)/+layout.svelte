@@ -14,6 +14,7 @@
 	import SummarizeModal from '$lib/components/modals/SummarizeModal.svelte';
 	import TutorialModal from '$lib/components/modals/TutorialModal.svelte';
 	import PolicyModal from '$lib/components/modals/PolicyModal.svelte';
+	import PdfImportModal from '$lib/components/modals/PdfImportModal.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { keyboardService } from '$lib/services/keyboard.service';
 	import { database } from '$lib/stores/database.store';
@@ -44,7 +45,7 @@
 	// Initialize keyboard service
 	onMount(() => {
 		// Keyboard service is automatically initialized as a singleton
-		ui.openPolicy();
+		ui.openPdfImport();
 	});
 
 	// Cleanup keyboard service
@@ -82,6 +83,7 @@
 <ImageOcclusionModal />
 <SettingsModal />
 <ExportImportModal />
+<PdfImportModal />
 <SummarizeModal />
 <PolicyModal />
 <TutorialModal />
