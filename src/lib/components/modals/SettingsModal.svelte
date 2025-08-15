@@ -333,7 +333,7 @@
               placeholder="Filter shortcuts…"
               bind:value={filterText}
               class="px-3 py-2 rounded border border-[rgb(var(--background-color))]
-                     bg-[rgb(var(--background-color_input))] text-sm flex-1 min-w-[200px]"
+                     bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] text-sm flex-1 min-w-[200px]"
               oninput={() => queueShortcutAutosave()}
             />
             <Button variant="ghost" size="sm" onclick={resetToDefaults} class="cursor-pointer hover:bg-black/5"
