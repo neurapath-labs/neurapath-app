@@ -26,7 +26,7 @@
 	{#snippet children({ selected, highlighted })}
 		<span class="absolute right-2 flex size-3.5 items-center justify-center text-[rgb(var(--font-color))]">
 			{#if selected}
-				<CheckIcon class="size-4" />
+				<CheckIcon class="size-4 text-[rgb(var(--background-color_button))]" />
 			{/if}
 		</span>
 		{#if childrenProp}

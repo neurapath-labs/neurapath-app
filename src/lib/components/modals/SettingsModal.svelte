@@ -272,7 +272,7 @@
                 bind:value={openRouterApiKey}
                 placeholder="sk-..."
                 class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))]
-                       bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm"
+                       bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] text-sm"
                 oninput={handleApiKeyInput}
               />
               <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">
