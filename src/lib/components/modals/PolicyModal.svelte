@@ -1,24 +1,29 @@
 <script lang="ts">
+  import * as Dialog from '$lib/components/ui/dialog/index.js';
   import { Button } from '$lib/components/ui/button';
   import { ui } from '$lib/stores/ui.store';
-  import { onMount, onDestroy } from 'svelte';
   import ScaleIcon from '@lucide/svelte/icons/scale';
+  import CheckIcon from '@lucide/svelte/icons/check';
 
-  // Using Svelte 5 runes for reactivity
+  // Svelte 5 runes
   let isOpen: boolean = $state(false);
   let policyContent: string = $state('');
+  let loadedOnce: boolean = $state(false);
 
-  let unsubscribeUI: (() => void) | undefined;
-
-  onMount(() => {
-    unsubscribeUI = ui.subscribe(($ui) => {
+  // Subscribe to UI store for open state
+  $effect(() => {
+    const unsub = ui.subscribe(($ui) => {
       isOpen = $ui.isPolicyOpen;
     });
-    loadPolicyContent();
+    return () => unsub();
   });
 
-  onDestroy(() => {
-    if (unsubscribeUI) unsubscribeUI();
+  // Load policy text once on client
+  $effect(() => {
+    if (!loadedOnce && typeof window !== 'undefined') {
+      loadedOnce = true;
+      loadPolicyContent();
+    }
   });
 
   async function loadPolicyContent() {
@@ -38,31 +43,42 @@
   function handleAgree() {
     closePolicy();
   }
+
+  function handleOpenChange(openState: boolean) {
+    if (!openState) closePolicy();
+  }
 </script>
 
-{#if isOpen}
-  <div id="modalbox-tos" class="fixed inset-0 flex items-center justify-center z-10">
-    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[400px] h-[400px] max-h-[600px] p-8 border border-[rgb(var(--background-color))] rounded grid grid-rows-[auto_1fr_auto] overflow-hidden">
+<Dialog.Root bind:open={isOpen} onOpenChange={handleOpenChange}>
+  <Dialog.Portal>
+    <Dialog.Overlay class="fixed inset-0 bg-transparent z-50" />
+
+    <Dialog.Content
+      class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+             w-[90vw] max-w-[650px] max-h-[90vh]
+             grid grid-rows-[auto_1fr_auto] overflow-hidden
+             rounded-lg border border-[rgb(var(--background-color))]
+             bg-[rgb(var(--background-color_modalbox))]
+             text-[rgb(var(--font-color))] p-8 shadow-lg focus:outline-none z-50"
+    >
       <!-- Header -->
-      <div class="flex flex-col items-center gap-2 mb-4">
-        <ScaleIcon class="w-[72px] h-[72px]" />
-        <span class="text-2xl font-semibold whitespace-nowrap">Terms of agreement</span>
+      <div class="flex items-center gap-3 mb-4">
+        <ScaleIcon class="w-10 h-10" />
+        <h1 class="text-2xl font-semibold">Terms of agreement</h1>
       </div>
 
       <!-- Content -->
-      <div class="overflow-y-auto pr-2 mr-[-8px] text-sm" innerHTML={policyContent}></div>
+      <div class="overflow-y-auto pr-1 text-sm">
+        {@html policyContent}
+      </div>
 
-      <!-- Action -->
-      <div class="flex justify-center mt-4">
-        <Button
-          type="button"
-          onclick={handleAgree}
-          variant="outline"
-          size="sm"
-        >
+      <!-- Footer -->
+      <div class="mt-6 flex justify-end gap-2">
+        <Button type="button" onclick={handleAgree} class="cursor-pointer" variant="outline" size="sm">
+          <CheckIcon class="mr-2 size-4" />
           I agree
         </Button>
       </div>
-    </div>
-  </div>
-{/if}
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
