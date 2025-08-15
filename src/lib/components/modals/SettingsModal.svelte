@@ -7,9 +7,8 @@
   import {
     Tabs,
     TabsContent,
-    TabsList,
-    TabsTrigger,
   } from "$lib/components/ui/tabs";
+  import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 
   import { profile } from "$lib/stores/profile.store";
   import { modal } from "$lib/stores/modal.store";
@@ -37,6 +36,7 @@
   let openRouterApiKey = $state("");
   let openRouterModel = $state("openai/gpt-5-mini");
   let isSaving = $state(false);
+  let settingsTab: "ai" | "shortcuts" = $state("ai");
 
   // Initialize AI settings with default values
   openRouterApiKey = "";
@@ -246,180 +246,205 @@
 
     <Dialog.Content
       class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-             w-[90vw] max-w-[650px] max-h-[90vh] min-h-[520px]
-             grid grid-rows-[auto_1fr_auto] overflow-hidden
+             w-[90vw] max-w-[800px] h-[76vh] max-h-[90vh] min-h-[540px]
+             grid grid-rows-[auto_1fr] overflow-hidden
              rounded-lg border border-[rgb(var(--background-color))]
              bg-[rgb(var(--background-color_modalbox))]
-             text-[rgb(var(--font-color))] p-8 shadow-lg z-50"
+             text-[rgb(var(--font-color))] p-6 shadow-lg z-50"
     >
-      <!-- Header -->
-      <div class="flex items-center gap-3 mb-6">
-        <SettingsIcon class="w-10 h-10" />
-        <h1 class="text-2xl font-semibold">Settings</h1>
-        <div class="ml-auto"></div>
-      </div>
+      <!-- Header moved into right column -->
 
-      <!-- Tabs -->
-      <Tabs value="ai" class="flex flex-col h-full min-h-0">
-        <TabsList class="mb-6 w-full bg-[rgba(var(--background-color),0.08)] text-[rgb(var(--font-color))]">
-          <TabsTrigger
-            value="ai"
-            class="flex-1 cursor-pointer !text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-md hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:!text-[rgb(var(--font-color))] data-[state=active]:border-2 data-[state=active]:border-[rgb(var(--background-color_button))]"
-            ><BrainIcon />AI&nbsp;Settings</TabsTrigger
-          >
-          <TabsTrigger
-            value="shortcuts"
-            class="flex-1 cursor-pointer !text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-md hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:!text-[rgb(var(--font-color))] data-[state=active]:border-2 data-[state=active]:border-[rgb(var(--background-color_button))]"
-            ><KeyboardIcon />Keyboard&nbsp;Shortcuts</TabsTrigger
-          >
-        </TabsList>
+      <!-- Tabs (sidebar nav + content) -->
+      <Tabs bind:value={settingsTab} class="h-full min-h-0">
+        <div class="grid grid-cols-[160px_1fr] gap-4 w-full h-full min-h-0">
+          <!-- Left navigation: svelte-shadcn sidebar -->
+          <Sidebar.Provider class="min-h-0 h-full" style="--sidebar-width: 160px; --sidebar-width-icon: 48px;">
+            <Sidebar.Root collapsible="none" class="h-full bg-transparent text-[rgb(var(--font-color))]">
+              <Sidebar.Content>
+                <Sidebar.Group class="p-1">
+                  <Sidebar.GroupLabel class="px-2 py-1 text-[10px] uppercase tracking-wide opacity-70">Preferences</Sidebar.GroupLabel>
+                  <Sidebar.GroupContent>
+                    <Sidebar.Menu>
+                      <Sidebar.MenuItem>
+                        <Sidebar.MenuButton size="sm" isActive={settingsTab === 'ai'} class="justify-start w-full !h-auto !flex-none gap-1.5 px-2 py-1 text-[12px] !text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-sm hover:bg-[rgba(var(--background-color),0.12)] hover:!text-[rgb(var(--font-color))] data-[active=true]:bg-[rgba(var(--background-color),0.18)] data-[active=true]:!text-[rgb(var(--font-color))] data-[active=true]:border-2 data-[active=true]:border-[rgb(var(--background-color_button))]">
+                          {#snippet child({ props })}
+                            <button type="button" onclick={() => (settingsTab = 'ai')} {...props}>
+                              <BrainIcon />
+                              <span>AI Settings</span>
+                            </button>
+                          {/snippet}
+                        </Sidebar.MenuButton>
+                      </Sidebar.MenuItem>
+                      <Sidebar.MenuItem>
+                        <Sidebar.MenuButton size="sm" isActive={settingsTab === 'shortcuts'} class="justify-start w-full !h-auto !flex-none gap-1.5 px-2 py-1 text-[12px] !text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-sm hover:bg-[rgba(var(--background-color),0.12)] hover:!text-[rgb(var(--font-color))] data-[active=true]:bg-[rgba(var(--background-color),0.18)] data-[active=true]:!text-[rgb(var(--font-color))] data-[active=true]:border-2 data-[active=true]:border-[rgb(var(--background-color_button))]">
+                          {#snippet child({ props })}
+                            <button type="button" onclick={() => (settingsTab = 'shortcuts')} {...props}>
+                              <KeyboardIcon />
+                              <span>Keyboard Shortcuts</span>
+                            </button>
+                          {/snippet}
+                        </Sidebar.MenuButton>
+                      </Sidebar.MenuItem>
+                    </Sidebar.Menu>
+                  </Sidebar.GroupContent>
+                </Sidebar.Group>
+              </Sidebar.Content>
+            </Sidebar.Root>
+          </Sidebar.Provider>
 
-        <!-- AI SETTINGS TAB -->
-        <TabsContent value="ai" class="flex-1 flex flex-col overflow-y-auto min-h-0 space-y-4">
-          <div class="grid gap-6 md:grid-cols-2">
-            <!-- API Key -->
-            <div>
-              <label
-                for="openrouter-api-key"
-                class="block text-sm font-medium mb-1"
-              >
-                OpenRouter&nbsp;API&nbsp;Key
-              </label>
-              <Input
-                id="openrouter-api-key"
-                type="text"
-                bind:value={openRouterApiKey}
-                placeholder="sk-..."
-                class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))]
-                       bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] text-sm"
-                oninput={handleApiKeyInput}
-              />
-              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">
-                Used for text summarization
-              </p>
+          <!-- Right content area -->
+          <div class="flex flex-col h-full min-h-0">
+            <!-- Section header on the right -->
+            <div class="shrink-0 mb-2">
+              <div class="flex items-center gap-2">
+                <SettingsIcon class="w-6 h-6" />
+                <h1 class="text-lg font-semibold">{settingsTab === 'ai' ? 'AI Settings' : 'Keyboard Shortcuts'}</h1>
+              </div>
             </div>
-
-            <!-- Model Select -->
-            <div>
-              <label
-                for="openrouter-model"
-                class="block text-sm font-medium mb-1"
-              >
-                Model
-              </label>
-              <!-- Shadcn Select, matches the fruit example -->
-              <Select.Root
-                type="single"
-                name="openRouterModel"
-                bind:value={openRouterModel}
-              >
-                <Select.Trigger class="w-full text-[rgb(var(--font-color))]">
-                  {modelTriggerContent}
-                </Select.Trigger>
-
-                <Select.Content>
-                  <Select.Group>
-                    <Select.Label>Models</Select.Label>
-                    {#each models as m (m.value)}
-                      <Select.Item value={m.value} label={m.label}>
-                        {m.label}
-                      </Select.Item>
-                    {/each}
-                  </Select.Group>
-                </Select.Content>
-              </Select.Root>
-
-              <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">
-                Default model for summarization
-              </p>
-            </div>
-          </div>
-
-          <p class="mt-2 text-xs text-[rgb(var(--font-color-secondary))]">
-            Changes are saved automatically as you type and when you select a model.
-          </p>
-        </TabsContent>
-
-        <!-- KEYBOARD SHORTCUTS TAB -->
-        <TabsContent
-          value="shortcuts"
-          class="flex-1 flex flex-col overflow-hidden min-h-0"
-        >
-          <!-- Toolbar -->
-          <header class="flex items-center mb-4 gap-4 flex-wrap">
-            <Input
-              type="text"
-              placeholder="Filter shortcuts…"
-              bind:value={filterText}
-              class="px-3 py-2 rounded border border-[rgb(var(--background-color))]
-                     bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] text-sm flex-1 min-w-[200px]"
-              oninput={() => queueShortcutAutosave()}
-            />
-            <Button variant="ghost" size="sm" onclick={resetToDefaults} class="cursor-pointer hover:bg-[rgba(var(--background-color),0.14)] active:bg-[rgba(var(--background-color),0.18)] hover:text-[rgb(var(--font-color))]"
-              >Reset to Defaults</Button
-            >
-            <span class="text-xs text-[rgb(var(--font-color-secondary))]">Changes are saved automatically.</span>
-          </header>
-
-          <!-- Shortcuts table -->
-          <div
-            class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))] min-h-0 scrollable-shortcuts"
-          >
-            <table class="w-full text-sm">
-              <thead
-                class="sticky top-0 bg-[rgb(var(--background-color_modalbox))]"
-              >
-                <tr class="border-b border-[rgb(var(--background-color))]">
-                  <th class="p-3 text-left font-semibold">Action</th>
-                  <th class="p-3 text-left font-semibold">Shortcut</th>
-                  <th class="p-3 text-left font-semibold">&nbsp;</th>
-                </tr>
-              </thead>
-              <tbody>
-                {#each filterShortcuts() as shortcut}
-                  <tr
-                    class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)]"
+            <!-- AI SETTINGS TAB -->
+            <TabsContent value="ai" class="flex-1 flex flex-col overflow-y-auto min-h-0 space-y-2.5">
+              <div class="grid gap-3 md:grid-cols-2">
+                <!-- API Key -->
+                <div>
+                  <label
+                    for="openrouter-api-key"
+                    class="block text-sm font-medium mb-1"
                   >
-                    <td class="p-3 capitalize">
-                      {shortcut.event
-                        .replace(/-/g, " ")
-                        .replace(/\b\w/g, (l) => l.toUpperCase())}
-                    </td>
-                    <td class="p-3">
-                      {#if isRecording && recordingEvent === shortcut.event}
-                        <span class="text-green-600 font-medium"
-                          >Press keys…</span
-                        >
-                      {:else}
-                        {shortcut.combination}
-                      {/if}
-                    </td>
-                    <td class="p-3 text-right">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={isRecording &&
-                          recordingEvent !== shortcut.event}
-                        onclick={() => { startRecording(shortcut.event); queueShortcutAutosave(); }}
-                        class="cursor-pointer"
-                      >
-                        {#if isRecording && recordingEvent === shortcut.event}
-                          Recording…
-                        {:else}
-                          Change
-                        {/if}
-                      </Button>
-                    </td>
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
-        </TabsContent>
-      </Tabs>
+                    OpenRouter\u00A0API\u00A0Key
+                  </label>
+                  <Input
+                    id="openrouter-api-key"
+                    type="text"
+                    bind:value={openRouterApiKey}
+                    placeholder="sk-..."
+                    class="w-full px-2 py-1 rounded border border-[rgb(var(--background-color))]
+                           bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] text-[12px]"
+                    oninput={handleApiKeyInput}
+                  />
+                  <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">
+                    Used for text summarization
+                  </p>
+                </div>
 
-      <!-- Spacer to satisfy grid -->
-      <span class="sr-only">bottom spacer</span>
+                <!-- Model Select -->
+                <div>
+                  <label
+                    for="openrouter-model"
+                    class="block text-sm font-medium mb-1"
+                  >
+                    Model
+                  </label>
+                  <Select.Root
+                    type="single"
+                    name="openRouterModel"
+                    bind:value={openRouterModel}
+                  >
+                    <Select.Trigger class="w-full text-[rgb(var(--font-color))] text-[12px] py-1">
+                      {modelTriggerContent}
+                    </Select.Trigger>
+
+                    <Select.Content>
+                      <Select.Group>
+                        <Select.Label>Models</Select.Label>
+                        {#each models as m (m.value)}
+                          <Select.Item value={m.value} label={m.label}>
+                            {m.label}
+                          </Select.Item>
+                        {/each}
+                      </Select.Group>
+                    </Select.Content>
+                  </Select.Root>
+
+                  <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">
+                    Default model for summarization
+                  </p>
+                </div>
+              </div>
+
+              <p class="mt-2 text-xs text-[rgb(var(--font-color-secondary))]">
+                Changes are saved automatically as you type and when you select a model.
+              </p>
+            </TabsContent>
+
+            <!-- KEYBOARD SHORTCUTS TAB -->
+            <TabsContent
+              value="shortcuts"
+              class="flex-1 flex flex-col overflow-hidden min-h-0"
+            >
+              <!-- Toolbar -->
+              <header class="flex items-center mb-4 gap-4 flex-wrap">
+                <Input
+                  type="text"
+                  placeholder="Filter shortcuts…"
+                  bind:value={filterText}
+                  class="px-2 py-1 rounded border border-[rgb(var(--background-color))]
+                         bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] text-[12px] flex-1 min-w-[200px]"
+                  oninput={() => queueShortcutAutosave()}
+                />
+                <Button variant="ghost" size="sm" onclick={resetToDefaults} class="cursor-pointer hover:bg-[rgba(var(--background-color),0.14)] active:bg-[rgba(var(--background-color),0.18)] hover:text-[rgb(var(--font-color))]"
+                  >Reset to Defaults</Button
+                >
+                <span class="text-xs text-[rgb(var(--font-color-secondary))]">Changes are saved automatically.</span>
+              </header>
+
+              <!-- Shortcuts table -->
+              <div
+                class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))] min-h-0 scrollable-shortcuts"
+              >
+                <table class="w-full text-[12px]">
+                  <thead
+                    class="sticky top-0 bg-[rgb(var(--background-color_modalbox))]"
+                  >
+                    <tr class="border-b border-[rgb(var(--background-color))]">
+                      <th class="p-2 text-left font-semibold">Action</th>
+                      <th class="p-2 text-left font-semibold">Shortcut</th>
+                      <th class="p-2 text-left font-semibold">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {#each filterShortcuts() as shortcut}
+                      <tr
+                        class="border-b border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color),0.2)]"
+                      >
+                        <td class="p-2 capitalize">
+                          {shortcut.event
+                            .replace(/-/g, " ")
+                            .replace(/\b\w/g, (l) => l.toUpperCase())}
+                        </td>
+                        <td class="p-2">
+                          {#if isRecording && recordingEvent === shortcut.event}
+                            <span class="text-green-600 font-medium"
+                              >Press keys…</span
+                            >
+                          {:else}
+                            {shortcut.combination}
+                          {/if}
+                        </td>
+                        <td class="p-2 text-right">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={isRecording &&
+                              recordingEvent !== shortcut.event}
+                            onclick={() => { startRecording(shortcut.event); queueShortcutAutosave(); }}
+                            class="cursor-pointer"
+                          >
+                            {#if isRecording && recordingEvent === shortcut.event}
+                              Recording…
+                            {:else}
+                              Change
+                            {/if}
+                          </Button>
+                        </td>
+                      </tr>
+                    {/each}
+                  </tbody>
+                </table>
+              </div>
+            </TabsContent>
+          </div>
+        </div>
+      </Tabs>
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
