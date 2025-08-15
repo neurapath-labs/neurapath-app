@@ -45,7 +45,7 @@
 	// Initialize keyboard service
 	onMount(() => {
 		// Keyboard service is automatically initialized as a singleton
-		ui.openPdfImport();
+		// ui.openPdfImport(); // disabled
 	});
 
 	// Cleanup keyboard service
@@ -83,7 +83,7 @@
 <ImageOcclusionModal />
 <SettingsModal />
 <ExportImportModal />
-<PdfImportModal />
+<!-- <PdfImportModal /> -->
 <SummarizeModal />
 <PolicyModal />
 <TutorialModal />

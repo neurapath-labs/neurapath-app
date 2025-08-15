@@ -170,7 +170,7 @@
 		class={`rounded-md px-4 py-2 font-medium transition-colors cursor-pointer flex items-center gap-2 border border-[rgb(var(--background-color))] ${
 			learningMode
 				? "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))]"
-				: "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))]"
+				: "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] dark:bg-[rgb(var(--background-color_button))] dark:text-[rgb(var(--font-color_button))] dark:hover:bg-[rgb(var(--background-color_button-hover))]"
 		}`}
 		onclick={toggleLearningMode}
 	>

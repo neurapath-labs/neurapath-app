@@ -8,7 +8,7 @@
   import type { SelectionState } from '$lib/stores/selection.store';
   import BrainIcon from '@lucide/svelte/icons/brain';
 
-  let isOpen = $state(false);
+  let isOpen = $state(true);
   let selectionData: SelectionState = $state({ isSelected: false, text: '', range: null });
   let isProcessing = $state(false);
   let apiKey = $state('');
@@ -72,7 +72,7 @@
 
 {#if isOpen}
 <div id="modalbox-summarize" class="fixed inset-0 flex items-center justify-center z-10" role="dialog" tabindex="-1" onkeydown={handleKeydown}>
-    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[500px] p-8 border border-[rgb(var(--background-color))] rounded grid grid-rows-[auto_1fr_auto] gap-6 overflow-hidden">
+    <div class="relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] w-[500px] p-8 border border-[rgb(var(--background-color))] rounded grid grid-rows-[auto_1fr_auto] gap-6 overflow-hidden shadow-lg">
       <!-- Header -->
       <div class="flex flex-col items-center gap-2">
         <BrainIcon class="w-[72px] h-[72px]" />
@@ -84,12 +84,12 @@
         {#if selectionData.isSelected}
           <div>
             <h3 class="text-base font-semibold mb-2">Selected Text:</h3>
-            <div class="px-3 py-2 bg-[rgba(var(--background-color),0.5)] rounded max-h-24 overflow-y-auto text-sm">
+            <div class="px-3 py-2 bg-[rgba(var(--background-color),0.2)] rounded max-h-24 overflow-y-auto text-sm">
               {selectionData.text.length > 200 ? selectionData.text.slice(0, 200) + '...' : selectionData.text}
             </div>
           </div>
         {:else}
-          <div class="px-5 py-4 text-center bg-[rgba(var(--background-color),0.5)] rounded text-sm">
+          <div class="px-5 py-4 text-center bg-[rgba(var(--background-color),0.2)] rounded text-sm">
             No text selected. Please select text in the editor and try again.
           </div>
         {/if}
@@ -97,7 +97,7 @@
         <div class="flex flex-col gap-4">
           <div>
             <label for="api-key" class="block text-sm font-medium mb-1">API Key:</label>
-            <input id="api-key" type="password" bind:value={apiKey} placeholder="Enter your OpenRouter API key" class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm" disabled={isProcessing} />
+            <input id="api-key" type="password" bind:value={apiKey} placeholder="Enter your OpenRouter API key" class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] text-sm" disabled={isProcessing} />
           </div>
           <div>
             <label for="provider" class="block text-sm font-medium mb-1">AI Provider:</label>
@@ -108,7 +108,7 @@
         </div>
 
         {#if errorMessage}
-          <div class="px-4 py-2 bg-[rgba(244,67,54,0.1)] text-red-600 text-sm rounded">
+          <div class="px-4 py-2 bg-[rgba(244,67,54,0.1)] text-red-600 text-sm rounded border border-red-300/30">
             {errorMessage}
           </div>
         {/if}
@@ -116,8 +116,8 @@
 
       <!-- Actions -->
       <div class="flex justify-end gap-3">
-        <Button type="button" onclick={closeSummarizeModal} disabled={isProcessing} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-gray-100 text-gray-800 hover:bg-gray-200 text-sm" variant="outline" size="sm">Cancel</Button>
-        <Button type="button" onclick={handleSummarize} disabled={isProcessing || !selectionData.isSelected || !apiKey} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgba(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm" variant="outline" size="sm">
+        <Button type="button" onclick={closeSummarizeModal} disabled={isProcessing} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgba(var(--background-color),0.1)] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.2)] text-sm" variant="outline" size="sm">Cancel</Button>
+        <Button type="button" onclick={handleSummarize} disabled={isProcessing || !selectionData.isSelected || !apiKey} class="px-4 py-2 rounded border border-[rgb(var(--background-color))] bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] disabled:opacity-50 disabled:cursor-not-allowed text-sm" variant="outline" size="sm">
           {isProcessing ? 'Summarizing...' : 'Summarize'}
         </Button>
       </div>
