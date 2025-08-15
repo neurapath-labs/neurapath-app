@@ -8,7 +8,7 @@
   import type { SelectionState } from '$lib/stores/selection.store';
   import BrainIcon from '@lucide/svelte/icons/brain';
 
-  let isOpen = $state(true);
+  let isOpen = $state(false);
   let selectionData: SelectionState = $state({ isSelected: false, text: '', range: null });
   let isProcessing = $state(false);
   let apiKey = $state('');
