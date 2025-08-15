@@ -5,7 +5,7 @@
 	import { learning } from "$lib/stores/learning.store";
 	import { ui } from "$lib/stores/ui.store";
 	import { modal } from "$lib/stores/modal.store";
-	import { theme } from "$lib/stores/theme.store";
+	import { toggleMode } from "mode-watcher";
 	import { contextmenu } from "$lib/stores/contextmenu.store";
 	import { lastSaved } from "$lib/stores/lastSaved.store";
 	import { Badge } from "$lib/components/ui/badge/index.js";
@@ -31,7 +31,7 @@
 	let learningMode = $state(false);
 	let expandedFolders = $state<Set<string>>(new Set());
 	let activeItemId = $state<string | null>(null);
-	let currentTheme = $state("day");
+	// theme toggling handled via mode-watcher
 
 	/* ────────── store subscriptions ────────── */
 	const unsubLearning = learning.subscribe(
@@ -41,9 +41,7 @@
 		expandedFolders = $u.expandedFolders;
 		activeItemId = $u.activeItemId;
 	});
-	const unsubTheme = theme.subscribe(
-		($t) => (currentTheme = $t.currentTheme),
-	);
+	// no custom theme subscription required
 	let lastSavedTime = $state<string>("");
 	const unsubLastSaved = lastSaved.subscribe(($ls) => {
 		if ($ls.lastSaved) {
@@ -60,7 +58,7 @@
 	onDestroy(() => {
 		unsubLearning();
 		unsubUI();
-		unsubTheme();
+		// nothing to unsubscribe for theme
 		unsubLastSaved();
 	});
 
@@ -106,8 +104,8 @@
 	const renderStatistics = () => ui.openStatistics();
 	const renderDatabases = () => ui.openDatabases();
 	const renderImportExport = () => ui.openExportImport();
-	const toggleTheme = () =>
-		theme.setTheme(currentTheme === "day" ? "homebrew" : "day");
+	// use mode-watcher's toggle
+	const toggleTheme = () => toggleMode();
 
 	function handleSidebarContextMenu(e: MouseEvent) {
 		e.preventDefault();
@@ -168,7 +166,9 @@
 		id="learning-button"
 		variant="outline"
 		class={`rounded-md px-4 py-2 font-medium transition-colors cursor-pointer ${
-			learningMode ? "bg-red-500/90 text-white hover:bg-red-600" : ""
+			learningMode
+				? "bg-red-500/90 text-white hover:bg-red-600"
+				: "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))]"
 		}`}
 		onclick={toggleLearningMode}
 	>
@@ -179,16 +179,21 @@
 	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.08)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={() => modal.openSpotlightSearchModal()}
 		>
 			<SearchIcon class="h-4 w-4" /><span>Search</span>
-			<Badge variant="outline" class="ml-auto text-xs">Ctrl/Cmd + J</Badge>
+			<Badge
+				variant="outline"
+				class="ml-auto text-xs border-[rgb(var(--background-color))] text-[rgb(var(--font-color))] bg-[rgba(var(--background-color),0.08)]"
+			>
+				Ctrl/Cmd + J
+			</Badge>
 		</button>
 		
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.08)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={() => modal.openSettingsModal()}
 		>
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
@@ -196,17 +201,16 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
+			class="action relative flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.08)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={toggleTheme}
 		>
-			{#if currentTheme === "day"}
-				<MoonIcon class="h-4 w-4" />
-			{:else}
-				<SunIcon class="h-4 w-4" />
-			{/if}
-			<span id="darkmode-text">
-				{currentTheme === "day" ? "Dark mode" : "Light mode"}
-			</span>
+			<SunIcon
+				class="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+			/>
+			<MoonIcon
+				class="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+			/>
+			<span id="darkmode-text">Toggle theme</span>
 		</button>
 
 		<!-- <button
@@ -219,7 +223,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.08)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={renderImportExport}
 		>
 			<DatabaseIcon class="h-4 w-4" /><span>Import/export</span>
@@ -229,7 +233,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.08)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={renderExplorer}
 		>
 			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>
@@ -237,7 +241,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.08)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={renderFlagged}
 		>
 			<FlagIcon class="h-4 w-4" /><span>Flagged items</span>
@@ -245,7 +249,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.08)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={renderStatistics}
 		>
 			<BarChartIcon class="h-4 w-4" /><span>Statistics</span>
@@ -253,7 +257,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-black/5 active:bg-black/10 cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.08)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={handleLogout}
 		>
 			<LogOutIcon class="h-4 w-4" /><span>Logout</span>

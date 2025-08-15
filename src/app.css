@@ -37,6 +37,17 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+/* Custom legacy variables used across the app (light mode) */
+  --font-color: 68, 68, 68;
+  --font-color-secondary: 108, 108, 108;
+  --font-color_button: 255, 255, 255;
+  --background-color: 255, 255, 255;
+  --background-color_sidebar: 252, 252, 252;
+  --background-color_modalbox: 255, 255, 255;
+  --background-color_input: 255, 255, 255;
+  --background-color_button: 163, 205, 255;
+  --background-color_button-hover: 118, 180, 255;
+  --background-color_checkbox: 33, 150, 243;
 }
 
 .dark {
@@ -71,6 +82,17 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+/* Custom legacy variables used across the app (dark mode = custom theme) */
+  --font-color: 249, 208, 148;
+  --font-color-secondary: 216, 190, 150;
+  --font-color_button: 46, 42, 36;
+  --background-color: 46, 42, 36;
+  --background-color_sidebar: 47, 44, 38;
+  --background-color_modalbox: 38, 34, 28;
+  --background-color_input: 47, 44, 38;
+  --background-color_button: 249, 208, 148;
+  --background-color_button-hover: 249, 218, 158;
+  --background-color_checkbox: 46, 42, 36;
 }
 
 @theme inline {

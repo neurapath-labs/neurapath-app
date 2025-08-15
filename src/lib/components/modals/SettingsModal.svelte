@@ -243,10 +243,14 @@
       <!-- Tabs -->
       <Tabs value="ai" class="flex flex-col h-full">
         <TabsList class="mb-6 w-full">
-          <TabsTrigger value="ai" class="flex-1 cursor-pointer hover:bg-black/5"
+          <TabsTrigger
+            value="ai"
+            class="flex-1 cursor-pointer text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))]"
             ><BrainIcon />AI&nbsp;Settings</TabsTrigger
           >
-          <TabsTrigger value="shortcuts" class="flex-1 cursor-pointer hover:bg-black/5"
+          <TabsTrigger
+            value="shortcuts"
+            class="flex-1 cursor-pointer text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))]"
             ><KeyboardIcon />Keyboard&nbsp;Shortcuts</TabsTrigger
           >
         </TabsList>

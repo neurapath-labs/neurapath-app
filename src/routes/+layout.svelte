@@ -1,5 +1,6 @@
 <script lang="ts">
 	import "../app.css";
+	import { ModeWatcher } from "mode-watcher";
 	import { Toaster } from "$lib/components/ui/sonner/index.js";
 	import SeoHead from "$lib/components/SeoHead.svelte";
 	import ContextMenu from "$lib/components/ContextMenu.svelte";
@@ -15,7 +16,7 @@
 </script>
 
 <SeoHead />
+<ModeWatcher />
 <Toaster/>
 <ContextMenu/>
-
 {@render children()}
