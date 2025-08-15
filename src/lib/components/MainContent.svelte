@@ -123,10 +123,9 @@
       
       // Process search term after content is loaded
       if (searchTermToProcess) {
-        setTimeout(() => {
-          if (quill && activeRecord) {
-            positionCursorAtSearchTerm(searchTermToProcess);
-            // Clear the search term after positioning
+        setTimeout(async () => {
+          const applied = await positionCursorAtSearchTerm(searchTermToProcess);
+          if (applied) {
             ui.setSearchTerm(null);
           }
         }, 200); // Increased delay to ensure content is fully loaded
@@ -471,11 +470,12 @@
         // Check if there's a search term to position cursor at
         const currentUI = get(ui);
         if (currentUI.searchTerm) {
-          setTimeout(() => {
-            positionCursorAtSearchTerm(currentUI.searchTerm!);
-            // Clear the search term after positioning
-            ui.setSearchTerm(null);
-          }, 100);
+          setTimeout(async () => {
+            const applied = await positionCursorAtSearchTerm(currentUI.searchTerm!);
+            if (applied) {
+              ui.setSearchTerm(null);
+            }
+          }, 120);
         }
       });
       
@@ -514,29 +514,76 @@
     }
   }
 
-  function positionCursorAtSearchTerm(searchTerm: string) {
-    if (!quill) return;
-    
-    try {
-      const text = quill.getText();
-      const searchIndex = text.toLowerCase().indexOf(searchTerm.toLowerCase());
-      
-      if (searchIndex !== -1) {
-        // Position cursor at the start of the search term
-        quill.setSelection(searchIndex, searchTerm.length);
-        
-        // Scroll to the position
-        const bounds = quill.getBounds(searchIndex);
+  async function positionCursorAtSearchTerm(searchTerm: string): Promise<boolean> {
+    const MAX_ATTEMPTS = 50;
+    const DELAY_MS = 100;
+    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+      try {
+        if (!quill) {
+          await new Promise((r) => setTimeout(r, DELAY_MS));
+          continue;
+        }
+        const text = quill.getText();
+        const idx = text.toLowerCase().indexOf(searchTerm.toLowerCase());
+        if (idx === -1) {
+          await new Promise((r) => setTimeout(r, DELAY_MS));
+          continue;
+        }
+
+        // Focus and select
+        quill.focus();
+        quill.setSelection(idx, searchTerm.length, 'user');
+
+        // Scroll to ensure visibility
+        const bounds = quill.getBounds(idx);
         if (bounds) {
           const editorElement = quill.root;
-          if (editorElement) {
-            editorElement.scrollTop = bounds.top - 100; // Offset to show some context above
-          }
+          if (editorElement) editorElement.scrollTop = Math.max(0, bounds.top - 100);
         }
+
+        // Try to show caret at the beginning, and re-apply selection a couple of times to outlast any late renders
+        const applyNativeBackwardSelection = () => {
+          try {
+            const nativeSel = window.getSelection?.();
+            if (!nativeSel) return;
+            const startInfo = (quill as any)?.getLeaf?.(idx);
+            const endInfo = (quill as any)?.getLeaf?.(idx + searchTerm.length);
+            const startLeaf = startInfo?.[0];
+            const startOffset = startInfo?.[1] ?? 0;
+            const endLeaf = endInfo?.[0];
+            const endOffset = endInfo?.[1] ?? 0;
+            const startNode = startLeaf?.domNode as Node | undefined;
+            const endNode = endLeaf?.domNode as Node | undefined;
+            if (startNode && endNode && quill.root.contains(startNode) && quill.root.contains(endNode)) {
+              nativeSel.removeAllRanges();
+              if (typeof nativeSel.setBaseAndExtent === 'function') {
+                nativeSel.setBaseAndExtent(endNode, endOffset, startNode, startOffset);
+              } else {
+                const range = document.createRange();
+                range.setStart(startNode, startOffset);
+                range.setEnd(endNode, endOffset);
+                nativeSel.addRange(range);
+              }
+            }
+          } catch {}
+        };
+
+        queueMicrotask(applyNativeBackwardSelection);
+        setTimeout(() => {
+          quill.setSelection(idx, searchTerm.length, 'user');
+          applyNativeBackwardSelection();
+        }, 150);
+        setTimeout(() => {
+          quill.setSelection(idx, searchTerm.length, 'user');
+          applyNativeBackwardSelection();
+        }, 350);
+        return true;
+      } catch {
+        // retry
       }
-    } catch (e) {
-      console.error('Failed to position cursor at search term:', e);
+      await new Promise((r) => setTimeout(r, DELAY_MS));
     }
+    return false;
   }
 
   // Function to handle keydown events on the editor

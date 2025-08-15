@@ -162,8 +162,6 @@
 
 	function closeSpotlight() {
 		modal.closeSpotlightSearchModal();
-		// Clear any search term when closing
-		ui.setSearchTerm(null);
 	}
 
 	function performSearch(
