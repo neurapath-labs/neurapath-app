@@ -5,6 +5,8 @@
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { Label } from "$lib/components/ui/label/index.js";
 	import { Loader2 } from "@lucide/svelte";
+	import LogInIcon from "@lucide/svelte/icons/log-in";
+	import UserPlusIcon from "@lucide/svelte/icons/user-plus";
 	import { turnstile } from "@svelte-put/cloudflare-turnstile";
 
 	import { PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY } from "$env/static/public";
@@ -121,14 +123,20 @@
 				<!-- submit -->
 				<Button
 					type="submit"
-					class="w-full bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))]"
+					class="w-full bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] flex items-center justify-center gap-2"
 					disabled={isLoading}
 					aria-busy={isLoading}
 				>
 					{#if isLoading}
 						<Loader2 class="animate-spin" aria-hidden="true" />
+					{:else}
+						{#if isRegistering}
+							<UserPlusIcon class="size-4" aria-hidden="true" />
+						{:else}
+							<LogInIcon class="size-4" aria-hidden="true" />
+						{/if}
 					{/if}
-					{isRegistering ? "Register" : "Login"}
+					<span>{isRegistering ? "Register" : "Login"}</span>
 				</Button>
 			</div>
 
