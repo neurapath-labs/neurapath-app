@@ -11,10 +11,18 @@
 <Sonner
 	theme={mode.current}
 	class="toaster group"
-	style="--normal-bg: var(--color-popover); --normal-text: var(--color-popover-foreground); --normal-border: var(--color-border);"
+	style="
+		--normal-bg: rgb(var(--background-color_modalbox));
+		--normal-text: rgb(var(--font-color));
+		--normal-border: var(--color-border);
+	"
 	toastOptions={{
+		class: "border bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))]",
 		classes: {
-			error: "bg-red-500 text-white"
+			success: "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] border-[rgb(var(--background-color))]",
+			info: "bg-[rgba(var(--background-color),0.2)] text-[rgb(var(--font-color))] border-[rgb(var(--background-color))]",
+			warning: "bg-yellow-500 text-black",
+			error: "bg-red-600 text-white"
 		}
 	}}
 	{...restProps}
