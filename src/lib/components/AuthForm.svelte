@@ -121,7 +121,7 @@
 				<!-- submit -->
 				<Button
 					type="submit"
-					class="w-full"
+					class="w-full bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))]"
 					disabled={isLoading}
 					aria-busy={isLoading}
 				>
