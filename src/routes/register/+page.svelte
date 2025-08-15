@@ -10,7 +10,7 @@
 	canonicalUrl="https://neurapath.shop/register"
 />
 
-<div class="flex h-screen w-full items-center justify-center px-8">
+<div class="flex h-screen w-full items-center justify-center px-8 bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))]">
 	<!-- start in register mode -->
 	<AuthForm form={form} mode="register" id={() => crypto.randomUUID()}/>
 </div>

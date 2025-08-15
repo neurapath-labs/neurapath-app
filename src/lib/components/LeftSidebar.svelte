@@ -26,6 +26,8 @@
 	import FlagIcon from "@lucide/svelte/icons/flag";
 	import BarChartIcon from "@lucide/svelte/icons/bar-chart";
 	import LogOutIcon from "@lucide/svelte/icons/log-out";
+	import PlayCircleIcon from "@lucide/svelte/icons/play-circle";
+	import StopCircleIcon from "@lucide/svelte/icons/stop-circle";
 
 	/* ────────── local state (runes) ────────── */
 	let learningMode = $state(false);
@@ -165,14 +167,20 @@
 	<Button
 		id="learning-button"
 		variant="outline"
-		class={`rounded-md px-4 py-2 font-medium transition-colors cursor-pointer ${
+		class={`rounded-md px-4 py-2 font-medium transition-colors cursor-pointer flex items-center gap-2 border border-[rgb(var(--background-color))] ${
 			learningMode
-				? "bg-red-500/90 text-white hover:bg-red-600"
-				: "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] hover:text-[rgb(var(--font-color_button))] border-[rgb(var(--background-color_button))] dark:bg-[rgb(var(--background-color_button))] dark:text-[rgb(var(--font-color_button))] dark:hover:bg-[rgb(var(--background-color_button-hover))] dark:hover:text-[rgb(var(--font-color_button))] dark:border-[rgb(var(--background-color_button))]"
+				? "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))]"
+				: "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))]"
 		}`}
 		onclick={toggleLearningMode}
 	>
-		{learningMode ? "Stop learning!" : "Practice mode!"}
+		{#if learningMode}
+			<StopCircleIcon class="h-4 w-4" />
+			<span>Stop practice mode</span>
+		{:else}
+			<PlayCircleIcon class="h-4 w-4" />
+			<span>Practice mode</span>
+		{/if}
 	</Button>
 
 	<!-- quick actions -->

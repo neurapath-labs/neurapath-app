@@ -12,6 +12,6 @@
 	canonicalUrl="https://neurapath.shop/login"
 />
 
-<div class="flex h-screen w-full items-center justify-center px-8">
+<div class="flex h-screen w-full items-center justify-center px-8 bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))]">
 	<AuthForm form={form} mode="login" id={() => crypto.randomUUID()} />
 </div>

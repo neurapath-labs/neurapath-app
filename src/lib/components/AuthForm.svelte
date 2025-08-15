@@ -30,7 +30,7 @@
 	let isLoading = $state(false);
 </script>
 
-<Card.Root class="mx-auto w-full max-w-sm">
+<Card.Root class="mx-auto w-full max-w-sm bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))]">
 	<form
 		method="POST"
 		action={isRegistering ? "/register" : "/login"}
@@ -45,11 +45,11 @@
 				class="h-12 w-auto"
 			/>
 
-			<Card.Title class="text-2xl">
+			<Card.Title class="text-2xl text-[rgb(var(--font-color))]">
 				{isRegistering ? "Register" : "Login"}
 			</Card.Title>
 
-			<Card.Description>
+			<Card.Description class="text-[rgb(var(--font-color))] opacity-80">
 				{isRegistering
 					? "Create a new account"
 					: "Enter your username to log in"}
@@ -75,6 +75,7 @@
 						bind:value={username}
 						required
 						autocomplete="username"
+						class="text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)]"
 					/>
 				</div>
 
@@ -99,6 +100,7 @@
 						autocomplete={isRegistering
 							? "new-password"
 							: "current-password"}
+						class="text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)]"
 					/>
 				</div>
 
