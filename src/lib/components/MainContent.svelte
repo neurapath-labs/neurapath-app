@@ -897,6 +897,10 @@
 
   // Global keyboard handler for spotlight search
   const handleGlobalKeydown = (e: KeyboardEvent) => {
+    // Disable spotlight activation while in learning/practice mode
+    const learningState = get(learning);
+    if (learningState.isInLearningMode) return;
+
     // If Settings modal is open (e.g., recording a shortcut), don't trigger spotlight
     const modals = get(modal);
     if (modals.isSettingsModalOpen) return;

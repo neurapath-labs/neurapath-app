@@ -171,10 +171,10 @@
 	>
 		{#if learningMode}
 			<BrainIcon class="h-4 w-4" />
-			<span>Stop practice mode</span>
+			<span>Stop practice</span>
 		{:else}
 			<BrainIcon class="h-4 w-4" />
-			<span>Practice mode</span>
+			<span>Start practice</span>
 		{/if}
 	</Button>
 

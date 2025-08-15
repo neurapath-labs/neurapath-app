@@ -92,9 +92,12 @@
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'j' && (e.metaKey || e.ctrlKey)) {
 			e.preventDefault();
-			open
-				? modal.closeSpotlightSearchModal()
-				: modal.openSpotlightSearchModal?.();
+			const { isInLearningMode } = get(learning);
+			if (open) {
+				modal.closeSpotlightSearchModal();
+			} else if (!isInLearningMode) {
+				modal.openSpotlightSearchModal?.();
+			}
 		}
 	}
 
