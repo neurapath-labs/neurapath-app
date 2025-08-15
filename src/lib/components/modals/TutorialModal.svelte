@@ -70,8 +70,8 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (1/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p>The left sidebar is used to organize your content. Here you will see when the database was last saved to the cloud and how many items are due today. Here you will also find the engage button used for learning the material in your database.</p>
-            <p>Below the engage button all your folders, clozes, images and image occlusions will show. You can right‑click in this sidebar to open a menu to handle the items.</p>
+            <p>The left sidebar organizes your content and shows when your database was last saved. Quick actions give you fast access to Search, Settings, Import/Export, Item Explorer, Flagged Items and Statistics.</p>
+            <p>Use the <b>Practice mode</b> button to start/stop learning. Your folders, extracts, clozes and occlusions are listed below. Right‑click anywhere in the sidebar to open a context menu for actions.</p>
           </div>
         {:else if currentStep === 2}
           <div class="flex flex-col items-center gap-2 mb-4">
@@ -79,7 +79,7 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (2/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p>Press here to start learning your material then use <b>Space</b> to show the answer. Grade with <b>Ctrl + 1‑5</b> (default). Ctrl + 1 = no clue; Ctrl + 5 = perfect recall. Think of the answer before showing it for better learning.</p>
+            <p>Toggle <b>Practice mode</b> in the sidebar to enter learning. Use <b>Space</b> to show the answer and grade with <b>1‑5</b> (1 = no recall, 5 = perfect). Think of the answer before revealing it for stronger memory.</p>
           </div>
         {:else if currentStep === 3}
           <div class="flex flex-col items-center gap-2 mb-4">
@@ -87,8 +87,8 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (3/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p><u>Last saved</u> tells you when your database was saved to the cloud. Your encrypted database is uploaded every 15 seconds.</p>
-            <p>(The DB is AES‑256 encrypted before upload. Images are unencrypted but cannot be linked back to a DB.)</p>
+            <p><u>Last saved</u> shows when your database was last synced. Changes are saved and the timestamp updates accordingly.</p>
+            <p>Your data is sent securely. Images may be stored separately and are not linkable back to a database.</p>
           </div>
         {:else if currentStep === 4}
           <div class="flex flex-col items-center gap-2 mb-4">
@@ -96,7 +96,7 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (4/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p><u>Due today</u> shows how many items need review. neurapath uses the SM‑2 algorithm (like Anki) to optimize spaced repetition.</p>
+            <p>Use <u>Spotlight Search</u> (<b>Ctrl/Cmd + J</b>) to quickly find files and content, or type <b>&gt;</b> to run commands (e.g., open modals).</p>
           </div>
         {:else if currentStep === 5}
           <div class="flex flex-col items-center gap-2 mb-4">
@@ -105,9 +105,9 @@
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
             <p><u>Main working window</u> is where you manage content. Paste formatted text and images here.</p>
-            <p><u>Create extract</u>: select text then Ctrl + X.</p>
-            <p><u>Create cloze</u>: select text then Ctrl + C.</p>
-            <p><u>Create image occlusion</u>: drop an image then draw boxes and press Ctrl + Z.</p>
+            <p><u>Create extract</u>: select text then <b>Ctrl/Cmd + Shift + E</b>.</p>
+            <p><u>Create cloze</u>: select text then <b>Ctrl/Cmd + Shift + C</b>.</p>
+            <p><u>Create image occlusion</u>: open the occlusion tool with <b>Ctrl/Cmd + Shift + O</b>, then add masks.</p>
           </div>
         {:else if currentStep === 6}
           <div class="flex flex-col items-center gap-2 mb-4">
@@ -115,13 +115,12 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (6/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p><u>Settings</u> lets you configure shortcuts and UI in Profile:</p>
+            <p><u>Settings</u> lets you configure the app and keyboard shortcuts:</p>
             <ul class="list-decimal list-inside space-y-1 text-sm">
-              <li>Working window text size</li>
-              <li>Toggle extracts, occlusions, clozes in learning</li>
-              <li>Show/hide images & right sidebar</li>
-              <li>Share / export / import DB</li>
-              <li>Import Anki / Quizlet (experimental)</li>
+              <li>AI settings: set your <b>OpenRouter API key</b> and choose a <b>model</b></li>
+              <li>Customize <b>keyboard shortcuts</b> (auto‑saves)</li>
+              <li>UI: font size, show/hide right sidebar, images</li>
+              <li>Import/Export and public database options</li>
             </ul>
           </div>
         {:else if currentStep === 7}
@@ -138,7 +137,7 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (8/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p><u>Public databases</u> let you share. Make your DB public in settings, then friends can import it using your password.</p>
+            <p><u>Import/Export</u> lets you back up or move your data. You can also make your database public in <b>Settings</b> to share with others.</p>
           </div>
         {:else if currentStep === 9}
           <div class="flex flex-col items-center gap-2 mb-4">
@@ -146,7 +145,7 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (9/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p><u>Item finder</u> helps locate problematic cards—high repetitions, low easiness. Edit or delete them to improve learning.</p>
+            <p><u>Item Explorer</u> helps locate problematic cards—high repetitions, low easiness factor. Open it from the sidebar to review and jump to items.</p>
           </div>
         {:else if currentStep === 10}
           <div class="flex flex-col items-center gap-2 mb-4">
@@ -170,7 +169,7 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (12/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p><u>Right sidebar</u> offers quick Wikipedia lookup for selected words. Import articles with right‑click → Import.</p>
+            <p><u>Right sidebar</u> can show similar content, related words and Wikipedia summaries based on your selection. Toggle it in Settings.</p>
           </div>
         {:else if currentStep === 13}
           <div class="flex flex-col items-center gap-2 mb-4">
@@ -178,8 +177,8 @@
             <span class="text-xl font-semibold whitespace-nowrap">Quick start (13/{totalSteps})</span>
           </div>
           <div class="leading-relaxed space-y-3 text-sm">
-            <p><b>AI text summarization</b>: select text → Ctrl + F.</p>
-            <p><b>Occlusion generation</b>: paste or drop images, then Ctrl + Z.</p>
+            <p><b>AI summarization</b>: select text → <b>Ctrl/Cmd + Shift + M</b>. Configure API key and model in Settings.</p>
+            <p><b>Occlusion generation</b>: paste or drop an image, then use <b>Ctrl/Cmd + Shift + O</b> to add masks.</p>
           </div>
         {:else if currentStep === 14}
           <div class="flex flex-col items-center gap-2 mb-4">
