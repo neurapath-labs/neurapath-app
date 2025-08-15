@@ -260,13 +260,12 @@
           <!-- Left navigation: svelte-shadcn sidebar -->
           <Sidebar.Provider class="min-h-0 h-full" style="--sidebar-width: 160px; --sidebar-width-icon: 48px;">
             <Sidebar.Root collapsible="none" class="h-full bg-transparent text-[rgb(var(--font-color))]">
-              <Sidebar.Content>
-                <Sidebar.Group class="p-1">
-                  <Sidebar.GroupLabel class="px-2 py-1 text-[10px] uppercase tracking-wide opacity-70">Preferences</Sidebar.GroupLabel>
+              <Sidebar.Content class="gap-0">
+                <Sidebar.Group class="p-0">
                   <Sidebar.GroupContent>
                     <Sidebar.Menu>
                       <Sidebar.MenuItem>
-                        <Sidebar.MenuButton size="sm" isActive={settingsTab === 'ai'} class="justify-start w-full !h-auto !flex-none gap-1.5 px-2 py-1 text-[12px] !text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-sm hover:bg-[rgba(var(--background-color),0.12)] hover:!text-[rgb(var(--font-color))] data-[active=true]:bg-[rgba(var(--background-color),0.18)] data-[active=true]:!text-[rgb(var(--font-color))] data-[active=true]:border-2 data-[active=true]:border-[rgb(var(--background-color_button))]">
+                        <Sidebar.MenuButton size="sm" isActive={settingsTab === 'ai'} class="justify-start w-full !h-auto !flex-none gap-1.5 px-2 py-1 text-[12px] rounded-sm cursor-pointer !text-[rgb(var(--font-color))] hover:!bg-[rgba(var(--background-color_button),0.18)] data-[active=true]:!bg-[rgba(var(--background-color_button),0.24)] transition-colors">
                           {#snippet child({ props })}
                             <button type="button" onclick={() => (settingsTab = 'ai')} {...props}>
                               <BrainIcon />
@@ -276,7 +275,7 @@
                         </Sidebar.MenuButton>
                       </Sidebar.MenuItem>
                       <Sidebar.MenuItem>
-                        <Sidebar.MenuButton size="sm" isActive={settingsTab === 'shortcuts'} class="justify-start w-full !h-auto !flex-none gap-1.5 px-2 py-1 text-[12px] !text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-sm hover:bg-[rgba(var(--background-color),0.12)] hover:!text-[rgb(var(--font-color))] data-[active=true]:bg-[rgba(var(--background-color),0.18)] data-[active=true]:!text-[rgb(var(--font-color))] data-[active=true]:border-2 data-[active=true]:border-[rgb(var(--background-color_button))]">
+                        <Sidebar.MenuButton size="sm" isActive={settingsTab === 'shortcuts'} class="justify-start w-full !h-auto !flex-none gap-1.5 px-2 py-1 text-[12px] rounded-sm cursor-pointer !text-[rgb(var(--font-color))] hover:!bg-[rgba(var(--background-color_button),0.18)] data-[active=true]:!bg-[rgba(var(--background-color_button),0.24)] transition-colors">
                           {#snippet child({ props })}
                             <button type="button" onclick={() => (settingsTab = 'shortcuts')} {...props}>
                               <KeyboardIcon />
@@ -295,7 +294,7 @@
           <!-- Right content area -->
           <div class="flex flex-col h-full min-h-0">
             <!-- Section header on the right -->
-            <div class="shrink-0 mb-2">
+            <div class="shrink-0 mb-2 pb-2">
               <div class="flex items-center gap-2">
                 <SettingsIcon class="w-6 h-6" />
                 <h1 class="text-lg font-semibold">{settingsTab === 'ai' ? 'AI Settings' : 'Keyboard Shortcuts'}</h1>
@@ -303,14 +302,14 @@
             </div>
             <!-- AI SETTINGS TAB -->
             <TabsContent value="ai" class="flex-1 flex flex-col overflow-y-auto min-h-0 space-y-2.5">
-              <div class="grid gap-3 md:grid-cols-2">
+              <div class="flex flex-col gap-3 max-w-[520px]">
                 <!-- API Key -->
                 <div>
                   <label
                     for="openrouter-api-key"
                     class="block text-sm font-medium mb-1"
                   >
-                    OpenRouter\u00A0API\u00A0Key
+                    OpenRouter API Key
                   </label>
                   <Input
                     id="openrouter-api-key"
@@ -355,9 +354,7 @@
                     </Select.Content>
                   </Select.Root>
 
-                  <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">
-                    Default model for summarization
-                  </p>
+                  <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">Default model for summarization</p>
                 </div>
               </div>
 
