@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@internationalized/date": "^3.8.2",
-    "@lucide/svelte": "^0.515.0",
+    "@lucide/svelte": "^0.539.0",
     "@sveltejs/adapter-auto": "^6.1.0",
     "@sveltejs/adapter-cloudflare": "^7.1.3",
     "@sveltejs/kit": "^2.30.1",
@@ -35,7 +35,7 @@
     "svelte-check": "^4.3.1",
     "svelte-sonner": "^1.0.5",
     "tailwind-merge": "^3.3.1",
-    "tailwind-variants": "^1.0.0",
+    "tailwind-variants": "^2.1.0",
     "tailwindcss": "^4.1.12",
     "tw-animate-css": "^1.3.6",
     "typescript": "^5.9.2",
