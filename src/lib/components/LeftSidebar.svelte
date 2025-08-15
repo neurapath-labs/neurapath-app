@@ -179,7 +179,7 @@
 	<nav id="quick-actions" class="flex flex-col gap-1 text-sm">
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.10)] hover:shadow-[inset_2px_0_0_0_rgb(var(--background-color_button))] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color_button),0.18)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={() => modal.openSpotlightSearchModal()}
 		>
 			<SearchIcon class="h-4 w-4" /><span>Search</span>
@@ -193,7 +193,7 @@
 		
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.10)] hover:shadow-[inset_2px_0_0_0_rgb(var(--background-color_button))] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color_button),0.18)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={() => modal.openSettingsModal()}
 		>
 			<UserIcon class="h-4 w-4" /><span>Settings</span>
@@ -201,7 +201,7 @@
 
 		<button
 			type="button"
-			class="action relative flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.10)] hover:shadow-[inset_2px_0_0_0_rgb(var(--background-color_button))] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
+			class="action relative flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color_button),0.18)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={toggleTheme}
 		>
 			<SunIcon
@@ -223,7 +223,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.10)] hover:shadow-[inset_2px_0_0_0_rgb(var(--background-color_button))] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color_button),0.18)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={renderImportExport}
 		>
 			<DatabaseIcon class="h-4 w-4" /><span>Import/export</span>
@@ -233,7 +233,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.10)] hover:shadow-[inset_2px_0_0_0_rgb(var(--background-color_button))] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color_button),0.18)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={renderExplorer}
 		>
 			<SearchIcon class="h-4 w-4" /><span>Item explorer</span>
@@ -241,7 +241,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.10)] hover:shadow-[inset_2px_0_0_0_rgb(var(--background-color_button))] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color_button),0.18)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={renderFlagged}
 		>
 			<FlagIcon class="h-4 w-4" /><span>Flagged items</span>
@@ -249,7 +249,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.10)] hover:shadow-[inset_2px_0_0_0_rgb(var(--background-color_button))] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color_button),0.18)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={renderStatistics}
 		>
 			<BarChartIcon class="h-4 w-4" /><span>Statistics</span>
@@ -257,7 +257,7 @@
 
 		<button
 			type="button"
-			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color),0.12)] hover:shadow-[inset_3px_0_0_0_rgb(var(--background-color_button))] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
+			class="action flex items-center gap-2 rounded px-2 py-1 hover:bg-[rgba(var(--background-color_button),0.18)] active:bg-[rgba(var(--background-color),0.14)] cursor-pointer"
 			onclick={handleLogout}
 		>
 			<LogOutIcon class="h-4 w-4" /><span>Logout</span>

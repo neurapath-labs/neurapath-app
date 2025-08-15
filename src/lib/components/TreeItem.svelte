@@ -119,7 +119,7 @@
 	<button
 		type="button"
 		data-fullpath={fullPath()}
-		class="flex cursor-pointer items-center gap-1 rounded px-1 py-[2px] text-sm hover:bg-[rgba(var(--background-color),0.10)] hover:shadow-[inset_2px_0_0_0_rgb(var(--background-color_button))] {activeItemId === fullPath() ? 'bg-[rgba(var(--background-color),0.14)]' : ''} {isDragOver ? 'bg-blue-100' : ''} w-full text-left"
+		class="flex cursor-pointer items-center gap-1 rounded px-1 py-[2px] text-sm hover:bg-[rgba(var(--background-color_button),0.18)] {activeItemId === fullPath() ? 'bg-[rgba(var(--background-color),0.14)]' : ''} {isDragOver ? 'bg-blue-100' : ''} w-full text-left"
 		onclick={isFolder() ? toggleFolder : selectItem}
 		oncontextmenu={openContext}
 		draggable={true}

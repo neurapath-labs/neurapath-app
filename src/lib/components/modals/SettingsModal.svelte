@@ -344,7 +344,7 @@
 
           <!-- Shortcuts table -->
           <div
-            class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))] min-h-0"
+            class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))] min-h-0 scrollable-shortcuts"
           >
             <table class="w-full text-sm">
               <thead
@@ -404,3 +404,30 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
+
+<style>
+  :global(.scrollable-shortcuts) {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--background-color_button), 0.6)
+                      rgba(var(--background-color), 0.06);
+  }
+
+  :global(.scrollable-shortcuts::-webkit-scrollbar) {
+    width: 8px;
+  }
+
+  :global(.scrollable-shortcuts::-webkit-scrollbar-track) {
+    background: rgba(var(--background-color), 0.06);
+    border-radius: 8px;
+  }
+
+  :global(.scrollable-shortcuts::-webkit-scrollbar-thumb) {
+    background-color: rgba(var(--background-color_button), 0.6);
+    border-radius: 8px;
+    border: 2px solid rgb(var(--background-color_modalbox));
+  }
+
+  :global(.scrollable-shortcuts::-webkit-scrollbar-thumb:hover) {
+    background-color: rgba(var(--background-color_button), 0.75);
+  }
+</style>
