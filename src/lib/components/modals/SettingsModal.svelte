@@ -245,12 +245,12 @@
         <TabsList class="mb-6 w-full bg-[rgba(var(--background-color),0.08)] text-[rgb(var(--font-color))]">
           <TabsTrigger
             value="ai"
-            class="flex-1 cursor-pointer text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))]"
+            class="flex-1 cursor-pointer text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-md hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))] data-[state=active]:border-2 data-[state=active]:border-[rgb(var(--background-color_button))]"
             ><BrainIcon />AI&nbsp;Settings</TabsTrigger
           >
           <TabsTrigger
             value="shortcuts"
-            class="flex-1 cursor-pointer text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))]"
+            class="flex-1 cursor-pointer text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-md hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))] data-[state=active]:border-2 data-[state=active]:border-[rgb(var(--background-color_button))]"
             ><KeyboardIcon />Keyboard&nbsp;Shortcuts</TabsTrigger
           >
         </TabsList>
