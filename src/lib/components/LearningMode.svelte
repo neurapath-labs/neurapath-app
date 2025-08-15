@@ -396,7 +396,7 @@
       </div>
 
       <!-- Question / Answer (single box) -->
-      <div class="mb-5 flex flex-col flex-1 overflow-hidden">
+      <div class="mb-5 flex flex-col flex-1 overflow-hidden bg-[rgb(var(--background-color_sidebar))] rounded border border-[rgb(var(--background-color))] p-3">
         <h3 class="text-lg mb-2">{showAnswer ? 'Answer' : 'Question'}</h3>
         {#if currentRecord.contentType === 'Occlusion' && currentRecord.url}
           <div class="relative inline-block max-w-full">
@@ -435,8 +435,8 @@
 
     <!-- Footer actions -->
     <div class="flex justify-center gap-5 mt-5">
-      <Button class="px-4 py-2 bg-blue-600 text-white rounded text-sm" onclick={toggleFlag}>{currentRecord.isFlagged ? 'Unflag Item (F)' : 'Flag Item (F)'}</Button>
-      <Button class="px-4 py-2 bg-gray-500 text-white rounded text-sm" onclick={moveToNextItem} variant="secondary">Skip (S)</Button>
+      <Button class="px-4 py-2 rounded text-sm bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] border border-[rgb(var(--background-color))]" onclick={toggleFlag}>{currentRecord.isFlagged ? 'Unflag Item (F)' : 'Flag Item (F)'}</Button>
+      <Button class="px-4 py-2 rounded text-sm bg-[rgba(var(--background-color),0.2)] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.3)] border border-[rgb(var(--background-color))]" onclick={moveToNextItem}" variant="secondary">Skip (S)</Button>
     </div>
   {:else}
     <!-- No items message -->
