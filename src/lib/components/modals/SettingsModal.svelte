@@ -123,6 +123,9 @@
 
     const handle = (e: KeyboardEvent) => {
       e.preventDefault();
+      e.stopPropagation();
+      // @ts-ignore optional API in some browsers
+      e.stopImmediatePropagation?.();
       const newShortcut: Shortcut = {
         event,
         keyCode: e.keyCode,
@@ -243,7 +246,7 @@
 
     <Dialog.Content
       class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-             w-[90vw] max-w-[650px] max-h-[90vh]
+             w-[90vw] max-w-[650px] max-h-[90vh] min-h-[520px]
              grid grid-rows-[auto_1fr_auto] overflow-hidden
              rounded-lg border border-[rgb(var(--background-color))]
              bg-[rgb(var(--background-color_modalbox))]
@@ -272,7 +275,7 @@
         </TabsList>
 
         <!-- AI SETTINGS TAB -->
-        <TabsContent value="ai" class="space-y-4 overflow-y-auto">
+        <TabsContent value="ai" class="flex-1 flex flex-col overflow-y-auto min-h-0 space-y-4">
           <div class="grid gap-6 md:grid-cols-2">
             <!-- API Key -->
             <div>
@@ -352,7 +355,7 @@
                      bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] placeholder:!text-[rgba(var(--font-color),0.6)] text-sm flex-1 min-w-[200px]"
               oninput={() => queueShortcutAutosave()}
             />
-            <Button variant="ghost" size="sm" onclick={resetToDefaults} class="cursor-pointer hover:bg-black/5"
+            <Button variant="ghost" size="sm" onclick={resetToDefaults} class="cursor-pointer hover:bg-[rgba(var(--background-color),0.14)] active:bg-[rgba(var(--background-color),0.18)] hover:text-[rgb(var(--font-color))]"
               >Reset to Defaults</Button
             >
             <span class="text-xs text-[rgb(var(--font-color-secondary))]">Changes are saved automatically.</span>

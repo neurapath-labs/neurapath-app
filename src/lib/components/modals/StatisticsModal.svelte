@@ -166,7 +166,7 @@
           <h3 class="text-lg font-semibold">Item Distribution</h3>
 
           <!-- Always render – pieData is ensured to have non‑zero values -->
-          <Chart.Container config={pieConfig} class="h-[300px] w-full max-w-[350px]">
+          <Chart.Container config={pieConfig} class="h-[260px] w-full max-w-[300px]">
             <PieChart
               data={pieData}
               key="type"
@@ -193,12 +193,12 @@
           <h3 class="text-lg font-semibold">Daily Activity</h3>
           {#if repetitionData.length}
             {@const max = getMaxRepetitionCount()}
-            {@const h = 200}
-            {@const w = 320}
+            {@const h = 170}
+            {@const w = 280}
             {@const bw = w / repetitionData.length - 10}
             <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
               {#each repetitionData as d, i}
-                {@const bh = max ? (d.count / max) * 160 : 0}
+                {@const bh = max ? (d.count / max) * 140 : 0}
                 {@const x = i * (w / repetitionData.length) + 10}
                 {@const y = h - bh - 20}
                 <rect x={x} y={y} width={bw} height={bh} fill="#4e79a7" />
@@ -218,12 +218,12 @@
           <h3 class="text-lg font-semibold">E‑Factor Distribution</h3>
           {#if efactorData.length}
             {@const maxE = getMaxEFactor()}
-            {@const h = 200}
-            {@const w = 320}
+            {@const h = 170}
+            {@const w = 280}
             {@const bw = w / efactorData.length - 10}
             <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
               {#each efactorData as d, i}
-                {@const bh = maxE ? (d.efactor / maxE) * 160 : 0}
+                {@const bh = maxE ? (d.efactor / maxE) * 140 : 0}
                 {@const x = i * (w / efactorData.length) + 10}
                 {@const y = h - bh - 20}
                 <rect x={x} y={y} width={bw} height={bh} fill="#e15759" />
