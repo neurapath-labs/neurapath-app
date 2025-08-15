@@ -260,7 +260,12 @@
             .replace(/>/g, '&gt;');
         const safe = escapeHtml(text);
         const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        return safe.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800">$1</mark>');
+        // Use theme-aware highlight for better readability
+        // Light: soft yellow; Dark: brand accent with contrasting text
+        return safe.replace(
+            regex,
+            '<mark class="px-0.5 rounded bg-yellow-200 text-black dark:bg-[rgba(var(--background-color_button),0.35)] dark:text-[rgb(var(--font-color))]">$1</mark>'
+        );
     }
 	
 	function highlightItemText(item: Record, searchTerm: string): string {

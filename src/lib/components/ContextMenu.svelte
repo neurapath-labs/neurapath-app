@@ -360,21 +360,21 @@
 ------------------------------------------------------------------- -->
 <!-- Dynamic menu ------------------------------------------------- -->
 <div
-	class="min-w-40 bg-popover text-popover-foreground rounded-md border p-1 shadow-md z-50"
+	class="min-w-40 rounded-md border p-1 shadow-md z-50 bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] border-[rgb(var(--background-color))]"
 	style="position: fixed; top: {ctx.y}px; left: {ctx.x}px; display: {ctx.isVisible
 		? 'block'
 		: 'none'};"
 >
 	{#if ctx.targetType === null || ctx.targetType === "sidebar-background"}
 			<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
 			onclick={createRootText}
 		>
 			<FilePlusIcon class="h-4 w-4" />
 			<span>Create text</span>
 		</button>
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
 			onclick={createRootFolder}
 		>
 			<FolderPlusIcon class="h-4 w-4" />
@@ -384,7 +384,7 @@
 		<!-- Create folder and text options for folders -->
 		{#if targetRecord && targetRecord.contentType === "Folder"}
 			<button
-				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
 				onclick={createFolderInFolder}
 				disabled={!ctx.targetId}
 			>
@@ -392,7 +392,7 @@
 				<span>Create folder</span>
 			</button>
 			<button
-				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
 				onclick={createTextInFolder}
 				disabled={!ctx.targetId}
 			>
@@ -403,7 +403,7 @@
 		{/if}
 		
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
 			onclick={flagItem}
 			disabled={!ctx.targetId}
 		>
@@ -417,7 +417,7 @@
 			{/if}
 		</button>
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
 			onclick={duplicateItem}
 			disabled={!ctx.targetId}
 		>
@@ -425,7 +425,7 @@
 			<span>Duplicate item</span>
 		</button>
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
 			onclick={renameItem}
 			disabled={!ctx.targetId}
 		>
@@ -433,7 +433,7 @@
 			<span>Rename item</span>
 		</button>
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm hover:bg-accent hover:text-accent-foreground rounded cursor-pointer text-red-500"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))] text-red-500"
 			onclick={removeItem}
 			disabled={!ctx.targetId}
 		>

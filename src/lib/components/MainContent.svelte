@@ -487,6 +487,7 @@
   function applyHighlightsForRecord(record: Record) {
     if (!quill) return;
     const YELLOW = '#f9ff24';
+    const THEME_CLOZE_BG = `rgba(var(--background-color_button), 0.35)`;
     try {
       // Clear any previous background highlights before applying fresh ones
       const totalLength = quill.getLength();
@@ -498,14 +499,14 @@
         record.clozes.forEach((c) => {
           const start = c.startindex;
           const len = Math.max(0, c.stopindex - c.startindex);
-          if (len > 0) quill!.formatText(start, len, { background: YELLOW });
+          if (len > 0) quill!.formatText(start, len, { background: THEME_CLOZE_BG });
         });
       } else if (record.contentType === 'Cloze' && record.clozes && record.clozes.length > 0) {
         // Only highlight the specific cloze of this subitem
         const c = record.clozes[0];
         const start = c.startindex;
         const len = Math.max(0, c.stopindex - c.startindex);
-        if (len > 0) quill!.formatText(start, len, { background: YELLOW });
+        if (len > 0) quill!.formatText(start, len, { background: THEME_CLOZE_BG });
       }
     } catch (e) {
       // Non-fatal: highlighting is best-effort
