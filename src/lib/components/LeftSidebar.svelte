@@ -26,8 +26,7 @@
 	import FlagIcon from "@lucide/svelte/icons/flag";
 	import BarChartIcon from "@lucide/svelte/icons/bar-chart";
 	import LogOutIcon from "@lucide/svelte/icons/log-out";
-	import PlayCircleIcon from "@lucide/svelte/icons/play-circle";
-	import StopCircleIcon from "@lucide/svelte/icons/stop-circle";
+	import BrainIcon from "@lucide/svelte/icons/brain";
 
 	/* ────────── local state (runes) ────────── */
 	let learningMode = $state(false);
@@ -175,10 +174,10 @@
 		onclick={toggleLearningMode}
 	>
 		{#if learningMode}
-			<StopCircleIcon class="h-4 w-4" />
+			<BrainIcon class="h-4 w-4" />
 			<span>Stop practice mode</span>
 		{:else}
-			<PlayCircleIcon class="h-4 w-4" />
+			<BrainIcon class="h-4 w-4" />
 			<span>Practice mode</span>
 		{/if}
 	</Button>

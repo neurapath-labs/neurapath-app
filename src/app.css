@@ -194,3 +194,100 @@
 .ql-editor.ql-blank::before {
   color: rgba(var(--font-color), 0.5);
 }
+/* Quill Bubble toolbar/tooltip theme sync */
+.ql-bubble .ql-tooltip {
+  background-color: rgb(var(--background-color_modalbox));
+  color: rgb(var(--font-color));
+  border: 1px solid rgb(var(--background-color));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.ql-bubble .ql-tooltip a {
+  color: inherit;
+}
+
+.ql-bubble .ql-tooltip .ql-formats button,
+.ql-bubble .ql-tooltip .ql-formats .ql-picker-label {
+  color: rgb(var(--font-color));
+}
+
+.ql-bubble .ql-tooltip .ql-formats button:hover,
+.ql-bubble .ql-tooltip .ql-formats .ql-picker-label:hover {
+  background-color: rgba(var(--background-color), 0.12);
+}
+
+.ql-bubble .ql-tooltip .ql-formats button.ql-active,
+.ql-bubble .ql-tooltip .ql-formats .ql-picker-label.ql-active {
+  background-color: rgba(var(--background-color_button), 0.18);
+  color: rgb(var(--font-color));
+}
+
+/* Light mode: make hover/active toolbar text a bit darker for readability */
+:root .ql-bubble .ql-tooltip .ql-formats button:hover,
+:root .ql-bubble .ql-tooltip .ql-formats .ql-picker-label:hover {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+:root .ql-bubble .ql-tooltip .ql-formats button.ql-active,
+:root .ql-bubble .ql-tooltip .ql-formats .ql-picker-label.ql-active {
+  color: rgba(0, 0, 0, 0.92);
+}
+
+/* Ensure icons in toolbar (stroke/fill) follow text color on hover/active */
+.ql-bubble .ql-tooltip .ql-formats button:hover .ql-stroke,
+.ql-bubble .ql-tooltip .ql-formats button.ql-active .ql-stroke,
+.ql-bubble .ql-tooltip .ql-formats .ql-picker-label:hover .ql-stroke,
+.ql-bubble .ql-tooltip .ql-formats .ql-picker-label.ql-active .ql-stroke {
+  stroke: currentColor !important;
+}
+
+.ql-bubble .ql-tooltip .ql-formats button:hover .ql-fill,
+.ql-bubble .ql-tooltip .ql-formats button.ql-active .ql-fill,
+.ql-bubble .ql-tooltip .ql-formats .ql-picker-label:hover .ql-fill,
+.ql-bubble .ql-tooltip .ql-formats .ql-picker-label.ql-active .ql-fill {
+  fill: currentColor !important;
+}
+
+/* Light mode: provide non-white hover backgrounds so items don't disappear */
+:root .ql-bubble .ql-tooltip .ql-formats button:hover,
+:root .ql-bubble .ql-tooltip .ql-formats .ql-picker-label:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+:root .ql-bubble .ql-tooltip .ql-formats button.ql-active,
+:root .ql-bubble .ql-tooltip .ql-formats .ql-picker-label.ql-active {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Dark mode: clearer hover/active backgrounds with themed text */
+.dark .ql-bubble .ql-tooltip .ql-formats button:hover,
+.dark .ql-bubble .ql-tooltip .ql-formats .ql-picker-label:hover {
+  background-color: rgba(var(--background-color), 0.22) !important;
+  color: rgb(var(--font-color)) !important;
+}
+
+.dark .ql-bubble .ql-tooltip .ql-formats button.ql-active,
+.dark .ql-bubble .ql-tooltip .ql-formats .ql-picker-label.ql-active {
+  background-color: rgba(var(--background-color_button), 0.25) !important;
+  color: rgb(var(--font-color)) !important;
+}
+
+.ql-bubble .ql-tooltip input[type="text"] {
+  background-color: rgb(var(--background-color_input));
+  color: rgb(var(--font-color));
+  border: 1px solid rgb(var(--background-color));
+}
+
+.ql-bubble .ql-tooltip .ql-picker-options {
+  background-color: rgb(var(--background-color_modalbox));
+  border: 1px solid rgb(var(--background-color));
+}
+
+/* Tooltip arrow colors */
+.ql-bubble .ql-tooltip:not(.ql-flip) .ql-tooltip-arrow {
+  border-bottom-color: rgb(var(--background-color_modalbox));
+}
+
+.ql-bubble .ql-tooltip.ql-flip .ql-tooltip-arrow {
+  border-top-color: rgb(var(--background-color_modalbox));
+}
