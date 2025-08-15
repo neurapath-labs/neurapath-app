@@ -57,13 +57,14 @@
              text-[rgb(var(--font-color))] p-8 shadow-lg focus:outline-none z-50"
     >
       <!-- Header -->
-      <div class="flex items-center gap-3 mb-4">
+      <div class="flex items-center gap-3 mb-2">
         <BookOpenIcon class="w-10 h-10" />
         <h1 class="text-2xl font-semibold">Quick start ({currentStep}/{totalSteps})</h1>
       </div>
+      <p class="text-sm italic opacity-80 mb-4">A few tips to get productive fast.</p>
 
       <!-- Body -->
-      <div class="overflow-y-auto pr-1">
+      <div class="overflow-y-auto pr-1 text-base leading-relaxed prose prose-sm dark:prose-invert max-w-none">
         {#if currentStep === 1}
           <div class="flex flex-col items-center gap-2 mb-4">
             <BookOpenIcon class="w-[72px] h-[72px]" />

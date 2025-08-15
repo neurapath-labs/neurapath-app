@@ -13,6 +13,7 @@
 	import ExportImportModal from '$lib/components/modals/ExportImportModal.svelte';
 	import SummarizeModal from '$lib/components/modals/SummarizeModal.svelte';
 	import TutorialModal from '$lib/components/modals/TutorialModal.svelte';
+	import PolicyModal from '$lib/components/modals/PolicyModal.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import { keyboardService } from '$lib/services/keyboard.service';
 	import { database } from '$lib/stores/database.store';
@@ -43,7 +44,7 @@
 	// Initialize keyboard service
 	onMount(() => {
 		// Keyboard service is automatically initialized as a singleton
-		ui.openTutorial();
+		ui.openPolicy();
 	});
 
 	// Cleanup keyboard service
@@ -82,6 +83,7 @@
 <SettingsModal />
 <ExportImportModal />
 <SummarizeModal />
+<PolicyModal />
 <TutorialModal />
 
 <style>
