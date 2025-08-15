@@ -168,7 +168,7 @@
 		class={`rounded-md px-4 py-2 font-medium transition-colors cursor-pointer ${
 			learningMode
 				? "bg-red-500/90 text-white hover:bg-red-600"
-				: "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))]"
+				: "bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] hover:text-[rgb(var(--font-color_button))] border-[rgb(var(--background-color_button))] dark:bg-[rgb(var(--background-color_button))] dark:text-[rgb(var(--font-color_button))] dark:hover:bg-[rgb(var(--background-color_button-hover))] dark:hover:text-[rgb(var(--font-color_button))] dark:border-[rgb(var(--background-color_button))]"
 		}`}
 		onclick={toggleLearningMode}
 	>

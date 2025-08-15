@@ -242,7 +242,7 @@
 
       <!-- Tabs -->
       <Tabs value="ai" class="flex flex-col h-full">
-        <TabsList class="mb-6 w-full">
+        <TabsList class="mb-6 w-full bg-[rgba(var(--background-color),0.08)] text-[rgb(var(--font-color))]">
           <TabsTrigger
             value="ai"
             class="flex-1 cursor-pointer text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))]"
@@ -272,7 +272,7 @@
                 bind:value={openRouterApiKey}
                 placeholder="sk-..."
                 class="w-full px-3 py-2 rounded border border-[rgb(var(--background-color))]
-                       bg-[rgb(var(--background-color_input))] text-sm"
+                       bg-[rgb(var(--background-color_input))] text-[rgb(var(--font-color))] text-sm"
                 oninput={handleApiKeyInput}
               />
               <p class="mt-1 text-xs text-[rgb(var(--font-color-secondary))]">
@@ -294,7 +294,7 @@
                 name="openRouterModel"
                 bind:value={openRouterModel}
               >
-                <Select.Trigger class="w-full">
+                <Select.Trigger class="w-full text-[rgb(var(--font-color))]">
                   {modelTriggerContent}
                 </Select.Trigger>
 
