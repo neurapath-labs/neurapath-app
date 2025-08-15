@@ -375,7 +375,7 @@
       
     } catch (error) {
       console.error('Error saving content to database:', error);
-      toast('Error saving content');
+      toast.error('Error saving content');
     }
   };
 
@@ -628,7 +628,7 @@
 
               // 3) Clear selection and notify
               quill.setSelection(null);
-              toast('Cloze removed');
+              toast.success('Cloze removed');
               return;
             }
           }
@@ -679,13 +679,13 @@
           
           quill.setSelection(null);
         }
-        toast('Cloze created successfully');
+        toast.success('Cloze created successfully');
       } catch (error) {
         console.error('Error creating cloze:', error);
-        toast('Error creating cloze');
+        toast.error('Error creating cloze');
       }
     } else {
-      toast('Please select text to create a cloze');
+      toast.info('Please select text to create a cloze');
     }
   };
 
@@ -726,13 +726,13 @@
           
           quill.setSelection(null);
         }
-        toast('Extract created successfully');
+        toast.success('Extract created successfully');
       } catch (error) {
         console.error('Error creating extract:', error);
-        toast('Error creating extract');
+        toast.error('Error creating extract');
       }
     } else {
-      toast('Please select text to create an extract');
+      toast.info('Please select text to create an extract');
     }
   };
 
@@ -774,13 +774,13 @@
         if (quill) {
           quill.setSelection(null);
         }
-        toast('Text summarized successfully');
+        toast.success('Text summarized successfully');
       } catch (error) {
         console.error('Error summarizing text:', error);
-        toast('Error summarizing text');
+        toast.error('Error summarizing text');
       }
     } else {
-      toast('Please select text to summarize');
+      toast.info('Please select text to summarize');
     }
   };
 
@@ -791,13 +791,13 @@
         // This would typically involve creating occlusions from the active image
         // For now, we'll just show a success message
         
-        toast('Occlusion created successfully');
+        toast.success('Occlusion created successfully');
       } catch (error) {
         console.error('Error creating occlusion:', error);
-        toast('Error creating occlusion');
+        toast.error('Error creating occlusion');
       }
     } else {
-      toast('No active record to create occlusion');
+      toast.info('No active record to create occlusion');
     }
   };
 
@@ -814,10 +814,10 @@
         toast(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`);
       } catch (error) {
         console.error('Error flagging item:', error);
-        toast('Error flagging item');
+        toast.error('Error flagging item');
       }
     } else {
-      toast('No active record to flag');
+      toast.info('No active record to flag');
     }
   };
 
@@ -851,10 +851,10 @@
             }
           };
           reader.readAsDataURL(file);
-          toast('Image imported successfully');
+          toast.success('Image imported successfully');
         } catch (error) {
           console.error('Error importing image:', error);
-          toast('Error importing image');
+          toast.error('Error importing image');
         }
       }
       // Handle PDF files
@@ -862,10 +862,10 @@
         try {
           // In a real implementation, this would parse the PDF and create records
           
-          toast('PDF imported successfully');
+          toast.success('PDF imported successfully');
         } catch (error) {
           console.error('Error importing PDF:', error);
-          toast('Error importing PDF');
+          toast.error('Error importing PDF');
         }
       }
       // Handle text files
@@ -880,10 +880,10 @@
             }
           };
           reader.readAsText(file);
-          toast('Text imported successfully');
+          toast.success('Text imported successfully');
         } catch (error) {
           console.error('Error importing text:', error);
-          toast('Error importing text');
+          toast.error('Error importing text');
         }
       }
     }

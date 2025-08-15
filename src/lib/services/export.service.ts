@@ -36,11 +36,11 @@ export const exportDatabaseToJSON = async (): Promise<boolean> => {
     // Clean up URL object
     URL.revokeObjectURL(url);
     
-    toast('Database exported successfully!');
+    toast.success('Database exported successfully!');
     return true;
   } catch (error) {
     console.error('Error exporting database:', error);
-    toast('Failed to export database. Please try again.');
+    toast.error('Failed to export database. Please try again.');
     return false;
   }
 };
@@ -99,11 +99,11 @@ export const exportDatabaseToCSV = async (): Promise<boolean> => {
     // Clean up URL object
     URL.revokeObjectURL(url);
     
-    toast('Database exported successfully!');
+    toast.success('Database exported successfully!');
     return true;
   } catch (error) {
     console.error('Error exporting database:', error);
-    toast('Failed to export database. Please try again.');
+    toast.error('Failed to export database. Please try again.');
     return false;
   }
 };
@@ -123,12 +123,12 @@ export const importDatabaseFromJSON = async (file: File): Promise<boolean> => {
     // Update database store
     database.set(importedData);
     
-    toast('Database imported successfully!');
+    toast.success('Database imported successfully!');
     return true;
   } catch (error: unknown) {
     console.error('Error importing database:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    toast(`Failed to import database: ${errorMessage}`);
+    toast.error(`Failed to import database: ${errorMessage}`);
     return false;
   }
 };
@@ -211,12 +211,12 @@ export const importDatabaseFromCSV = async (file: File): Promise<boolean> => {
     // Update database store
     database.set({ items });
     
-    toast('Database imported successfully!');
+    toast.success('Database imported successfully!');
     return true;
   } catch (error: unknown) {
     console.error('Error importing database:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    toast(`Failed to import database: ${errorMessage}`);
+    toast.error(`Failed to import database: ${errorMessage}`);
     return false;
   }
 };

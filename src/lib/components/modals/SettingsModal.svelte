@@ -136,7 +136,7 @@
 
       shortcuts = shortcuts.map((s) => (s.event === event ? newShortcut : s));
       // Toast and autosave after capture
-      toast(`Shortcut updated: ${humanizeShortcutEvent(event)} → ${newShortcut.combination}`);
+      toast.success(`Shortcut updated: ${humanizeShortcutEvent(event)} → ${newShortcut.combination}`);
       queueShortcutAutosave();
       isRecording = false;
       recordingEvent = null;
@@ -153,10 +153,10 @@
       for (const s of shortcuts) {
         await profile.updateShortcut(s.event, s);
       }
-      toast("Keyboard shortcuts saved");
+      // toast.success("Keyboard shortcuts saved");
     } catch (e) {
       console.error("Error saving shortcuts:", e);
-      toast("Error saving keyboard shortcuts");
+      toast.error("Error saving keyboard shortcuts");
     } finally {
       isSavingShortcuts = false;
     }
@@ -175,10 +175,10 @@
     try {
       // Save AI settings to profile
       await profile.updateProfile({ openRouterApiKey, openRouterModel });
-      if (!silent) toast("AI settings saved");
+      if (!silent) toast.success("AI settings saved");
     } catch (error) {
       console.error("Error saving AI settings:", error);
-      if (!silent) toast("Error saving AI settings");
+      if (!silent) toast.error("Error saving AI settings");
     } finally {
       isSaving = false;
     }
@@ -187,7 +187,7 @@
   function handleApiKeyInput() {
     // Save on every keypress
     saveAiSettings(true);
-    toast("Saved OpenRouter API key");
+    toast.info("Saved OpenRouter API key");
   }
 
   // Autosave when model selection changes
@@ -199,14 +199,14 @@
       if (isSettingsModalOpen) {
         saveAiSettings(true);
         const modelLabel = models.find((m) => m.value === currentModel)?.label || currentModel;
-        toast(`Saved AI model: ${modelLabel}`);
+        toast.success(`Saved AI model: ${modelLabel}`);
       }
     }
   });
 
   function resetToDefaults() {
     profile.resetShortcutsToDefault();
-    toast("Shortcuts reset to defaults");
+    toast.success("Shortcuts reset to defaults");
   }
 
   function filterShortcuts() {
@@ -241,16 +241,16 @@
       </div>
 
       <!-- Tabs -->
-      <Tabs value="ai" class="flex flex-col h-full">
+      <Tabs value="ai" class="flex flex-col h-full min-h-0">
         <TabsList class="mb-6 w-full bg-[rgba(var(--background-color),0.08)] text-[rgb(var(--font-color))]">
           <TabsTrigger
             value="ai"
-            class="flex-1 cursor-pointer text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-md hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))] data-[state=active]:border-2 data-[state=active]:border-[rgb(var(--background-color_button))]"
+            class="flex-1 cursor-pointer !text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-md hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:!text-[rgb(var(--font-color))] data-[state=active]:border-2 data-[state=active]:border-[rgb(var(--background-color_button))]"
             ><BrainIcon />AI&nbsp;Settings</TabsTrigger
           >
           <TabsTrigger
             value="shortcuts"
-            class="flex-1 cursor-pointer text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-md hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:text-[rgb(var(--font-color))] data-[state=active]:border-2 data-[state=active]:border-[rgb(var(--background-color_button))]"
+            class="flex-1 cursor-pointer !text-[rgb(var(--font-color))] border border-[rgb(var(--background-color))] rounded-md hover:bg-[rgba(var(--background-color),0.12)] data-[state=active]:bg-[rgba(var(--background-color),0.18)] data-[state=active]:!text-[rgb(var(--font-color))] data-[state=active]:border-2 data-[state=active]:border-[rgb(var(--background-color_button))]"
             ><KeyboardIcon />Keyboard&nbsp;Shortcuts</TabsTrigger
           >
         </TabsList>
@@ -324,7 +324,7 @@
         <!-- KEYBOARD SHORTCUTS TAB -->
         <TabsContent
           value="shortcuts"
-          class="flex-1 flex flex-col overflow-hidden"
+          class="flex-1 flex flex-col overflow-hidden min-h-0"
         >
           <!-- Toolbar -->
           <header class="flex items-center mb-4 gap-4 flex-wrap">
@@ -344,7 +344,7 @@
 
           <!-- Shortcuts table -->
           <div
-            class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))]"
+            class="flex-1 overflow-y-auto rounded border border-[rgb(var(--background-color))] min-h-0"
           >
             <table class="w-full text-sm">
               <thead

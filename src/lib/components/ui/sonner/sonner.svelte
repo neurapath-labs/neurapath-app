@@ -28,12 +28,12 @@
 	{...restProps}
 >
 	{#snippet successIcon()}
-		<CheckCircleIcon />
+		<CheckCircleIcon class="size-4" />
 	{/snippet}
 	{#snippet errorIcon()}
-		<XCircleIcon />
+		<XCircleIcon class="size-4" />
 	{/snippet}
 	{#snippet infoIcon()}
-		<InfoIcon />
+		<InfoIcon class="size-4" />
 	{/snippet}
 </Sonner>

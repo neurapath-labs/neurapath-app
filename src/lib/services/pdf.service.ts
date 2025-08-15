@@ -59,7 +59,7 @@ export const createLearningItemsFromPDF = async (fileName: string, content: stri
     await database.addRecord(newExtract);
     
     // Show success message
-    toast(`Successfully imported ${fileName}`);
+    toast.success(`Successfully imported ${fileName}`);
   } catch (error) {
     console.error('Error creating learning items from PDF:', error);
     throw new Error('Failed to create learning items from PDF');
@@ -70,7 +70,7 @@ export const createLearningItemsFromPDF = async (fileName: string, content: stri
 export const processPDFFile = async (file: File, folderPath: string = ''): Promise<void> => {
   try {
     // Show processing message
-    toast(`Processing ${file.name}...`);
+    toast.info(`Processing ${file.name}...`);
     
     // Extract text from PDF
     const extractedText = await extractTextFromPDF(file);
@@ -79,7 +79,7 @@ export const processPDFFile = async (file: File, folderPath: string = ''): Promi
     await createLearningItemsFromPDF(file.name, extractedText, folderPath);
   } catch (error: any) {
     console.error('Error processing PDF file:', error);
-    toast(`Error processing ${file.name}: ${error.message}`);
+    toast.error(`Error processing ${file.name}: ${error.message}`);
     throw error;
   }
 };

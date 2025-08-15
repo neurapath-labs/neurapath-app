@@ -109,12 +109,12 @@ export const summarizeSelectedText = async (apiKey: string, provider: 'openRoute
     ('Selection data:', selectionData);
     
     if (!selectionData.isSelected || !selectionData.text) {
-      toast('Please select text to summarize');
+      toast.info('Please select text to summarize');
       return false;
     }
 
     // Show processing message
-    toast('Summarizing text...');
+    toast.info('Summarizing text...');
 
     // Summarize the text
     let summary: string;
@@ -134,11 +134,11 @@ export const summarizeSelectedText = async (apiKey: string, provider: 'openRoute
     await createSummaryRecord(selectionData.text, summary, activeRecord?.id);
 
     // Show success message
-    toast('Text summarized successfully!');
+    toast.success('Text summarized successfully!');
     return true;
   } catch (error: any) {
     console.error('Error summarizing text:', error);
-    toast(`Error summarizing text: ${error.message || 'Unknown error'}`);
+    toast.error(`Error summarizing text: ${error.message || 'Unknown error'}`);
     return false;
   }
 };

@@ -51,7 +51,7 @@
       isDatabasePublic = getDatabasePublicStatus();
     } catch (error) {
       console.error('Error loading item data:', error);
-      toast('Error loading item data');
+      toast.error('Error loading item data');
     }
   }
 
@@ -62,10 +62,10 @@
     try {
       const newStatus = await toggleItemPublicStatus(targetItem.id);
       isItemPublic = newStatus;
-      toast(`Item is now ${newStatus ? 'public' : 'private'}`);
+      toast.success(`Item is now ${newStatus ? 'public' : 'private'}`);
     } catch (error) {
       console.error('Error toggling public status:', error);
-      toast('Error toggling public status');
+      toast.error('Error toggling public status');
     } finally {
       isProcessing = false;
     }
@@ -78,15 +78,15 @@
       if (isDatabasePublic) {
         await makeDatabasePrivate();
         isDatabasePublic = false;
-        toast('Database is now private');
+        toast.success('Database is now private');
       } else {
         await makeDatabasePublic();
         isDatabasePublic = true;
-        toast('Database is now public');
+        toast.success('Database is now public');
       }
     } catch (error) {
       console.error('Error toggling database public status:', error);
-      toast('Error toggling database public status');
+      toast.error('Error toggling database public status');
     } finally {
       isProcessing = false;
     }
@@ -97,10 +97,10 @@
     if (!shareableLink) return;
     try {
       await navigator.clipboard.writeText(shareableLink);
-      toast('Link copied to clipboard', 'success');
+      toast.success('Link copied to clipboard');
     } catch (error) {
       console.error('Error copying link to clipboard:', error);
-      toast('Error copying link to clipboard');
+      toast.error('Error copying link to clipboard');
     }
   }
 

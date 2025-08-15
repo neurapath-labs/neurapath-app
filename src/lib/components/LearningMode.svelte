@@ -174,9 +174,9 @@
       setTimeout(() => {
         moveToNextItem();
       }, 0);
-      toast(`Item graded with ${g}/5`);
+      toast.success(`Item graded with ${g}/5`);
     } catch {
-      toast('Error grading item');
+      toast.error('Error grading item');
     }
   }
   function moveToNextItem() {
@@ -186,7 +186,7 @@
       learning.setCurrentRecord(dueItems[currentIndex]);
     } else if (currentIndex >= dueItems.length) {
       learning.setCurrentRecord(null);
-      toast('All items reviewed!');
+      toast.info('All items reviewed!');
     }
     showAnswer = false;
   }
@@ -204,7 +204,7 @@
       learning.setCurrentRecord(updatedRecord);
     }
     
-    toast(`Item ${isFlagged ? 'flagged' : 'unflagged'}`);
+    toast.success(`Item ${isFlagged ? 'flagged' : 'unflagged'}`);
   }
   function drawOcclusionQuestion() {
     if (!questionOcclusionCanvas || !currentRecord?.url) return;

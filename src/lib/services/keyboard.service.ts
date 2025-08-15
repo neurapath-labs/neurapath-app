@@ -132,7 +132,7 @@ class KeyboardService {
       case 'input-create-occlusion-separate':
         if (!isInLearningMode) {
           // Implementation would depend on context
-          toast('Create separate occlusions functionality not yet implemented');
+          toast.info('Create separate occlusions functionality not yet implemented');
         }
         break;
 
@@ -172,7 +172,7 @@ class KeyboardService {
       case 'input-rename-item':
         if (!isInLearningMode) {
           // Implementation would depend on context
-          toast('Rename item functionality not yet implemented');
+          toast.info('Rename item functionality not yet implemented');
         }
         break;
 
@@ -233,7 +233,7 @@ class KeyboardService {
     // 
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
-      toast('Please select text to create a cloze');
+      toast.info('Please select text to create a cloze');
       return;
     }
 
@@ -248,14 +248,14 @@ class KeyboardService {
       : null;
 
     if (!activeRecord) {
-      toast('Please select an item to create a cloze first');
+      toast.info('Please select an item to create a cloze first');
       return;
     }
 
     try {
       const range = selectionData.range;
       if (!range) {
-        toast('Invalid selection range');
+        toast.error('Invalid selection range');
         return;
       }
 
@@ -292,10 +292,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      toast('Cloze created successfully');
+      toast.success('Cloze created successfully');
     } catch (error) {
       console.error('Error creating cloze:', error);
-      toast('Error creating cloze');
+      toast.error('Error creating cloze');
     }
   }
 
@@ -304,7 +304,7 @@ class KeyboardService {
     const selectionData = get(selection);
 
     if (!selectionData || !selectionData.isSelected || !selectionData.text) {
-      toast('Please select text to create an extract');
+      toast.info('Please select text to create an extract');
       return;
     }
 
@@ -319,7 +319,7 @@ class KeyboardService {
       : null;
 
     if (!activeRecord) {
-      toast('Please select an item to create an extract first');
+      toast.info('Please select an item to create an extract first');
       return;
     }
 
@@ -342,10 +342,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      toast('Extract created successfully');
+      toast.success('Extract created successfully');
     } catch (error) {
       console.error('Error creating extract:', error);
-      toast('Error creating extract');
+      toast.error('Error creating extract');
     }
   }
 
@@ -355,7 +355,7 @@ class KeyboardService {
     const activeItemId = uiData.activeItemId;
     
     if (!activeItemId) {
-      toast('Please select an item to flag first');
+      toast.info('Please select an item to flag first');
       return;
     }
 
@@ -363,7 +363,7 @@ class KeyboardService {
     const activeRecord = database.getRecordById(activeItemId);
 
     if (!activeRecord || !activeRecord.id) {
-      toast('Please select an item to flag first');
+      toast.info('Please select an item to flag first');
       return;
     }
 
@@ -372,10 +372,10 @@ class KeyboardService {
       const isFlagged = !(activeRecord.isFlagged || false);
       await database.updateRecordRemotely(activeRecord.id, { isFlagged });
       
-      toast(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`);
+      toast.success(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`);
     } catch (error) {
       console.error('Error flagging item:', error);
-      toast('Error flagging item');
+      toast.error('Error flagging item');
     }
   }
 
@@ -391,7 +391,7 @@ class KeyboardService {
       : null;
 
     if (!activeRecord || !activeRecord.id) {
-      toast('Please select an item to remove first');
+      toast.info('Please select an item to remove first');
       return;
     }
 
@@ -399,10 +399,10 @@ class KeyboardService {
       // Remove from database
       await database.removeRecordById(activeRecord.id);
       
-      toast('Item removed successfully');
+      toast.success('Item removed successfully');
     } catch (error) {
       console.error('Error removing item:', error);
-      toast('Error removing item');
+      toast.error('Error removing item');
     }
   }
 
@@ -418,7 +418,7 @@ class KeyboardService {
       : null;
 
     if (!activeRecord) {
-      toast('Please select an item to duplicate first');
+      toast.info('Please select an item to duplicate first');
       return;
     }
 
@@ -434,10 +434,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      toast('Item duplicated successfully');
+      toast.success('Item duplicated successfully');
     } catch (error) {
       console.error('Error duplicating item:', error);
-      toast('Error duplicating item');
+      toast.error('Error duplicating item');
     }
   }
 
@@ -454,10 +454,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      toast('Folder created successfully');
+      toast.success('Folder created successfully');
     } catch (error) {
       console.error('Error creating folder:', error);
-      toast('Error creating folder');
+      toast.error('Error creating folder');
     }
   }
 
@@ -481,10 +481,10 @@ class KeyboardService {
       // Add to database
       await database.addRecord(newRecord);
 
-      toast('Text document created successfully');
+      toast.success('Text document created successfully');
     } catch (error) {
       console.error('Error creating text document:', error);
-      toast('Error creating text document');
+      toast.error('Error creating text document');
     }
   }
 

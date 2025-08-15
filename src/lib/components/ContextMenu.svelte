@@ -101,7 +101,7 @@
 
 	async function createRootFolder() {
 		await addRecord({ id: createID(6), contentType: "Folder" });
-		toast("Folder created");
+		toast.success("Folder created");
 		contextmenu.hideContextMenu();
 	}
 
@@ -111,7 +111,7 @@
 			contentType: "Extract",
 			content: { ops: [{ insert: "New text item" }] },
 		});
-		toast("Text created");
+		toast.success("Text created");
 		contextmenu.hideContextMenu();
 	}
 	
@@ -125,7 +125,7 @@
 			id: `${parent.id}/${createID(6)}`,
 			contentType: "Folder"
 		});
-		toast("Folder created");
+		toast.success("Folder created");
 		contextmenu.hideContextMenu();
 	}
 	
@@ -140,7 +140,7 @@
 			contentType: "Extract",
 			content: { ops: [{ insert: "New text item" }] },
 		});
-		toast("Text created");
+		toast.success("Text created");
 		contextmenu.hideContextMenu();
 	}
 
@@ -151,11 +151,11 @@
 		if (targetRecord && targetRecord.contentType === "Folder") {
 			// Use the new function to remove folder and all its contents
 			await database.removeFolderAndContents(ctx.targetId);
-			toast("Folder and contents removed");
+			toast.success("Folder and contents removed");
 		} else {
 			// Remove single item as before
 			await database.removeRecordById(ctx.targetId);
-			toast("Item removed");
+			toast.success("Item removed");
 		}
 		
 		// Save the database to ensure changes are persisted
@@ -174,7 +174,7 @@
 			contentType: "Extract",
 			content: { ops: [{ insert: sel.text }] },
 		});
-		toast("Extract created");
+		toast.success("Extract created");
 		contextmenu.hideContextMenu();
 	}
 
@@ -183,7 +183,7 @@
 		
 		const record = database.getRecordById(ctx.targetId);
 		if (!record) {
-			toast("No record found to flag");
+			toast.error("No record found to flag");
 			return;
 		}
 		
@@ -192,10 +192,10 @@
 			const isFlagged = !(record.isFlagged || false);
 			await database.updateRecordRemotely(record.id, { isFlagged });
 			
-			toast(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`);
+			toast.success(`Item ${isFlagged ? 'flagged' : 'unflagged'} successfully`);
 		} catch (error) {
 			console.error('Error flagging item:', error);
-			toast('Error flagging item');
+			toast.error('Error flagging item');
 		}
 		contextmenu.hideContextMenu();
 	}
@@ -205,7 +205,7 @@
 		
 		const record = database.getRecordById(ctx.targetId);
 		if (!record) {
-			toast("No record found to duplicate");
+			toast.error("No record found to duplicate");
 			return;
 		}
 		
@@ -254,10 +254,10 @@
 				await database.addRecord(newSubItem);
 			}
 			
-			toast('Item and subitems duplicated successfully');
+			toast.success('Item and subitems duplicated successfully');
 		} catch (error) {
 			console.error('Error duplicating item:', error);
-			toast('Error duplicating item');
+			toast.error('Error duplicating item');
 		}
 		contextmenu.hideContextMenu();
 	}
@@ -267,7 +267,7 @@
 		
 		const record = database.getRecordById(ctx.targetId);
 		if (!record) {
-			toast("No record found to rename");
+			toast.error("No record found to rename");
 			return;
 		}
 		
@@ -281,7 +281,7 @@
 			const sanitizedName = newName.trim();
 			if (sanitizedName === currentName) return; // No change
 			if (!sanitizedName) {
-				toast("Name cannot be empty");
+				toast.info("Name cannot be empty");
 				return;
 			}
 			if (sanitizedName.includes('/')) {
@@ -346,10 +346,10 @@
 				await database.addRecord(renamedChild);
 			}
 			
-			toast('Item and subitems renamed successfully');
+			toast.success('Item and subitems renamed successfully');
 		} catch (error) {
 			console.error('Error renaming item:', error);
-			toast('Error renaming item');
+			toast.error('Error renaming item');
 		}
 		contextmenu.hideContextMenu();
 	}
@@ -367,14 +367,14 @@
 >
 	{#if ctx.targetType === null || ctx.targetType === "sidebar-background"}
 			<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color_button),0.18)] hover:text-[rgb(var(--font-color))]"
 			onclick={createRootText}
 		>
 			<FilePlusIcon class="h-4 w-4" />
 			<span>Create text</span>
 		</button>
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color_button),0.18)] hover:text-[rgb(var(--font-color))]"
 			onclick={createRootFolder}
 		>
 			<FolderPlusIcon class="h-4 w-4" />
@@ -384,7 +384,7 @@
 		<!-- Create folder and text options for folders -->
 		{#if targetRecord && targetRecord.contentType === "Folder"}
 			<button
-				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
+				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color_button),0.18)] hover:text-[rgb(var(--font-color))]"
 				onclick={createFolderInFolder}
 				disabled={!ctx.targetId}
 			>
@@ -392,7 +392,7 @@
 				<span>Create folder</span>
 			</button>
 			<button
-				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
+				class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color_button),0.18)] hover:text-[rgb(var(--font-color))]"
 				onclick={createTextInFolder}
 				disabled={!ctx.targetId}
 			>
@@ -403,7 +403,7 @@
 		{/if}
 		
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color_button),0.18)] hover:text-[rgb(var(--font-color))]"
 			onclick={flagItem}
 			disabled={!ctx.targetId}
 		>
@@ -417,7 +417,7 @@
 			{/if}
 		</button>
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color_button),0.18)] hover:text-[rgb(var(--font-color))]"
 			onclick={duplicateItem}
 			disabled={!ctx.targetId}
 		>
@@ -425,7 +425,7 @@
 			<span>Duplicate item</span>
 		</button>
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))]"
+			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color_button),0.18)] hover:text-[rgb(var(--font-color))]"
 			onclick={renameItem}
 			disabled={!ctx.targetId}
 		>
@@ -433,7 +433,7 @@
 			<span>Rename item</span>
 		</button>
 		<button
-			class="flex items-center gap-2 w-full text-left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color),0.1)] hover:text-[rgb(var(--font-color))] text-red-500"
+			class="flex items-center gap-2 w-full text left px-2 py-1 text-sm rounded cursor-pointer hover:bg-[rgba(var(--background-color_button),0.18)] hover:text-[rgb(var(--font-color))] text-red-500"
 			onclick={removeItem}
 			disabled={!ctx.targetId}
 		>
