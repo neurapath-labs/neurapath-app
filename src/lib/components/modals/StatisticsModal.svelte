@@ -227,7 +227,7 @@
                 {@const x = i * (w / efactorData.length) + 10}
                 {@const y = h - bh - 20}
                 <rect x={x} y={y} width={bw} height={bh} fill="#e15759" />
-                <text x={x + bw / 2} y={h - 5} text-anchor="middle" font-size="10">{d.id.slice(0, 3)}</text>
+                <text x={x + bw / 2} y={h - 5} text-anchor="middle" font-size="10" style="fill: rgb(var(--font-color));">{d.id.slice(0, 3)}</text>
               {/each}
             </svg>
           {:else}

@@ -7,6 +7,9 @@
   import type { Record, Profile } from '$lib/models';
   import { toast } from "svelte-sonner";
   import { browser } from '$app/environment';
+  import EyeIcon from '@lucide/svelte/icons/eye';
+  import FlagIcon from '@lucide/svelte/icons/flag';
+  import SkipForwardIcon from '@lucide/svelte/icons/skip-forward';
 
   let questionEditor: HTMLDivElement | null = $state(null);
   let questionQuill: any | null = $state(null);
@@ -425,9 +428,10 @@
           <Button
             onclick={handleShowAnswer}
             size="lg"
-            class="px-6 py-3 rounded text-base border bg-[rgb(var(--background-color_sidebar))] text-[rgb(var(--font-color))] border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color_button),0.12)] hover:text-[rgb(var(--font-color))] transition-colors"
+            class="px-6 py-3 rounded text-base border bg-[rgb(var(--background-color_sidebar))] text-[rgb(var(--font-color))] border-[rgb(var(--background-color))] hover:bg-[rgba(var(--background-color_button),0.12)] hover:text-[rgb(var(--font-color))] transition-colors flex items-center gap-2"
           >
-            Show Answer (Space)
+            <EyeIcon class="size-4" />
+            <span>Show Answer (Space)</span>
           </Button>
         </div>
       {/if}
@@ -435,14 +439,20 @@
 
     <!-- Footer actions -->
     <div class="flex justify-center gap-5 mt-5">
-      <Button class="px-4 py-2 rounded text-sm bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] border border-[rgb(var(--background-color))]" onclick={toggleFlag}>{currentRecord.isFlagged ? 'Unflag Item (F)' : 'Flag Item (F)'}</Button>
-      <Button class="px-4 py-2 rounded text-sm bg-[rgba(var(--background-color),0.2)] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.3)] border border-[rgb(var(--background-color))]" onclick={moveToNextItem} variant="secondary">Skip (S)</Button>
+      <Button class="px-4 py-2 rounded text-sm bg-[rgb(var(--background-color_button))] text-[rgb(var(--font-color_button))] hover:bg-[rgb(var(--background-color_button-hover))] border border-[rgb(var(--background-color))] flex items-center gap-2" onclick={toggleFlag}>
+        <FlagIcon class="size-4" />
+        <span>{currentRecord.isFlagged ? 'Unflag Item (F)' : 'Flag Item (F)'}</span>
+      </Button>
+      <Button class="px-4 py-2 rounded text-sm bg-[rgba(var(--background-color),0.2)] text-[rgb(var(--font-color))] hover:bg-[rgba(var(--background-color),0.3)] border border-[rgb(var(--background-color))] flex items-center gap-2" onclick={moveToNextItem} variant="secondary">
+        <SkipForwardIcon class="size-4" />
+        <span>Skip (S)</span>
+      </Button>
     </div>
   {:else}
     <!-- No items message -->
     <div class="flex flex-col items-center justify-center h-full text-center gap-4">
       <h2 class="text-2xl font-semibold">No items to review</h2>
-      <p class="text-gray-500">You've completed all your reviews for now. Check back later for more items.</p>
+      <p class="text-[rgb(var(--font-color))] opacity-80">You've completed all your reviews for now. Check back later for more items.</p>
       <Button class="px-4 py-2 bg-red-600 text-white rounded text-sm" onclick={exitLearningMode} variant="destructive" size="sm">Exit Learning Mode</Button>
     </div>
   {/if}

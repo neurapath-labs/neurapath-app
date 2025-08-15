@@ -15,6 +15,7 @@
 	import ListIcon from '@lucide/svelte/icons/list';
 	import ImageIcon from '@lucide/svelte/icons/image';
 	import FileIcon from '@lucide/svelte/icons/file';
+	import FlagIcon from '@lucide/svelte/icons/flag';
 
 	/* ─────── self import for recursion ─────── */
 	import TreeItem from './TreeItem.svelte';
@@ -146,7 +147,9 @@
 		{/if}
 
 		<span class="truncate">{path.at(-1)}</span>
-		{#if record() && record()!.isFlagged} <span>🚩</span> {/if}
+		{#if record() && record()!.isFlagged}
+			<FlagIcon class="h-3.5 w-3.5 text-[rgb(var(--background-color_button))]" aria-label="Flagged" />
+		{/if}
 	</button>
 
 	<!-- children -->

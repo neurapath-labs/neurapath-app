@@ -185,7 +185,7 @@
 			<SearchIcon class="h-4 w-4" /><span>Search</span>
 			<Badge
 				variant="outline"
-				class="ml-auto text-xs border-[rgb(var(--background-color))] text-[rgb(var(--font-color))] bg-[rgba(var(--background-color),0.08)]"
+				class="ml-auto text-xs rounded-md border border-[rgb(var(--background-color))] text-[rgb(var(--font-color))] bg-[rgba(var(--background-color),0.08)] shadow-[inset_0_0_0_1px_rgba(var(--background-color),0.25)]"
 			>
 				Ctrl/Cmd + J
 			</Badge>
