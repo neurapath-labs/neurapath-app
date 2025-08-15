@@ -134,6 +134,22 @@
       };
       newShortcut.combination = formatKeyCombination(newShortcut);
 
+      // Prevent duplicate hotkeys (same key + modifiers already in use by another action)
+      const isDuplicate = shortcuts.some(
+        (s) =>
+          s.event !== event &&
+          s.keyCode === newShortcut.keyCode &&
+          s.altKey === newShortcut.altKey &&
+          s.ctrlKey === newShortcut.ctrlKey &&
+          s.metaKey === newShortcut.metaKey &&
+          s.shift === newShortcut.shift,
+      );
+      if (isDuplicate) {
+        toast.error(`Shortcut already in use: ${newShortcut.combination}`);
+        // Don't update, and keep listening so the user can try another combo without closing
+        return;
+      }
+
       shortcuts = shortcuts.map((s) => (s.event === event ? newShortcut : s));
       // Toast and autosave after capture
       toast.success(`Shortcut updated: ${humanizeShortcutEvent(event)} → ${newShortcut.combination}`);
