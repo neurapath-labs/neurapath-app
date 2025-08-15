@@ -178,6 +178,12 @@
   color: rgb(var(--font-color));
 }
 
+/* Learning mode question Quill container */
+.ql-bubble .ql-editor.ql-disabled,
+.ql-bubble .ql-editor[contenteditable="false"] {
+  background-color: rgb(var(--background-color_modalbox));
+  color: rgb(var(--font-color));
+}
 .ql-editor.ql-blank::before {
   color: rgba(var(--font-color), 0.5);
 }

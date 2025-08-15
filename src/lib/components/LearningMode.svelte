@@ -404,7 +404,7 @@
             <canvas bind:this={questionOcclusionCanvas} class="absolute inset-0 pointer-events-none"></canvas>
           </div>
         {:else}
-          <div bind:this={questionEditor} class="flex-1 overflow-auto border rounded p-2 bg-card relative"></div>
+          <div bind:this={questionEditor} class="flex-1 overflow-auto border rounded p-2 relative bg-[rgb(var(--background-color_modalbox))] text-[rgb(var(--font-color))] border-[rgb(var(--background-color))]"></div>
         {/if}
       </div>
 
