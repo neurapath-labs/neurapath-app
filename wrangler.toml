@@ -2,7 +2,8 @@ name = "neurapath-app"
 main = ".svelte-kit/cloudflare/_worker.js"
 preview_urls = false
 compatibility_flags = [ "nodejs_compat" ]
-compatibility_date = "2025-08-10"
+compatibility_date = "2025-08-19"
+minify = true
 
 routes = [
   { pattern = "neurapath.shop", custom_domain = true },
