@@ -2,7 +2,7 @@ name = "neurapath-app"
 main = ".svelte-kit/cloudflare/_worker.js"
 preview_urls = false
 compatibility_flags = [ "nodejs_compat" ]
-compatibility_date = "2025-08-19"
+compatibility_date = "2025-09-06"
 minify = true
 
 routes = [
@@ -21,7 +21,7 @@ enabled = true
 mode = "smart"
 
 [vars]
-NODE_VERSION = "24.6.0"
+NODE_VERSION = "24.7.0"
 ENVIRONMENT = "production"
 
 TURNSTILE_SECRET_KEY="0x4AAAAAABrwaiIg84oUm8STEGh9Yztgzn4"
