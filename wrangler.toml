@@ -21,7 +21,7 @@ enabled = true
 mode = "smart"
 
 [vars]
-NODE_VERSION = "24.7.0"
+NODE_VERSION = "24.8.0"
 ENVIRONMENT = "production"
 
 TURNSTILE_SECRET_KEY="0x4AAAAAABrwaiIg84oUm8STEGh9Yztgzn4"
