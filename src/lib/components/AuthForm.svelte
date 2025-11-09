@@ -9,7 +9,10 @@
 	import UserPlusIcon from "@lucide/svelte/icons/user-plus";
 	import { turnstile } from "@svelte-put/cloudflare-turnstile";
 
-	import { PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY } from "$env/static/public";
+	import { env } from "$env/dynamic/public";
+
+	const PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY =
+		env.PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ?? "";
 
 	let token = $state("");
 	$inspect(token);

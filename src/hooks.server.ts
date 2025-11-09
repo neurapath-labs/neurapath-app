@@ -1,12 +1,12 @@
 import type { Handle } from '@sveltejs/kit';
 import { verifyToken } from '$lib/services/user.service';
-import { SIMULATE_LOGGED_IN_USER } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 
 export const handle: Handle = async ({ event, resolve }) => {
   ('[Hooks] Handling request for URL:', event.url.pathname);
   ('[Hooks] Request method:', event.request.method);
 
-  const simulateLoggedInUser = SIMULATE_LOGGED_IN_USER === 'true';
+  const simulateLoggedInUser = env.SIMULATE_LOGGED_IN_USER === 'true';
   if (simulateLoggedInUser) {
     ('[Hooks] Simulating logged-in user');
     // Simulate a logged-in user

@@ -6,7 +6,14 @@ import {
 } from './database.service';
 
 import type { User } from '$lib/models';
-import { JWT_SECRET } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+
+const getJwtSecret = () => {
+  if (!env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not configured');
+  }
+  return env.JWT_SECRET;
+};
 
 /* ------------------------------------------------------------------ */
 /*  Auth helpers                                                      */
@@ -77,7 +84,7 @@ export const generateToken = async (user: User): Promise<string> => {
       // Expires in 2 hours
       exp: Math.floor(Date.now() / 1000) + 2 * 60 * 60
     },
-    JWT_SECRET
+    getJwtSecret()
   );
   ('[UserService] Token generated successfully for user:', user.username);
   return token;
@@ -86,7 +93,7 @@ export const generateToken = async (user: User): Promise<string> => {
 export const verifyToken = async (token: string): Promise<User | null> => {
   ('[UserService] Verifying token');
   try {
-    const { payload } = (await jwt.verify(token, JWT_SECRET)) as unknown as {
+    const { payload } = (await jwt.verify(token, getJwtSecret())) as unknown as {
       payload: {
         userId: string;
         username: string;
