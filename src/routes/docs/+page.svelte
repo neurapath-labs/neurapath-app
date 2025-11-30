@@ -10,7 +10,7 @@
   ogDescription="Complete documentation for Neurapath's evidence-based learning platform. Learn how to use spaced repetition, incremental reading, and other powerful study techniques."
   twitterTitle="Neurapath Documentation - Learning Platform Guide"
   twitterDescription="Complete documentation for Neurapath's evidence-based learning platform. Learn how to use spaced repetition, incremental reading, and other powerful study techniques."
-  canonicalUrl="https://neurapath.shop/docs"
+  canonicalUrl="https://app.neurapath.shop/docs"
   schema={[{
     "@context": "https://schema.org",
     "@type": "Article",

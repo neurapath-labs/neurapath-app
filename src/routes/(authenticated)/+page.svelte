@@ -41,7 +41,7 @@
 	ogDescription="Access your personalized learning dashboard with spaced repetition cards, incremental reading materials, and progress tracking."
 	twitterTitle="Neurapath Dashboard - Evidence-Based Learning"
 	twitterDescription="Access your personalized learning dashboard with spaced repetition cards, incremental reading materials, and progress tracking."
-	canonicalUrl="https://neurapath.shop/dashboard"
+	canonicalUrl="https://app.neurapath.shop/dashboard"
 	schema={[
 		{
 			"@context": "https://schema.org",

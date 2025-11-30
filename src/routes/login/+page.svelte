@@ -9,7 +9,7 @@
 <SeoHead
 	title="Login to Neurapath"
 	description="Sign in to your Neurapath account."
-	canonicalUrl="https://neurapath.shop/login"
+	canonicalUrl="https://app.neurapath.shop/login"
 />
 
 <div class="flex h-screen w-full items-center justify-center px-8 bg-[rgb(var(--background-color))] text-[rgb(var(--font-color))]">
