@@ -7,7 +7,8 @@ Discord: https://discord.gg/2xkMPmcGZh
 ## Features
 
 - **Spaced Repetition**: Implements the SM-2 algorithm for optimal review scheduling
-- **Cloze Deletions**: Create flashcards by hiding parts of text
+- **Active Recall**: Test yourself with flashcards to strengthen memory
+- **Cloze Deletions**: Create fill-in-the-blank cards by hiding parts of text
 - **Image Occlusions**: Create flashcards from images by hiding parts of them
 - **Incremental Reading**: Process large texts by extracting key information
 - **Similar Content**: Automatically fetch related information from Oxford and Wikipedia APIs
@@ -15,6 +16,9 @@ Discord: https://discord.gg/2xkMPmcGZh
 - **Keyboard Shortcuts**: Fully customizable keyboard shortcuts for efficient workflow
 - **Data Export/Import**: Save and restore your learning database
 - **Hierarchical Organization**: Folder-based structure for organizing learning materials
+- **Progress Analytics**: Track your learning streaks and performance metrics
+- **Cloud Sync**: Your data syncs across devices via Cloudflare Workers backend
+- **Privacy Controls**: Make your learning data public or keep it private
 
 ## Getting Started
 
@@ -137,8 +141,10 @@ For support, feature requests, or general questions:
 
 ### Acknowledgments
 
-- Built with [SvelteKit](https://kit.svelte.dev/)
-- Uses [Tailwind CSS](https://tailwindcss.com/) for styling
+- Built with [SvelteKit 2.49+](https://kit.svelte.dev/) and [Svelte 5](https://svelte.dev/)
+- Uses [Tailwind CSS 4.1+](https://tailwindcss.com/) for styling
+- UI components from [shadcn-svelte](https://www.shadcn-svelte.com/)
 - Implements [Quill.js](https://quilljs.com/) for rich text editing
 - Leverages [pdfjs-dist](https://mozilla.github.io/pdf.js/) for PDF processing
-- Inspired by evidence-based learning research
+- Deployed on [Cloudflare Workers](https://workers.cloudflare.com/)
+- Inspired by evidence-based learning research and SuperMemo
