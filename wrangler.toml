@@ -3,6 +3,7 @@ main = ".svelte-kit/cloudflare/_worker.js"
 compatibility_flags = [ "nodejs_compat" ]
 compatibility_date = "2025-11-19"
 minify = true
+account_id = "6c2dccead5cc8b117a208576df3a8c2c"
 
 routes = [
   { pattern = "neurapath.shop", custom_domain = true },

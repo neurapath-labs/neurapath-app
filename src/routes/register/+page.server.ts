@@ -2,7 +2,6 @@ import { redirect, fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import {
     createUser,
-    authenticateUser,
     generateToken
 } from '$lib/services/user.service';
 import { dev } from '$app/environment';
@@ -19,36 +18,55 @@ export const actions: Actions = {
         const password = (data.get('password') ?? '').toString();
 
         if (!username || !password) {
-            return fail(400, { error: 'Invalid input' });
+            return fail(400, { error: 'Username and password are required' });
         }
 
-        // 1 · does the user already exist?
-        if (await authenticateUser(username, password)) {
-            return fail(409, { error: 'Username already taken' });
+        if (username.length < 3) {
+            return fail(400, { error: 'Username must be at least 3 characters' });
         }
 
-        // 2 · create user
-        const user = await createUser(username, password);
+        if (password.length < 6) {
+            return fail(400, { error: 'Password must be at least 6 characters' });
+        }
 
-        // 3 · issue JWT
-        const token = await generateToken(user);
+        if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+            return fail(400, { error: 'Username can only contain letters, numbers, underscores, and hyphens' });
+        }
 
-        // 4 · cookies
-        cookies.set('password', password, {
-            path: '/',
-            httpOnly: true,
-            secure: !dev,
-            sameSite: 'lax',
-            maxAge: 2147483647
-        });
-        cookies.set('token', token, {
-            path: '/',
-            httpOnly: true,
-            secure: !dev,
-            sameSite: 'lax',
-            maxAge: 2147483647
-        });
+        try {
+            // Create user (will throw if username already exists)
+            const user = await createUser(username, password);
 
-        throw redirect(303, '/');
+            // Issue JWT
+            const token = await generateToken(user);
+
+            // Set cookies
+            cookies.set('password', password, {
+                path: '/',
+                httpOnly: true,
+                secure: !dev,
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 30 // 30 days
+            });
+            cookies.set('token', token, {
+                path: '/',
+                httpOnly: true,
+                secure: !dev,
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 30 // 30 days
+            });
+
+            throw redirect(303, '/');
+        } catch (error: any) {
+            // Handle redirect
+            if (error?.status === 303) throw error;
+
+            // Handle registration errors
+            const message = error?.message ?? 'Registration failed';
+            if (message.includes('already')) {
+                return fail(409, { error: 'Username already taken' });
+            }
+            return fail(400, { error: message });
+        }
     }
 };

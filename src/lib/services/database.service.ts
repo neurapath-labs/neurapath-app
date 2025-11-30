@@ -38,8 +38,6 @@ export async function register(username: string, password: string) {
 }
 
 export async function login(username: string, password: string) {
-
-  // successful response ⇒ credentials are valid
   try {
     const result = await handle<unknown>(
       fetch(`${BASE}/user/data`, {
@@ -50,11 +48,7 @@ export async function login(username: string, password: string) {
 
     return result;
   } catch (error: any) {
-    console.error('[DatabaseService] Login error for user:', username, error);
-    console.error('[DatabaseService] Login error type:', typeof error);
-    console.error('[DatabaseService] Login error constructor:', error.constructor.name);
-    console.error('[DatabaseService] Login error message:', error.message);
-    console.error('[DatabaseService] Login error stack:', error.stack);
+    console.error('[DatabaseService] Login error:', error.message);
     throw error;
   }
 }

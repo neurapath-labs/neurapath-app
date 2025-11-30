@@ -15,7 +15,6 @@ const readStorage = (): AuthState => {
   if (!browser) return EMPTY;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    ('[AuthStore] Read from localStorage:', raw);
     return raw ? (JSON.parse(raw) as AuthState) : EMPTY;
   } catch (e) {
     console.error('[auth.store] failed to read localStorage', e);
@@ -26,7 +25,6 @@ const readStorage = (): AuthState => {
 const writeStorage = (state: AuthState) => {
   if (!browser) return;
   try {
-    ('[AuthStore] Writing to localStorage:', state);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (e) {
     console.error('[auth.store] failed to write localStorage', e);
@@ -49,15 +47,12 @@ function createAuthStore() {
 
   /* 2 — actions */
   const login = async (username: string) => {
-    ('[AuthStore] Logging in user:', username);
     const state: AuthState = { isLoggedIn: true, user: { username } };
     set(state);
     writeStorage(state);
-    ('[AuthStore] Login completed for user:', username);
   };
 
   const logout = async () => {
-    ('[AuthStore] Logging out');
     try {
       await fetch('/logout', {
         method: 'POST',
@@ -69,7 +64,6 @@ function createAuthStore() {
     }
     set(EMPTY);
     writeStorage(EMPTY);
-    ('[AuthStore] Logout completed');
   };
 
   /* 3 — expose API (this was missing) */

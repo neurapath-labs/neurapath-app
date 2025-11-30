@@ -1,7 +1,26 @@
+export type ContentType = 'Folder' | 'Cloze' | 'Extract' | 'Image' | 'Occlusion';
+
+/**
+ * Quill Delta operation for rich text content
+ */
+export interface DeltaOp {
+  insert?: string | { [key: string]: unknown };
+  delete?: number;
+  retain?: number;
+  attributes?: { [key: string]: unknown };
+}
+
+/**
+ * Quill Delta format for rich text content
+ */
+export interface Delta {
+  ops: DeltaOp[];
+}
+
 export interface Record {
   id: string;
-  contentType: 'Folder' | 'Cloze' | 'Extract' | 'Image' | 'Occlusion';
-  content?: any;
+  contentType: ContentType;
+  content?: Delta | string;
   clozes?: Cloze[];
   occlusions?: Occlusion[];
   url?: string;

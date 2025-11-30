@@ -9,6 +9,13 @@ interface LearningState {
   showExtractsInLearningMode: boolean;
 }
 
+interface SM2Result {
+  interval: number;
+  repetition: number;
+  efactor: number;
+  dueDate: string;
+}
+
 const initialState: LearningState = {
   isInLearningMode: false,
   currentRecord: null,
@@ -54,12 +61,25 @@ const toggleShowExtracts = () => {
   }));
 };
 
-// SM-2 algorithm implementation for spaced repetition
-const sm2 = (grade: number, repetition: number, efactor: number, interval: number) => {
-  let nextInterval = 0;
-  let nextRepetition = 0;
-  let nextEfactor = 0;
+/**
+ * SM-2 algorithm implementation for spaced repetition
+ * @param grade - Quality of response (0-5)
+ * @param repetition - Current number of consecutive correct reviews
+ * @param efactor - Easiness factor (starts at 2.5)
+ * @param interval - Current interval in days
+ * @returns Updated SM-2 parameters and next due date
+ */
+const sm2 = (
+  grade: number,
+  repetition: number,
+  efactor: number,
+  interval: number
+): SM2Result => {
+  let nextInterval: number;
+  let nextRepetition: number;
+  let nextEfactor: number;
 
+  // Grade >= 3 means correct response
   if (grade >= 3) {
     if (repetition === 0) {
       nextInterval = 1;
@@ -72,12 +92,18 @@ const sm2 = (grade: number, repetition: number, efactor: number, interval: numbe
       nextRepetition = repetition + 1;
     }
   } else {
+    // Failed - reset repetition count
     nextInterval = 1;
     nextRepetition = 0;
   }
 
+  // Update easiness factor
   nextEfactor = efactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
-  if (nextEfactor < 1.3) nextEfactor = 1.3;
+
+  // Minimum efactor is 1.3
+  if (nextEfactor < 1.3) {
+    nextEfactor = 1.3;
+  }
 
   const dueDate = new Date();
   dueDate.setDate(dueDate.getDate() + nextInterval);

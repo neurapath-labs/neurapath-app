@@ -27,20 +27,20 @@ export const actions: Actions = {
       // 2 · create JWT
       const token = await generateToken(user);
 
-      // 3 · set cookies (password kept for DB encryption layer)
+      // 3 · set cookies (password kept for DB encryption layer)
       cookies.set('password', password, {
         path: '/',
         httpOnly: true,
         secure: !dev,
         sameSite: 'lax',
-        maxAge: 2147483647
+        maxAge: 60 * 60 * 24 * 30 // 30 days
       });
       cookies.set('token', token, {
         path: '/',
         httpOnly: true,
         secure: !dev,
         sameSite: 'lax',
-        maxAge: 2147483647
+        maxAge: 60 * 60 * 24 * 30 // 30 days
       });
 
       // 4 · off you go
