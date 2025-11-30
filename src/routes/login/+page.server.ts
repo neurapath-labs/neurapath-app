@@ -1,4 +1,4 @@
-import { redirect, fail } from '@sveltejs/kit';
+import { redirect, fail, isRedirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { authenticateUser, generateToken } from '$lib/services/user.service';
 import { dev } from '$app/environment';
@@ -43,9 +43,12 @@ export const actions: Actions = {
         maxAge: 60 * 60 * 24 * 30 // 30 days
       });
 
-      // 4 · off you go
-      throw redirect(303, '/');
+      // 4 · off you go
+      redirect(303, '/');
     } catch (error: any) {
+      // Re-throw redirects - they're not actual errors
+      if (isRedirect(error)) throw error;
+
       console.error('[Login] ', error);
       return fail(401, { error: error?.message ?? 'Invalid credentials' });
     }

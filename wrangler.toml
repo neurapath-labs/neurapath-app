@@ -1,7 +1,7 @@
 name = "neurapath-app"
 main = ".svelte-kit/cloudflare/_worker.js"
 compatibility_flags = [ "nodejs_compat" ]
-compatibility_date = "2025-11-19"
+compatibility_date = "2025-11-30"
 minify = true
 account_id = "6c2dccead5cc8b117a208576df3a8c2c"
 
@@ -24,3 +24,4 @@ mode = "smart"
 ENVIRONMENT = "production"
 TURNSTILE_SECRET_KEY="0x4AAAAAABrwaiIg84oUm8STEGh9Yztgzn4"
 PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY="0x4AAAAAABrwau0ZWE5j8kEU"
+JWT_SECRET="secret-jwt-token"
