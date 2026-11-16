@@ -1,0 +1,27 @@
+name = "neurapath-app"
+main = ".svelte-kit/cloudflare/_worker.js"
+compatibility_flags = [ "nodejs_compat" ]
+compatibility_date = "2026-11-16"
+minify = true
+account_id = "XXX"
+
+routes = [
+  { pattern = "app.neurapath.shop", custom_domain = true },
+  { pattern = "www.app.neurapath.shop", custom_domain = true }
+]
+
+[assets]
+directory = ".svelte-kit/cloudflare"
+binding = "ASSETS"
+
+[observability.logs]
+enabled = true
+
+[placement]
+mode = "smart"
+
+[vars]
+ENVIRONMENT = "production"
+TURNSTILE_SECRET_KEY="0xAA"
+PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY="0xAA"
+JWT_SECRET="secret-jwt-token"
